@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import base64
 import os
 import shutil
 import subprocess
@@ -15,7 +16,16 @@ from .models import AcquisitionTask, DeploymentTask
 
 
 def snapshot(root: Path) -> dict[str, Any]:
-    files = {str(path.relative_to(root)): path.read_text(errors="replace") for path in root.rglob("*") if path.is_file() and path.name != "Dockerfile"}
+    files = {}
+    for path in root.rglob("*"):
+        if not path.is_file() or path.name == "Dockerfile":
+            continue
+        raw = path.read_bytes()
+        try:
+            value: Any = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            value = {"encoding": "base64", "data": base64.b64encode(raw).decode("ascii")}
+        files[str(path.relative_to(root))] = value
     modes = {str(path.relative_to(root)): path.stat().st_mode & 0o777 for path in root.rglob("*") if path.is_file() and path.name != "Dockerfile"}
     return {"files": files, "modes": modes}
 
@@ -52,7 +62,10 @@ class HostNativeVerifier:
             for relative, content in files.items():
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_text(str(content))
+                if isinstance(content, dict) and content.get("encoding") == "base64":
+                    target.write_bytes(base64.b64decode(content["data"]))
+                else:
+                    target.write_text(str(content))
                 if relative in modes:
                     target.chmod(int(modes[relative]))
             self._prepare_dependencies(root)

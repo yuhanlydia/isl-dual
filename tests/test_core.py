@@ -10,6 +10,7 @@ from isl_dual.controls import artifact_shuffle, edge_shuffle
 from isl_dual.cache import CachedExecutor, JSONCache
 from isl_dual.baselines import Baseline, deterministic_plan, upper_information_skill
 from isl_dual.compile import compile_graph_to_skill
+from isl_dual.executor import CodexExecutor
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -100,3 +101,12 @@ def test_skill_compilation_is_topological_not_json_order():
     graph = Graph("g", (node("b", "second"), node("a", "first")), (("a", "b"),))
     skill = compile_graph_to_skill(graph)
     assert skill.index("first") < skill.index("second")
+
+
+def test_binary_artifacts_are_losslessly_encoded(tmp_path):
+    path = tmp_path / "artifact.bin"
+    path.write_bytes(b"\x00\xff\x10")
+    encoded = CodexExecutor._read_artifact(path)
+    assert encoded["encoding"] == "base64"
+    import base64
+    assert base64.b64decode(encoded["data"]) == b"\x00\xff\x10"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import base64
 import shutil
 import subprocess
 import tempfile
@@ -75,10 +76,18 @@ class CodexExecutor:
                 raise CodexExecutionError(completed.stderr[-4000:])
             files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
             return {
-                "workspace": {str(p.relative_to(workspace)): p.read_text(errors="replace") for p in files},
+                "workspace": {str(p.relative_to(workspace)): self._read_artifact(p) for p in files},
                 "modes": {str(p.relative_to(workspace)): p.stat().st_mode & 0o777 for p in files},
                 "message": output_file.read_text(errors="replace") if output_file.exists() else "",
             }
+
+    @staticmethod
+    def _read_artifact(path: Path) -> Any:
+        raw = path.read_bytes()
+        try:
+            return raw.decode("utf-8")
+        except UnicodeDecodeError:
+            return {"encoding": "base64", "data": base64.b64encode(raw).decode("ascii")}
 
     def _prepare_dependencies(self, workspace: Path) -> None:
         requirements = workspace / "requirements.txt"
