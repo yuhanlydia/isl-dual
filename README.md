@@ -153,7 +153,7 @@ For the official 30-family queue, the host-native research adapter can be launch
 ```bash
 isl-dual --hours 10 --output runs/skillevol-10h supervise -- \
   isl-dual-campaign --benchmark-root /path/to/SkillEvolBench \
-  --output runs/skillevol-10h
+  --output runs/skillevol-10h --model gpt-5.4
 ```
 
 The campaign immediately advances after a completed family and atomically records failures

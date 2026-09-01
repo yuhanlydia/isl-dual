@@ -36,6 +36,10 @@ def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -
         "benchmark_commit": benchmark_commit,
         "completed": [], "attempts": [], "started_at": datetime.now(timezone.utc).isoformat(),
     }
+    state.setdefault("models_used", [])
+    resolved_model = model or "codex_default"
+    if resolved_model not in state["models_used"]:
+        state["models_used"].append(resolved_model)
     if "benchmark_commit" not in state:
         state["benchmark_commit"] = benchmark_commit
         _atomic(state_path, state)
@@ -55,7 +59,7 @@ def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -
     while len(state["completed"]) < len(families):
         pending = [family for family in families if family not in state["completed"]]
         for family_id in pending:
-            attempt = {"family": family_id, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
+            attempt = {"family": family_id, "model": resolved_model, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
             state["attempts"].append(attempt); _atomic(state_path, state)
             try:
                 run_family(benchmark_root, family_id, output / "families" / family_id, model)
@@ -77,7 +81,7 @@ def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -
         for family_id in families:
             if family_id in completed_replication:
                 continue
-            attempt = {"family": family_id, "replication": replication, "seed": config.seed, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
+            attempt = {"family": family_id, "model": resolved_model, "replication": replication, "seed": config.seed, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
             state["attempts"].append(attempt); _atomic(state_path, state)
             try:
                 run_family(benchmark_root, family_id, output / "replications" / f"seed-{config.seed}" / "families" / family_id, model, config)
