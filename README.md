@@ -70,6 +70,7 @@ model from unit tests would be costly and flaky.
   pruning, compilation, and leakage audit.
 - `metrics.py`: entropy, skill lift, Spearman correlation, and spurious-skill rejection.
 - `run_state.py`: atomic checkpoint primitive for resumable long jobs.
+- `supervisor.py`: signal-aware wall-clock supervisor for a fixed ten-hour command.
 
 ## SkillEvolBench integration
 
@@ -118,6 +119,17 @@ equal, do not scale the run before revisiting the method.
 - Never tune on deployment tasks or feed hidden verifier results back to the agent.
 - A ten-hour soak run is meaningful only after Docker, Harbor, artifacts, and native
   verifiers pass preflight.
+
+After strict preflight succeeds, wrap the real runner as follows:
+
+```bash
+isl-dual supervise --hours 10 --output runs/official-10h -- \
+  python3 path/to/skillevol_adapter.py --resume
+```
+
+The supervisor writes `supervisor.json`, forwards SIGINT/SIGTERM, stops at the deadline,
+and preserves the child's exit status. The child runner remains responsible for
+algorithm-level family/task/graph checkpoints.
 
 ## License
 

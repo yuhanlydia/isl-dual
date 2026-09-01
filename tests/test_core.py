@@ -4,6 +4,7 @@ from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
 from isl_dual.models import Graph
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
+from isl_dual.supervisor import supervise
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -40,3 +41,9 @@ def test_scientific_metrics():
     assert spurious_skill_rejection_rate(
         {"g": 0.9}, {"g": 0.1}, {"g": 0.8}, {"g": 0.2}, 0.8, 0.2,
     ) == 1.0
+
+
+def test_supervisor_records_completion(tmp_path):
+    state = tmp_path / "supervisor.json"
+    assert supervise(["/bin/true"], 0.001, state) == 0
+    assert '"status": "completed"' in state.read_text()
