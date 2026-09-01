@@ -28,6 +28,24 @@ class JSONCache:
         os.replace(temporary, path)
 
 
+class CachedJSONClient:
+    """Checkpoint schema-constrained Codex calls that are not graph components."""
+
+    def __init__(self, inner: Any, cache: JSONCache, namespace: str = "json_call"):
+        self.inner, self.cache, self.namespace = inner, cache, namespace
+        self.model = getattr(inner, "model", None)
+
+    def call(self, prompt: str, schema: dict[str, Any]) -> Any:
+        path = self.cache.key(self.namespace, {
+            "component": _identity(self.inner), "prompt": prompt, "schema": schema,
+        })
+        value = self.cache.get(path)
+        if value is None:
+            value = self.inner.call(prompt, schema)
+            self.cache.put(path, value)
+        return value
+
+
 def _task_digest(tasks: list[AcquisitionTask]) -> list[dict[str, Any]]:
     return [{"id": t.id, "x": t.x, "artifact": t.expert_artifact} for t in tasks]
 

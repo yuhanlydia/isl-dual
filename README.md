@@ -115,12 +115,14 @@ static-score correlation, spurious-skill rejection rate, and posterior entropy c
 The first go/no-go tests are `B4 > B3` and `B6 > B1`. If B3, B4, and B6 are effectively
 equal, do not scale the run before revisiting the method.
 
-`isl_dual.baselines` implements B1–B5. B0 is evaluated in the real family runner using
-the same deployment tasks and executor with no procedural skill. B7 and B8 deliberately
-require their full-trajectory or curated skill text to be supplied explicitly; the ISL
-data loader never reads those sources implicitly. The family runner also freezes and
-deploys every initial candidate graph for the candidate-level correlation metrics without
-feeding those held-out rewards back into learning.
+The real family runner executes B0–B8 and writes per-task scores, family means, and the
+GO-gate decision to `result.json`. B0 uses the same deployment executor with no procedural
+skill. B7 explicitly treats each acquisition task's benchmark `solution/solve.sh` as its
+upper-information execution trajectory; B8 explicitly reads the benchmark-declared curated
+`SKILL.md`. Neither source is loaded by B1–B6 or fed into ISL. Non-graph skill-generation
+calls are checkpointed just like proposer and critic calls. The runner also freezes and
+deploys every initial candidate graph for candidate-level correlation metrics without
+feeding held-out rewards back into learning.
 
 ## Long-run discipline
 

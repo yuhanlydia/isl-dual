@@ -50,6 +50,27 @@ def direct_text_skill(tasks: list[AcquisitionTask], client: CodexJSON) -> Select
     return SelectedSkill(Baseline.DIRECT_TEXT, str(value["skill"]), None, {}, {})
 
 
+def full_trajectory_skill(
+    tasks: list[AcquisitionTask], trajectories: list[str], client: CodexJSON,
+) -> SelectedSkill:
+    """B7 upper-information baseline; trajectories must be supplied explicitly."""
+    import json
+    if len(tasks) != len(trajectories) or not all(item.strip() for item in trajectories):
+        raise ValueError("B7 requires one non-empty expert trajectory per acquisition task")
+    observed = [
+        {"task": task.x, "expert_execution_trajectory": trajectory}
+        for task, trajectory in zip(tasks, trajectories, strict=True)
+    ]
+    prompt = (
+        "Write a portable SKILL.md containing reusable procedural knowledge from the "
+        "explicit expert execution trajectories below. Abstract away task-specific answers, "
+        "filenames, constants, and output content. Include Preconditions, Procedure, Failure "
+        "checks, and Stop condition.\n" + json.dumps(observed)
+    )
+    value = client.call(prompt, DIRECT_SKILL_SCHEMA)
+    return SelectedSkill(Baseline.FULL_TRAJECTORY, str(value["skill"]), None, {}, {})
+
+
 def _candidate_graphs(tasks: list[AcquisitionTask], proposer: Proposer, config: PilotConfig) -> list[Graph]:
     graphs = [graph for mode in PROPOSAL_MODES for graph in proposer.propose(tasks, mode, 2)]
     graphs = validate_dedupe(graphs, config.max_graph_nodes)

@@ -8,8 +8,8 @@ from isl_dual.mcts import TreeState, _uct, mcts
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
-from isl_dual.cache import CachedExecutor, JSONCache
-from isl_dual.baselines import Baseline, deterministic_plan, upper_information_skill
+from isl_dual.cache import CachedExecutor, CachedJSONClient, JSONCache
+from isl_dual.baselines import Baseline, deterministic_plan, full_trajectory_skill, upper_information_skill
 from isl_dual.compile import compile_graph_to_skill
 from isl_dual.executor import CodexExecutor
 from isl_dual.report import go_gate
@@ -157,3 +157,24 @@ def test_status_reports_latest_cache_activity(tmp_path):
     summary = summarize(tmp_path)
     assert summary["cache_records"] == {"executor": 1}
     assert summary["latest_cache_activity"]["executor"].endswith("+00:00")
+
+
+def test_non_graph_json_calls_are_checkpointed(tmp_path):
+    class Client:
+        model = "test"
+        def __init__(self): self.calls = 0
+        def call(self, prompt, schema):
+            self.calls += 1
+            return {"skill": "procedure"}
+    inner = Client()
+    client = CachedJSONClient(inner, JSONCache(tmp_path))
+    assert client.call("prompt", {"type": "object"}) == {"skill": "procedure"}
+    assert client.call("prompt", {"type": "object"}) == {"skill": "procedure"}
+    assert inner.calls == 1
+
+
+def test_full_trajectory_baseline_requires_explicit_trajectory_per_task():
+    class Client:
+        def call(self, prompt, schema): return {"skill": "# Skill\n\n## Procedure\n\n1. Diagnose."}
+    with pytest.raises(ValueError):
+        full_trajectory_skill(toy_tasks(), ["only one"], Client())
