@@ -9,6 +9,7 @@ from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
 from isl_dual.cache import CachedExecutor, JSONCache
 from isl_dual.baselines import Baseline, deterministic_plan, upper_information_skill
+from isl_dual.compile import compile_graph_to_skill
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -93,3 +94,9 @@ def test_baseline_contracts_are_explicit():
     graph = Graph("g", (node("a", "a"), node("b", "b")), (("a", "b"),))
     assert deterministic_plan(graph) == ("a", "b")
     assert upper_information_skill(Baseline.CURATED_SKILL, "procedure").skill == "procedure"
+
+
+def test_skill_compilation_is_topological_not_json_order():
+    graph = Graph("g", (node("b", "second"), node("a", "first")), (("a", "b"),))
+    skill = compile_graph_to_skill(graph)
+    assert skill.index("first") < skill.index("second")

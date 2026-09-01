@@ -71,3 +71,23 @@ def validate_dedupe(graphs: list[Graph], max_nodes: int = 12) -> list[Graph]:
             accepted.append(graph)
     return accepted
 
+
+def topological_node_ids(graph: Graph) -> list[str]:
+    """Stable topological ordering using original node order as the tie-breaker."""
+    position = {node.id: index for index, node in enumerate(graph.nodes)}
+    indegree = {node.id: 0 for node in graph.nodes}
+    children = {node.id: [] for node in graph.nodes}
+    for source, target in graph.edges:
+        indegree[target] += 1
+        children[source].append(target)
+    available = sorted((node_id for node_id, degree in indegree.items() if degree == 0), key=position.get)
+    ordered: list[str] = []
+    while available:
+        current = available.pop(0); ordered.append(current)
+        for child in children[current]:
+            indegree[child] -= 1
+            if indegree[child] == 0:
+                available.append(child); available.sort(key=position.get)
+    if len(ordered) != len(graph.nodes):
+        raise InvalidGraph("graph must be acyclic")
+    return ordered

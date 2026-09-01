@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .models import Graph, Utility, clone_graph
+from .graph import topological_node_ids
 
 
 def operational_pruning(
@@ -28,12 +29,16 @@ def operational_pruning(
 
 def compile_graph_to_skill(graph: Graph) -> str:
     node_map = graph.node_map()
+    ordered_nodes = [node_map[node_id] for node_id in topological_node_ids(graph)]
+    member_groups = {member: group.id for group in graph.or_groups for member in group.members}
     lines = ["# Skill", "", "## Preconditions"]
     preconditions = list(dict.fromkeys(p for n in graph.nodes for p in n.preconditions))
     lines.extend(f"- {item}" for item in preconditions or ["A concrete task input is available."])
     lines.extend(["", "## Procedure", ""])
-    for index, node in enumerate(graph.nodes, start=1):
+    for index, node in enumerate(ordered_nodes, start=1):
         marker = " (optional)" if not node.required else ""
+        if node.id in member_groups:
+            marker += f" (OR branch: choose one from {member_groups[node.id]})"
         lines.append(f"{index}. {node.action}{marker}")
     lines.extend(["", "## Failure checks", ""])
     lines.extend(f"- {node.validator}" for node in graph.nodes if node.validator.strip())
@@ -44,4 +49,3 @@ def compile_graph_to_skill(graph: Graph) -> str:
     else:
         lines.append("Stop when all required nodes and validators have completed successfully.")
     return "\n".join(lines) + "\n"
-
