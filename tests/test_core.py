@@ -8,6 +8,7 @@ from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
 from isl_dual.cache import CachedExecutor, JSONCache
+from isl_dual.baselines import Baseline, deterministic_plan, upper_information_skill
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -86,3 +87,9 @@ def test_or_group_selects_exactly_one_branch_before_stop():
     )
     assert set(legal_actions(graph, ("a",), 12)) == {"b", "c"}
     assert legal_actions(graph, ("a", "b"), 12) == [STOP]
+
+
+def test_baseline_contracts_are_explicit():
+    graph = Graph("g", (node("a", "a"), node("b", "b")), (("a", "b"),))
+    assert deterministic_plan(graph) == ("a", "b")
+    assert upper_information_skill(Baseline.CURATED_SKILL, "procedure").skill == "procedure"
