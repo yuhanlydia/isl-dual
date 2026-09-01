@@ -107,7 +107,7 @@ def _materialize_expert_artifact(task_dir: Path) -> dict[str, Any]:
         return {"delta": changed, "modes": {path: after["modes"][path] for path in changed}, "deleted": deleted}
 
 
-def load_family(benchmark_root: Path, family_id: str, materialize_artifacts: bool = True) -> FamilyBundle:
+def load_family(benchmark_root: Path, family_id: str, materialize_artifacts: bool = True, artifact_cache: Path | None = None) -> FamilyBundle:
     task_root = benchmark_root / "benchmark" / "tasks"
     records: list[tuple[int, Path, dict[str, Any]]] = []
     for task_dir in task_root.iterdir():
@@ -127,7 +127,16 @@ def load_family(benchmark_root: Path, family_id: str, materialize_artifacts: boo
         verifier = HostNativeVerifier(task_dir / "tests", task_dir / "environment")
         workspace = str((task_dir / "environment").resolve())
         if index <= 3:
-            artifact = _materialize_expert_artifact(task_dir) if materialize_artifacts else {}
+            cache_path = artifact_cache / f"{spec['task_id']}.json" if artifact_cache else None
+            if cache_path and cache_path.exists():
+                artifact = json.loads(cache_path.read_text())
+            else:
+                artifact = _materialize_expert_artifact(task_dir) if materialize_artifacts else {}
+                if cache_path:
+                    cache_path.parent.mkdir(parents=True, exist_ok=True)
+                    temporary = cache_path.with_suffix(".tmp")
+                    temporary.write_text(json.dumps(artifact, indent=2, sort_keys=True))
+                    os.replace(temporary, cache_path)
             acquisition.append(AcquisitionTask(spec["task_id"], instruction, artifact, verifier, workspace))
         else:
             deployment.append(DeploymentTask(spec["task_id"], instruction, verifier, workspace))

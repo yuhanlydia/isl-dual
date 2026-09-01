@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 from pathlib import Path
 
 from .cache import CachedCritic, CachedExecutor, CachedMutator, CachedProposer, JSONCache
@@ -16,7 +17,8 @@ from .skillevol_host import load_family
 
 def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
-    bundle = load_family(benchmark_root, family_id)
+    benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
+    bundle = load_family(benchmark_root, family_id, artifact_cache=output / "artifacts" / benchmark_commit)
     artifact_rewards = {task.id: task.verifier(task.expert_artifact) for task in bundle.acquisition}
     if any(reward < 1.0 for reward in artifact_rewards.values()):
         raise RuntimeError(f"expert outcomes fail native verifier: {artifact_rewards}")
@@ -63,7 +65,7 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
         q2=q2_initial,
         tau_artifact=0.8, tau_transfer=0.5,
     )
-    summary = {"family_id": family_id, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics}
+    summary = {"family_id": family_id, "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics}
     (output / "result.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
 
