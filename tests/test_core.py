@@ -189,6 +189,15 @@ def test_status_reports_latest_cache_activity(tmp_path):
     summary = summarize(tmp_path)
     assert summary["cache_records"] == {"executor": 1}
     assert summary["latest_cache_activity"]["executor"].endswith("+00:00")
+    assert summary["campaign_process_live"] is False
+
+
+def test_status_does_not_trust_stale_running_file(tmp_path):
+    (tmp_path / "supervisor.json").write_text('{"status":"running","pid":99999999}')
+    summary = summarize(tmp_path)
+    assert summary["supervisor_status"] == "running"
+    assert summary["campaign_process_live"] is False
+    assert summary["watchdog_process_live"] is False
 
 
 def test_non_graph_json_calls_are_checkpointed(tmp_path):
