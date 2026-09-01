@@ -102,7 +102,6 @@ def mcts(
         reward = max(0.0, min(1.0, float(task.verifier(output))))
         rollouts.append(Rollout(plan=plan, reward=reward, output=output))
 
-        root.visits += 1
         for parent, action in path:
             parent.visits += 1
             count = parent.action_visits.get(action, 0) + 1
@@ -111,4 +110,3 @@ def mcts(
             parent.action_values[action] = old + (reward - old) / count
 
     return MCTSResult(rollouts=rollouts)
-

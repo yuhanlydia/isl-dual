@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import traceback
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -28,10 +29,17 @@ def discover_families(benchmark_root: Path) -> list[str]:
 
 def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -> None:
     state_path = output / "campaign.json"
+    benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
     state = json.loads(state_path.read_text()) if state_path.exists() else {
         "benchmark_root": str(benchmark_root.resolve()), "model": model,
+        "benchmark_commit": benchmark_commit,
         "completed": [], "attempts": [], "started_at": datetime.now(timezone.utc).isoformat(),
     }
+    if "benchmark_commit" not in state:
+        state["benchmark_commit"] = benchmark_commit
+        _atomic(state_path, state)
+    if state.get("benchmark_commit") != benchmark_commit:
+        raise RuntimeError("benchmark commit changed; refusing to reuse cached rollouts")
     families = discover_families(benchmark_root)
     if len(families) != 30:
         raise RuntimeError(f"expected 30 SkillEvolBench families, found {len(families)}")

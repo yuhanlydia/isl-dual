@@ -123,7 +123,7 @@ equal, do not scale the run before revisiting the method.
 After strict preflight succeeds, wrap the real runner as follows:
 
 ```bash
-isl-dual supervise --hours 10 --output runs/official-10h -- \
+isl-dual --hours 10 --output runs/official-10h supervise -- \
   python3 path/to/skillevol_adapter.py --resume
 ```
 
@@ -134,7 +134,7 @@ algorithm-level family/task/graph checkpoints.
 For the official 30-family queue, the host-native research adapter can be launched with:
 
 ```bash
-isl-dual supervise --hours 10 --output runs/skillevol-10h -- \
+isl-dual --hours 10 --output runs/skillevol-10h supervise -- \
   isl-dual-campaign --benchmark-root /path/to/SkillEvolBench \
   --output runs/skillevol-10h
 ```
