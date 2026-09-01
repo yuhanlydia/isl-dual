@@ -69,6 +69,10 @@ model from unit tests would be costly and flaky.
 - `pipeline.py`: proposal, q0, first forward loop, utility estimation, mutation, q2,
   pruning, compilation, and leakage audit.
 - `metrics.py`: entropy, skill lift, Spearman correlation, and spurious-skill rejection.
+- `baselines.py`: executable B1–B5 selectors plus explicit B7/B8 information contracts.
+- `controls.py`: deterministic artifact-shuffle and DAG-edge-shuffle causal controls.
+- `report.py`: candidate-level forward/static transfer correlations and posterior metrics.
+- `cache.py`: model-scoped, occurrence-aware checkpoints that preserve fresh rollouts.
 - `run_state.py`: atomic checkpoint primitive for resumable long jobs.
 - `supervisor.py`: signal-aware wall-clock supervisor for a fixed ten-hour command.
 
@@ -110,6 +114,13 @@ Primary metrics are skill lift, acquisition-forward versus held-out Spearman cor
 static-score correlation, spurious-skill rejection rate, and posterior entropy change.
 The first go/no-go tests are `B4 > B3` and `B6 > B1`. If B3, B4, and B6 are effectively
 equal, do not scale the run before revisiting the method.
+
+`isl_dual.baselines` implements B1–B5. B0 is evaluated in the real family runner using
+the same deployment tasks and executor with no procedural skill. B7 and B8 deliberately
+require their full-trajectory or curated skill text to be supplied explicitly; the ISL
+data loader never reads those sources implicitly. The family runner also freezes and
+deploys every initial candidate graph for the candidate-level correlation metrics without
+feeding those held-out rewards back into learning.
 
 ## Long-run discipline
 

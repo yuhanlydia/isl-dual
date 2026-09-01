@@ -55,14 +55,11 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
             rewards.append(task.verifier(produced))
         candidate_deployment[graph_id] = sum(rewards) / len(rewards)
     common_forward = {k: result.forward_scores[k] for k in result.artifact_scores}
-    q2_initial_raw = {k: result.posterior.get(k, 0.0) for k in result.q0}
-    q2_initial_total = sum(q2_initial_raw.values())
-    q2_initial = {k: value / q2_initial_total for k, value in q2_initial_raw.items()}
     diagnostics = scientific_report(
         no_skill_reward=sum(no_skill_scores.values()) / len(no_skill_scores), isl_reward=sum(deployment_scores.values()) / len(deployment_scores),
         artifact_scores=result.artifact_scores, forward_scores=common_forward,
         deployment_scores=candidate_deployment, q0=result.q0,
-        q2=q2_initial,
+        q2=result.posterior,
         tau_artifact=0.8, tau_transfer=0.5,
     )
     summary = {"family_id": family_id, "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics}
