@@ -15,6 +15,7 @@ from isl_dual.executor import CodexExecutor
 from isl_dual.report import go_gate
 from isl_dual.subprocesses import run_process_group
 from isl_dual.pipeline import train_inverse_skill
+from isl_dual.status import summarize
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
 
@@ -138,3 +139,12 @@ def test_one_failed_rollout_becomes_zero_reward_not_family_abort():
     result = mcts(graph, toy_tasks()[0], FailingExecutor(), budget=1)
     assert result.rewards == [0.0]
     assert "RuntimeError" in result.rollouts[0].failure
+
+
+def test_status_reports_latest_cache_activity(tmp_path):
+    cache = tmp_path / "families" / "f" / "cache" / "executor"
+    cache.mkdir(parents=True)
+    (cache / "one.json").write_text("{}")
+    summary = summarize(tmp_path)
+    assert summary["cache_records"] == {"executor": 1}
+    assert summary["latest_cache_activity"]["executor"].endswith("+00:00")

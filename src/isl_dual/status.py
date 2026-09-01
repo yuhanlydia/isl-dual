@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -11,7 +12,12 @@ def summarize(run_root: Path) -> dict[str, object]:
     supervisor = json.loads(supervisor_path.read_text()) if supervisor_path.exists() else {}
     campaign = json.loads(campaign_path.read_text()) if campaign_path.exists() else {}
     attempts = campaign.get("attempts", [])
-    cache_counts = Counter(path.parent.name for path in run_root.glob("**/cache/*/*.json"))
+    cache_files = list(run_root.glob("**/cache/*/*.json"))
+    cache_counts = Counter(path.parent.name for path in cache_files)
+    latest_cache_activity = {}
+    for component in cache_counts:
+        modified = max(path.stat().st_mtime for path in cache_files if path.parent.name == component)
+        latest_cache_activity[component] = datetime.fromtimestamp(modified, timezone.utc).isoformat()
     return {
         "supervisor_status": supervisor.get("status", "missing"),
         "deadline_at": supervisor.get("deadline_at"),
@@ -20,6 +26,7 @@ def summarize(run_root: Path) -> dict[str, object]:
         "attempt_statuses": dict(Counter(str(attempt.get("status", "unknown")) for attempt in attempts)),
         "current_units": [{"family": attempt.get("family"), "replication": attempt.get("replication")} for attempt in attempts if attempt.get("status") == "running"],
         "cache_records": dict(sorted(cache_counts.items())),
+        "latest_cache_activity": dict(sorted(latest_cache_activity.items())),
     }
 
 
