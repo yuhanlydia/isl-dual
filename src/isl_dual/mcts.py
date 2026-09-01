@@ -95,7 +95,10 @@ def mcts(
         path: list[tuple[TreeState, str]] = []
         while True:
             actions = legal_actions(graph, state.prefix, max_plan_length)
-            if not actions or actions == [STOP]:
+            if not actions:
+                break
+            if actions == [STOP]:
+                path.append((state, STOP))
                 break
             unvisited = [a for a in actions if a not in state.children and a != STOP]
             if unvisited:
@@ -107,6 +110,10 @@ def mcts(
                 break
             action = max(actions, key=lambda a: _uct(state, a, c_uct))
             if action == STOP:
+                # STOP is a real MCTS action. It must receive the terminal reward;
+                # otherwise its UCT exploration term never decays and it remains
+                # spuriously attractive on every later visit to this state.
+                path.append((state, STOP))
                 break
             path.append((state, action))
             state = state.children[action]

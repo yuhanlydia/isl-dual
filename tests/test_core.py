@@ -4,7 +4,7 @@ from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
 from isl_dual.models import Graph, OrGroup
 from isl_dual.mcts import STOP, legal_actions
-from isl_dual.mcts import mcts
+from isl_dual.mcts import TreeState, _uct, mcts
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
@@ -139,6 +139,15 @@ def test_one_failed_rollout_becomes_zero_reward_not_family_abort():
     result = mcts(graph, toy_tasks()[0], FailingExecutor(), budget=1)
     assert result.rewards == [0.0]
     assert "RuntimeError" in result.rollouts[0].failure
+
+
+def test_visited_stop_action_has_decaying_exploration_bonus():
+    state = TreeState(prefix=("a",), visits=8)
+    unseen = _uct(state, STOP, 1.4)
+    state.action_visits[STOP] = 8
+    state.action_values[STOP] = 0.25
+    visited = _uct(state, STOP, 1.4)
+    assert visited < unseen
 
 
 def test_status_reports_latest_cache_activity(tmp_path):
