@@ -60,6 +60,9 @@ The deterministic smoke family validates the two-loop algorithm cheaply. A manua
 integration check also exercises the actual ephemeral Codex subprocess because calling a
 model from unit tests would be costly and flaky.
 
+The requirement-by-requirement implementation map is in
+[`docs/SPEC_AUDIT.md`](docs/SPEC_AUDIT.md).
+
 ## Components
 
 - `models.py`: typed DAG, tasks, rollouts, utilities, and component protocols.
