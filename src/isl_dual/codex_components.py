@@ -39,7 +39,7 @@ def graph_to_dict(graph: Graph) -> dict[str, Any]:
 
 
 class CodexJSON:
-    def __init__(self, model: str | None = None, timeout_seconds: int = 900):
+    def __init__(self, model: str | None = None, timeout_seconds: int = 300):
         self.model, self.timeout_seconds = model, timeout_seconds
 
     def call(self, prompt: str, schema: dict[str, Any]) -> Any:
