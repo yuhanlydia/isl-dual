@@ -27,6 +27,9 @@ class HostNativeVerifier:
     timeout_seconds: int = 600
 
     def __call__(self, output: Any) -> float:
+        return self.evaluate(output)[0]
+
+    def evaluate(self, output: Any) -> tuple[float, str | None]:
         if isinstance(output, dict) and "workspace" in output:
             files, modes = output["workspace"], output.get("modes", {})
         elif isinstance(output, dict) and "files" in output:
@@ -58,8 +61,20 @@ class HostNativeVerifier:
             completed = subprocess.run(["bash", str(self.tests_dir / "test.sh")], env=env, text=True, capture_output=True, timeout=self.timeout_seconds)
             reward_path = logs / "reward.txt"
             if not reward_path.exists():
-                return 0.0
-            return max(0.0, min(1.0, float(reward_path.read_text().strip())))
+                return 0.0, "native verifier did not produce reward.txt: " + completed.stderr[-1000:]
+            reward = max(0.0, min(1.0, float(reward_path.read_text().strip())))
+            failures: list[str] = []
+            for report_name in ("outcome_report.json", "process_report.json"):
+                report_path = logs / report_name
+                if not report_path.exists():
+                    continue
+                report = json.loads(report_path.read_text())
+                for section in ("public", "hidden"):
+                    for item in (report.get(section) or {}).get("results", []):
+                        if not item.get("passed", False):
+                            failures.append(f"{report_name}:{item.get('name', '?')}: {item.get('error') or item.get('detail') or ''}")
+            summary = "\n".join(failures[:20]) or (None if reward >= 1.0 else completed.stderr[-2000:] or "verifier reward below 1 without detailed failures")
+            return reward, summary
 
     def _prepare_dependencies(self, root: Path) -> None:
         requirements = root / "requirements.txt"

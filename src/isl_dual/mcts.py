@@ -113,8 +113,13 @@ def mcts(
 
         plan = _complete_plan(graph, state.prefix, rng, max_plan_length, p_stop)
         output = executor.execute(task, graph, plan)
-        reward = max(0.0, min(1.0, float(task.verifier(output))))
-        rollouts.append(Rollout(plan=plan, reward=reward, output=output))
+        evaluator = getattr(task.verifier, "evaluate", None)
+        if evaluator is not None:
+            raw_reward, failure = evaluator(output)
+        else:
+            raw_reward, failure = task.verifier(output), None
+        reward = max(0.0, min(1.0, float(raw_reward)))
+        rollouts.append(Rollout(plan=plan, reward=reward, output=output, failure=failure))
 
         for parent, action in path:
             parent.visits += 1
