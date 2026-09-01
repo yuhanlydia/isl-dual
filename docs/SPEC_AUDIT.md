@@ -34,10 +34,12 @@ because nested Docker/Harbor cannot run in the current container (`unshare` is d
 
 ## Persisted evidence
 
-Each completed family writes `SKILL.md` and `result.json`. The result includes the pinned
+Each native verifier result is atomically journaled by task, verifier-script digest, and
+output digest, so a deadline in the middle of a family still leaves durable reward/failure
+evidence and deterministic resume does not rerun an already evaluated output. Each completed
+family writes `SKILL.md` and `result.json`. The result includes the pinned
 benchmark and ISL-Dual commits, model/CLI identity, adapter label, fixed configuration,
 component-cache digests, expert-artifact native verification, q0/q1/q2, forward and
 deployment scores, B0–B8, controls, scientific metrics, and the GO decision. `campaign.json`
 is updated atomically at family boundaries; component calls and rollout occurrences are
 individually cached. `supervisor.json` is authoritative for the wall-clock deadline.
-

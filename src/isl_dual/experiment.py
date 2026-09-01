@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-from .cache import CachedCritic, CachedExecutor, CachedJSONClient, CachedMutator, CachedProposer, JSONCache
+from .cache import CachedCritic, CachedExecutor, CachedJSONClient, CachedMutator, CachedProposer, CachedVerifier, JSONCache
 from .baselines import Baseline, SelectedSkill, direct_text_skill, full_trajectory_skill, select_dag_baseline, upper_information_skill
 from .codex_components import CodexCritic, CodexJSON, CodexMutator, CodexProposer, graph_to_dict
 from .executor import CodexExecutor
@@ -25,12 +25,13 @@ from .skillevol_host import FamilyBundle, audit_no_curated_access, load_family
 def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None, config: PilotConfig | None = None) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
+    cache = JSONCache(output / "cache")
     artifact_root = output / "artifacts" / benchmark_commit
     bundle = load_family(benchmark_root, family_id, artifact_cache=artifact_root)
+    bundle = _with_checkpointed_verifiers(bundle, cache)
     artifact_rewards = _verified_artifact_rewards(bundle.acquisition, artifact_root / "native-verification.json")
     if any(reward < 1.0 for reward in artifact_rewards.values()):
         raise RuntimeError(f"expert outcomes fail native verifier: {artifact_rewards}")
-    cache = JSONCache(output / "cache")
     client = CodexJSON(model=model)
     baseline_client = CachedJSONClient(client, cache, "baseline_skill")
     proposer = CachedProposer(CodexProposer(client), cache)
@@ -159,6 +160,15 @@ def _run_metadata(output: Path, benchmark_commit: str, model: str | None, config
     }
 
 
+def _with_checkpointed_verifiers(bundle: FamilyBundle, cache: JSONCache) -> FamilyBundle:
+    def wrap(task: AcquisitionTask | DeploymentTask) -> AcquisitionTask | DeploymentTask:
+        verifier = task.verifier.inner if isinstance(task.verifier, CachedVerifier) else task.verifier
+        return replace(task, verifier=CachedVerifier(task.id, verifier, cache))
+    acquisition = [wrap(task) for task in bundle.acquisition]
+    deployment = [wrap(task) for task in bundle.deployment]
+    return FamilyBundle(bundle.family_id, acquisition, deployment)
+
+
 def _verified_artifact_rewards(tasks: list[AcquisitionTask], checkpoint: Path) -> dict[str, float]:
     """Checkpoint native verification only when all outcome artifacts pass at 1.0."""
     digests = {
@@ -203,6 +213,9 @@ def _artifact_shuffle_control(
     })
     donor_id = families[(families.index(family_id) + 1) % len(families)]
     donor = load_family(benchmark_root, donor_id, artifact_cache=output / "donor_artifacts" / benchmark_commit)
+    control_cache = JSONCache(output / "cache")
+    donor = _with_checkpointed_verifiers(donor, control_cache)
+    target_bundle = _with_checkpointed_verifiers(target_bundle, control_cache)
     donor_artifact_rewards = _verified_artifact_rewards(donor.acquisition, output / "donor_artifacts" / benchmark_commit / "native-verification.json")
     if any(reward < 1.0 for reward in donor_artifact_rewards.values()):
         raise RuntimeError(f"artifact-shuffle donor outcomes fail native verifier: {donor_artifact_rewards}")
@@ -210,7 +223,7 @@ def _artifact_shuffle_control(
         replace(task, expert_artifact=donor.acquisition[index].expert_artifact)
         for index, task in enumerate(target_bundle.acquisition)
     ]
-    cache = JSONCache(output / "cache")
+    cache = control_cache
     client = CodexJSON(model=model)
     result = train_inverse_skill(
         shuffled_tasks,

@@ -10,7 +10,7 @@ from isl_dual.mcts import TreeState, _uct, mcts
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
-from isl_dual.cache import CachedExecutor, CachedJSONClient, JSONCache
+from isl_dual.cache import CachedExecutor, CachedJSONClient, CachedVerifier, JSONCache
 from isl_dual.baselines import Baseline, deterministic_plan, full_trajectory_skill, upper_information_skill
 from isl_dual.compile import compile_graph_to_skill, operational_pruning
 from isl_dual.codex_components import validate_declared_mutation
@@ -237,6 +237,20 @@ def test_passing_expert_artifact_verification_is_checkpointed(tmp_path):
     assert _verified_artifact_rewards(tasks, checkpoint) == {"t1": 1.0}
     assert _verified_artifact_rewards(tasks, checkpoint) == {"t1": 1.0}
     assert len(calls) == 1
+
+
+def test_native_verifier_reward_and_failure_are_checkpointed(tmp_path):
+    class Verifier:
+        def __init__(self): self.calls = 0
+        def evaluate(self, output):
+            self.calls += 1
+            return 0.25, "observable failure"
+    inner = Verifier()
+    first = CachedVerifier("task", inner, JSONCache(tmp_path))
+    assert first.evaluate({"workspace": {"a": "b"}}) == (0.25, "observable failure")
+    resumed = CachedVerifier("task", inner, JSONCache(tmp_path))
+    assert resumed.evaluate({"workspace": {"a": "b"}}) == (0.25, "observable failure")
+    assert inner.calls == 1
 
 
 def test_smoke_cli_accepts_output_after_subcommand(tmp_path):

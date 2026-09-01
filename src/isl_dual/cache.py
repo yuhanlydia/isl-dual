@@ -46,6 +46,47 @@ class CachedJSONClient:
         return value
 
 
+class CachedVerifier:
+    """Persist deterministic native-verifier evidence without exposing it to the executor."""
+
+    def __init__(self, task_id: str, inner: Any, cache: JSONCache):
+        self.task_id, self.inner, self.cache = task_id, inner, cache
+
+    def _path(self, output: Any) -> Path:
+        output_digest = hashlib.sha256(json.dumps(output, sort_keys=True, default=str).encode()).hexdigest()
+        tests_value = getattr(self.inner, "tests_dir", None)
+        tests_dir = Path(tests_value) if tests_value is not None else None
+        test_script = tests_dir / "test.sh" if tests_dir is not None else None
+        script_digest = hashlib.sha256(test_script.read_bytes()).hexdigest() if test_script is not None and test_script.is_file() else None
+        return self.cache.key("verifier", {
+            "task_id": self.task_id,
+            "verifier_class": f"{type(self.inner).__module__}.{type(self.inner).__qualname__}",
+            "tests_dir": str(tests_dir.resolve()) if tests_dir is not None else None,
+            "test_script_digest": script_digest,
+            "output_digest": output_digest,
+        })
+
+    def evaluate(self, output: Any) -> tuple[float, str | None]:
+        path = self._path(output)
+        value = self.cache.get(path)
+        if value is None:
+            evaluator = getattr(self.inner, "evaluate", None)
+            if evaluator is not None:
+                reward, failure = evaluator(output)
+            else:
+                reward, failure = self.inner(output), None
+            value = {
+                "task_id": self.task_id,
+                "reward": max(0.0, min(1.0, float(reward))),
+                "failure": failure,
+            }
+            self.cache.put(path, value)
+        return float(value["reward"]), value.get("failure")
+
+    def __call__(self, output: Any) -> float:
+        return self.evaluate(output)[0]
+
+
 def _task_digest(tasks: list[AcquisitionTask]) -> list[dict[str, Any]]:
     return [{"id": t.id, "x": t.x, "artifact": t.expert_artifact} for t in tasks]
 
