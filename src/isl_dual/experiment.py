@@ -12,7 +12,7 @@ from .models import Graph, Node
 from .compile import compile_graph_to_skill
 from .report import scientific_report
 from .pipeline import train_inverse_skill
-from .skillevol_host import load_family
+from .skillevol_host import audit_no_curated_access, load_family
 
 
 def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None) -> dict[str, object]:
@@ -29,6 +29,7 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
     executor = CachedExecutor(CodexExecutor(model=model), cache)
     mutator = CachedMutator(CodexMutator(client), cache)
     result = train_inverse_skill(bundle.acquisition, proposer, critic, executor, mutator)
+    audit_no_curated_access(benchmark_root, result.skill)
     (output / "SKILL.md").write_text(result.skill)
     skill_node = Node("skill", "Apply the following frozen procedural skill exactly as reusable guidance:\n\n" + result.skill, ("A deployment task is available",), ("task",), "Apply the following frozen procedural skill exactly as reusable guidance:\n\n" + result.skill, ("completed_task",), "Verify the task requirements", True)
     deployment_graph = Graph("frozen-deployment", (skill_node, Node("verify", "Verify the final artifact against all observable task requirements", (), (), "Verify the final artifact against all observable task requirements", ("verified",), "All observable checks pass", True)), (("skill", "verify"),))

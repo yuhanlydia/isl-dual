@@ -57,6 +57,12 @@ def test_supervisor_records_completion(tmp_path):
     assert '"status": "completed"' in state.read_text()
 
 
+def test_supervisor_enforces_wall_clock_deadline(tmp_path):
+    state = tmp_path / "deadline.json"
+    assert supervise(["/bin/sleep", "10"], 0.00001, state) != 0
+    assert '"status": "deadline_reached"' in state.read_text()
+
+
 def test_edge_shuffle_preserves_nodes_and_edge_count():
     graph = Graph("g", (node("a", "a"), node("b", "b"), node("c", "c")), (("a", "b"),))
     shuffled = edge_shuffle(graph, 4)
