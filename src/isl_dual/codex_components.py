@@ -77,6 +77,11 @@ GRAPH_SCHEMA: dict[str, Any] = {
         "metadata": {"type": "object", "additionalProperties": False, "properties": {}},
     },
 }
+MUTANT_SCHEMA = json.loads(json.dumps(GRAPH_SCHEMA))
+MUTANT_SCHEMA["properties"]["metadata"] = {
+    "type": "object", "additionalProperties": False, "required": ["mutation"],
+    "properties": {"mutation": {"type": "string", "enum": ["ADD_NODE", "REMOVE_OPTIONAL_NODE", "SPLIT_NODE", "MERGE_NODES", "ADD_EDGE", "REMOVE_EDGE", "CHANGE_BRANCH"]}},
+}
 
 
 def _artifact_text(tasks: list[AcquisitionTask]) -> str:
@@ -96,6 +101,7 @@ class CodexProposer:
             prompt = f"""You do not know the expert's actual execution history. Do not reconstruct chain-of-thought.
 Infer one reusable {mode} procedural DAG that could explain the successful final artifacts and transfer to related unseen tasks.
 Do not copy case-specific answers, filenames, constants, or output content unless genuinely reusable. This is variant {index + 1}, attempt {attempts}; make it structurally distinct.
+Validity contract: use 2-12 unique nodes; non-empty actions; existing edge endpoints; no self-edge or cycle; a required node may not depend on an optional node; OR groups contain at least two existing non-overlapping members, and a required OR group contains a required alternative.
 The previous rejected attempt failed validation with: {last_error or 'none'}.
 Observed outcome-only data:\n{_artifact_text(tasks)}"""
             data = self.client.call(prompt, GRAPH_SCHEMA)
@@ -133,10 +139,20 @@ class CodexMutator:
     def mutate(self, graph: Graph, evidence: Mapping[tuple[str, str], MCTSResult], node_utilities: Mapping[tuple[str, str], Utility], edge_utilities: Mapping[tuple[str, tuple[str, str]], Utility], count: int) -> list[Graph]:
         rollouts = [{"task": task, "plan": list(r.plan), "reward": r.reward, "failure": r.failure} for (gid, task), result in evidence.items() if gid == graph.id for r in result.rollouts]
         utilities = {node: {"delta": u.delta, "n_with": u.n_with, "n_without": u.n_without} for (gid, node), u in node_utilities.items() if gid == graph.id}
-        results = []
-        for index in range(count):
-            prompt = "Revise the procedural graph using execution evidence. Prefer one minimal edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + f"\nProduce distinct mutant {index + 1}."
-            data = self.client.call(prompt, GRAPH_SCHEMA)
+        results = []; attempts = 0; last_error = ""
+        while len(results) < count and attempts < count * 6:
+            index = len(results); attempts += 1
+            prompt = "Revise the procedural graph using execution evidence. Prefer one minimal edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on an optional node, and valid non-overlapping OR groups.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + f"\nProduce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
+            data = self.client.call(prompt, MUTANT_SCHEMA)
             mutant = graph_from_dict(data, f"{graph.id}-m{index + 1}")
-            results.append(Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": str(data.get("metadata", {}).get("mutation", "UNKNOWN"))}))
+            mutant = Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": str(data["metadata"]["mutation"])})
+            try:
+                validate_graph(mutant)
+            except InvalidGraph as error:
+                last_error = str(error); continue
+            if mutant.fingerprint() == graph.fingerprint() or mutant.fingerprint() in {item.fingerprint() for item in results}:
+                last_error = "mutation made no distinct semantic change"; continue
+            results.append(mutant); last_error = ""
+        if len(results) != count:
+            raise RuntimeError(f"Codex mutator produced only {len(results)}/{count} valid mutants after {attempts} attempts: {last_error}")
         return results
