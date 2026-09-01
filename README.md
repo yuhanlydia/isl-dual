@@ -1,0 +1,124 @@
+# ISL-Dual
+
+ISL-Dual (**Inverse Skill Learning with an Inverse–Forward Dual Loop**) learns a
+portable procedure from successful final artifacts without observing expert trajectories
+or curated skills. It trains no model parameters: learning happens over a latent
+procedural DAG, its posterior, and evidence from actual forward execution.
+
+> Research pilot. The core engine and isolated Codex executor run end to end.
+> SkillEvolBench is an external dependency and is not vendored here.
+
+## Algorithm
+
+For each family, the learner sees only three `(task input, successful final artifact)`
+pairs. It proposes eight diverse DAGs, computes a static artifact posterior, and searches
+execution plans with MCTS. Every rollout receives a clean workspace and a fresh
+`codex exec --ephemeral` process. The native verifier runs only after execution and never
+compares against the expert artifact. Forward evidence updates the posterior and drives
+one restricted graph-mutation pass. After two outer loops the winner is pruned and
+compiled to a frozen `SKILL.md` for T4–T6 deployment.
+
+```text
+(x, final artifact) -> DAG posterior -> MCTS plan search
+                                         |
+                              fresh Codex + workspace
+                                         |
+                              native verifier reward
+                                         |
+                         posterior update + mutation
+                                         |
+                               frozen SKILL.md
+```
+
+## Fixed pilot configuration
+
+| Parameter | Value |
+|---|---:|
+| Acquisition / deployment tasks | 3 / 3 |
+| Candidate DAGs | 8 |
+| Maximum nodes / plan length | 12 / 12 |
+| Outer loops | 2 |
+| MCTS budget | 8 |
+| UCT constant / rollout stop probability | 1.4 / 0.4 |
+| Static / forward weights | 2.0 / 4.0 |
+| Stability / complexity penalties | 0.5 / 0.1 |
+| Graphs mutated / mutants each | 2 / 3 |
+| Maximum graph pool | 12 |
+| Utility pruning threshold | 0.05 |
+
+## Install and verify
+
+Python 3.10+ and an authenticated Codex CLI are required.
+
+```bash
+python3 -m pip install -e . --no-build-isolation
+python3 -m pytest -q
+isl-dual smoke --output runs/smoke
+```
+
+The deterministic smoke family validates the two-loop algorithm cheaply. A manual
+integration check also exercises the actual ephemeral Codex subprocess because calling a
+model from unit tests would be costly and flaky.
+
+## Components
+
+- `models.py`: typed DAG, tasks, rollouts, utilities, and component protocols.
+- `graph.py`: acyclicity, endpoint, node-count, optional-dependency, and OR-group checks.
+- `mcts.py`: UCT selection, expansion, randomized legal completion, and mean backup.
+- `executor.py`: isolated temporary workspace plus fresh ephemeral Codex per rollout.
+- `pipeline.py`: proposal, q0, first forward loop, utility estimation, mutation, q2,
+  pruning, compilation, and leakage audit.
+- `metrics.py`: entropy, skill lift, Spearman correlation, and spurious-skill rejection.
+- `run_state.py`: atomic checkpoint primitive for resumable long jobs.
+
+## SkillEvolBench integration
+
+Clone the official benchmark separately and pin its commit. ISL-Dual must adapt its 30
+families without importing curated `benchmark/skills/*/SKILL.md` or expert solution
+trajectories into model prompts. For every family:
+
+1. Materialize successful T1–T3 final workspaces as outcome artifacts.
+2. Supply proposer, critic, executor, mutator, and native verifier implementations.
+3. Run acquisition learning and freeze the compiled skill.
+4. Execute T4–T6 once with only task plus frozen skill.
+5. Persist benchmark commit, model, verifier version, seed, and prompt hashes.
+
+The benchmark uses containerized Harbor tasks. Docker/Harbor readiness is a hard
+preflight requirement for official scores. Do not substitute host-side toy verifiers.
+
+## Leakage contract
+
+Runtime assertions enforce:
+
+- proposer/critic: no expert trajectory or curated skill;
+- forward executor: no expert artifact, trajectory, or curated skill;
+- mutator: graph plus operational evidence only;
+- deployment: no expert artifact, posterior update, or hidden reward.
+
+All stages should use `codex exec --ephemeral`. Private artifacts, credentials, run logs,
+and workspaces belong under ignored paths; `runs/` is excluded from Git.
+
+## Experiments
+
+Required baselines are B0 no skill, B1 direct outcome-to-text skill, B2 one-shot DAG,
+B3 eight DAGs plus static critic, B4 greedy forward, B5 MCTS forward, and B6 full
+ISL-Dual. B7 full trajectory and B8 curated skill are upper-information controls.
+Artifact shuffle and edge shuffle are the two required causal controls.
+
+Primary metrics are skill lift, acquisition-forward versus held-out Spearman correlation,
+static-score correlation, spurious-skill rejection rate, and posterior entropy change.
+The first go/no-go tests are `B4 > B3` and `B6 > B1`. If B3, B4, and B6 are effectively
+equal, do not scale the run before revisiting the method.
+
+## Long-run discipline
+
+- Use a wall-clock deadline and atomic checkpoints at family/task/graph boundaries.
+- Resume completed units rather than restarting paid rollouts.
+- Handle SIGINT/SIGTERM by saving state before exit.
+- Never tune on deployment tasks or feed hidden verifier results back to the agent.
+- A ten-hour soak run is meaningful only after Docker, Harbor, artifacts, and native
+  verifiers pass preflight.
+
+## License
+
+MIT
