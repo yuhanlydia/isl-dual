@@ -2,7 +2,8 @@ import pytest
 
 from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
-from isl_dual.models import Graph
+from isl_dual.models import Graph, OrGroup
+from isl_dual.mcts import STOP, legal_actions
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
@@ -76,3 +77,12 @@ def test_rollout_cache_keeps_duplicate_occurrences_distinct(tmp_path):
     assert resumed.execute(task, graph, ("a", "b"))["call"] == 1
     assert resumed.execute(task, graph, ("a", "b"))["call"] == 2
     assert resumed_inner.calls == 0
+
+
+def test_or_group_selects_exactly_one_branch_before_stop():
+    graph = Graph(
+        "or", (node("a", "a"), node("b", "b", True), node("c", "c", False)),
+        (("a", "b"), ("a", "c")), (OrGroup("branch", ("b", "c"), True),),
+    )
+    assert set(legal_actions(graph, ("a",), 12)) == {"b", "c"}
+    assert legal_actions(graph, ("a", "b"), 12) == [STOP]

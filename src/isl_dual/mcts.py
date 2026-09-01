@@ -20,17 +20,32 @@ class TreeState:
 
 def legal_actions(graph: Graph, prefix: tuple[str, ...], max_len: int) -> list[str]:
     used = set(prefix)
+    member_to_group = {member: group for group in graph.or_groups for member in group.members}
     actions = [
         node.id
         for node in graph.nodes
-        if node.id not in used and graph.parents(node.id) <= used
+        if node.id not in used
+        and graph.parents(node.id) <= used
+        and not (node.id in member_to_group and (set(member_to_group[node.id].members) & used))
     ]
-    required = {node.id for node in graph.nodes if node.required}
-    if required <= used:
+    if requirements_satisfied(graph, used):
         actions.append(STOP)
     if len(prefix) >= max_len:
-        return [STOP] if required <= used else []
+        return [STOP] if requirements_satisfied(graph, used) else []
     return actions
+
+
+def requirements_satisfied(graph: Graph, used: set[str]) -> bool:
+    grouped = {member for group in graph.or_groups for member in group.members}
+    standalone_required = {node.id for node in graph.nodes if node.required and node.id not in grouped}
+    if not standalone_required <= used:
+        return False
+    node_map = graph.node_map()
+    for group in graph.or_groups:
+        group_required = group.required or any(node_map[member].required for member in group.members)
+        if group_required and not (set(group.members) & used):
+            return False
+    return True
 
 
 def _uct(state: TreeState, action: str, c_uct: float) -> float:
@@ -47,14 +62,13 @@ def _complete_plan(
     p_stop: float,
 ) -> tuple[str, ...]:
     plan = list(prefix)
-    required = {node.id for node in graph.nodes if node.required}
     while len(plan) < max_len:
         actions = [a for a in legal_actions(graph, tuple(plan), max_len) if a != STOP]
-        required_available = [a for a in actions if a in required]
+        required_available = [a for a in actions if graph.node_map()[a].required]
         if required_available:
             plan.append(rng.choice(required_available))
             continue
-        if required <= set(plan) and (not actions or rng.random() < p_stop):
+        if requirements_satisfied(graph, set(plan)) and (not actions or rng.random() < p_stop):
             break
         if not actions:
             break
