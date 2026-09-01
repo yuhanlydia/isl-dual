@@ -5,11 +5,13 @@ import base64
 import shutil
 import subprocess
 import tempfile
+import os
 from pathlib import Path
 from typing import Any
 
 from .leakage import SecretBundle, assert_forward_input
 from .models import AcquisitionTask, DeploymentTask, Graph
+from .subprocesses import run_process_group
 
 
 class CodexExecutionError(RuntimeError):
@@ -51,6 +53,7 @@ class CodexExecutor:
         )
         with tempfile.TemporaryDirectory(prefix="isl-dual-rollout-") as temp:
             workspace = Path(temp) / "workspace"
+            tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
             if task.workspace_source:
                 shutil.copytree(task.workspace_source, workspace, ignore=shutil.ignore_patterns("Dockerfile"))
             else:
@@ -65,16 +68,12 @@ class CodexExecutor:
             if self.model:
                 command.extend(["--model", self.model])
             command.append(prompt)
-            completed = subprocess.run(
-                command,
-                text=True,
-                capture_output=True,
-                timeout=self.timeout_seconds,
-                check=False,
-            )
+            process_env = os.environ.copy()
+            process_env["PATH"] = str(tool_bin) + os.pathsep + process_env.get("PATH", "")
+            completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env)
             if completed.returncode != 0:
                 raise CodexExecutionError(completed.stderr[-4000:])
-            files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
+            files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".npm-cache", ".poetry_env", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
             return {
                 "workspace": {str(p.relative_to(workspace)): self._read_artifact(p) for p in files},
                 "modes": {str(p.relative_to(workspace)): p.stat().st_mode & 0o777 for p in files},

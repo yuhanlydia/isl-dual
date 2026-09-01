@@ -9,6 +9,7 @@ from typing import Any, Mapping
 
 from .models import AcquisitionTask, CriticScore, Graph, MCTSResult, Mutator, Node, OrGroup, Utility
 from .graph import InvalidGraph, validate_graph
+from .subprocesses import run_process_group
 
 
 def graph_from_dict(data: Mapping[str, Any], graph_id: str | None = None) -> Graph:
@@ -54,7 +55,7 @@ class CodexJSON:
                     command.extend(["--model", self.model])
                 command.append(prompt + f"\nTransient call attempt: {attempt}.")
                 try:
-                    result = subprocess.run(command, text=True, capture_output=True, timeout=self.timeout_seconds)
+                    result = run_process_group(command, timeout=self.timeout_seconds)
                 except subprocess.TimeoutExpired:
                     errors.append(f"attempt {attempt}: timed out after {self.timeout_seconds}s")
                     continue
@@ -95,8 +96,16 @@ MUTANT_SCHEMA["properties"]["metadata"] = {
 }
 
 
+def observable_artifact(artifact: Any) -> Any:
+    if isinstance(artifact, dict):
+        return {key: observable_artifact(value) for key, value in artifact.items() if not str(key).startswith("_")}
+    if isinstance(artifact, list):
+        return [observable_artifact(value) for value in artifact]
+    return artifact
+
+
 def _artifact_text(tasks: list[AcquisitionTask]) -> str:
-    return json.dumps([{"task_id": t.id, "task": t.x, "successful_final_artifact": t.expert_artifact} for t in tasks], ensure_ascii=False)
+    return json.dumps([{"task_id": t.id, "task": t.x, "successful_final_artifact": observable_artifact(t.expert_artifact)} for t in tasks], ensure_ascii=False)
 
 
 class CodexProposer:

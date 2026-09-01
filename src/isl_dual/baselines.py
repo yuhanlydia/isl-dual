@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
-from .codex_components import CodexJSON
+from .codex_components import CodexJSON, observable_artifact
 from .compile import compile_graph_to_skill
 from .config import PilotConfig
 from .graph import validate_dedupe
@@ -44,7 +44,7 @@ DIRECT_SKILL_SCHEMA = {
 
 def direct_text_skill(tasks: list[AcquisitionTask], client: CodexJSON) -> SelectedSkill:
     import json
-    observed = [{"task": task.x, "successful_final_artifact": task.expert_artifact} for task in tasks]
+    observed = [{"task": task.x, "successful_final_artifact": observable_artifact(task.expert_artifact)} for task in tasks]
     prompt = "Write a portable SKILL.md containing only reusable procedural knowledge inferred from these outcome-only examples. Do not infer chain-of-thought and do not copy case-specific answers, filenames, constants, or output content. Include Preconditions, Procedure, Failure checks, and Stop condition.\n" + json.dumps(observed)
     value = client.call(prompt, DIRECT_SKILL_SCHEMA)
     return SelectedSkill(Baseline.DIRECT_TEXT, str(value["skill"]), None, {}, {})

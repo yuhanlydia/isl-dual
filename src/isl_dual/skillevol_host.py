@@ -6,13 +6,21 @@ import os
 import shutil
 import subprocess
 import tempfile
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
+import tomli
 
 from .models import AcquisitionTask, DeploymentTask
+
+EPHEMERAL_PARTS = {"node_modules", ".npm-cache", ".poetry_env", "__pycache__", ".pytest_cache"}
+
+
+def _observable_path(path: str) -> bool:
+    return not (set(Path(path).parts) & EPHEMERAL_PARTS) and "$PROJECT_ROOT" not in path and '"' not in path
 
 
 def snapshot(root: Path) -> dict[str, Any]:
@@ -34,6 +42,7 @@ def snapshot(root: Path) -> dict[str, Any]:
 class HostNativeVerifier:
     tests_dir: Path
     base_environment: Path
+    project_relative: str = "."
     timeout_seconds: int = 600
 
     def __call__(self, output: Any) -> float:
@@ -50,10 +59,12 @@ class HostNativeVerifier:
             raise TypeError("host verifier expects a workspace snapshot")
         with tempfile.TemporaryDirectory(prefix="isl-dual-verify-") as temp:
             root, logs = Path(temp) / "task", Path(temp) / "logs"
+            tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
             if isinstance(output, dict) and "delta" in output:
                 shutil.copytree(self.base_environment, root, ignore=shutil.ignore_patterns("Dockerfile"))
-                files, modes = output["delta"], output.get("modes", {})
-                for relative in output.get("deleted", []):
+                files = output.get("_replay_delta", output["delta"])
+                modes = output.get("_replay_modes", output.get("modes", {}))
+                for relative in output.get("_replay_deleted", output.get("deleted", [])):
                     target = root / relative
                     if target.exists(): target.unlink()
             else:
@@ -70,7 +81,7 @@ class HostNativeVerifier:
                     target.chmod(int(modes[relative]))
             self._prepare_dependencies(root)
             env = os.environ.copy()
-            env.update(PROJECT_ROOT=str(root), HARBOR_LOG_DIR=str(logs), PYTHON_BIN="python3")
+            env.update(PROJECT_ROOT=str((root / self.project_relative).resolve()), TASK_ROOT=str(root), HARBOR_LOG_DIR=str(logs), PYTHON_BIN="python3", PATH=str(tool_bin) + os.pathsep + env["PATH"])
             completed = subprocess.run(["bash", str(self.tests_dir / "test.sh")], env=env, text=True, capture_output=True, timeout=self.timeout_seconds)
             reward_path = logs / "reward.txt"
             if not reward_path.exists():
@@ -104,20 +115,48 @@ class FamilyBundle:
     deployment: list[DeploymentTask]
 
 
-def _materialize_expert_artifact(task_dir: Path) -> dict[str, Any]:
+def _project_relative(task_dir: Path) -> str:
+    task_toml = tomli.loads((task_dir / "task.toml").read_text())
+    configured = str(task_toml.get("verifier", {}).get("env", {}).get("PROJECT_ROOT", "/root/task"))
+    prefix = "/root/task"
+    if configured == prefix:
+        return "."
+    if configured.startswith(prefix + "/"):
+        return configured[len(prefix) + 1:]
+    raise ValueError(f"unsupported PROJECT_ROOT outside /root/task: {configured}")
+
+
+def _solution_project_relative(task_dir: Path) -> str:
+    text = (task_dir / "solution" / "solve.sh").read_text()
+    match = re.search(r'PROJECT_ROOT="\$\{PROJECT_ROOT:-(/root/task(?:/[^}]*)?)\}"', text)
+    if not match or match.group(1) == "/root/task":
+        return "."
+    return match.group(1)[len("/root/task/"):]
+
+
+def _materialize_expert_artifact(task_dir: Path, project_relative: str) -> dict[str, Any]:
     with tempfile.TemporaryDirectory(prefix="isl-dual-outcome-") as temp:
         root = Path(temp) / "task"
+        tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
         shutil.copytree(task_dir / "environment", root, ignore=shutil.ignore_patterns("Dockerfile"))
         before = snapshot(root)
-        env = os.environ.copy(); env["PROJECT_ROOT"] = str(root); env["PYTHON_BIN"] = "python3"
+        env = os.environ.copy(); env["PROJECT_ROOT"] = str((root / project_relative).resolve()); env["TASK_ROOT"] = str(root); env["PYTHON_BIN"] = "python3"; env["PATH"] = str(tool_bin) + os.pathsep + env["PATH"]
         completed = subprocess.run(["bash", str(task_dir / "solution" / "solve.sh")], env=env, cwd=root, text=True, capture_output=True, timeout=600)
         if completed.returncode != 0:
             raise RuntimeError(f"expert artifact materialization failed for {task_dir.name}: {completed.stderr[-2000:]}")
         after = snapshot(root)
         # Outcome representation intentionally contains no command log or solution script.
-        changed = {path: content for path, content in after["files"].items() if before["files"].get(path) != content or before["modes"].get(path) != after["modes"].get(path)}
+        replay_changed = {path: content for path, content in after["files"].items() if before["files"].get(path) != content or before["modes"].get(path) != after["modes"].get(path)}
+        changed = {path: content for path, content in replay_changed.items() if _observable_path(path)}
         deleted = sorted(set(before["files"]) - set(after["files"]))
-        return {"delta": changed, "modes": {path: after["modes"][path] for path in changed}, "deleted": deleted}
+        return {
+            "delta": changed,
+            "modes": {path: after["modes"][path] for path in changed},
+            "deleted": [path for path in deleted if _observable_path(path)],
+            "_replay_delta": replay_changed,
+            "_replay_modes": {path: after["modes"][path] for path in replay_changed},
+            "_replay_deleted": deleted,
+        }
 
 
 def load_family(benchmark_root: Path, family_id: str, materialize_artifacts: bool = True, artifact_cache: Path | None = None) -> FamilyBundle:
@@ -137,14 +176,16 @@ def load_family(benchmark_root: Path, family_id: str, materialize_artifacts: boo
     deployment: list[DeploymentTask] = []
     for index, task_dir, spec in records:
         instruction = (task_dir / "instruction.md").read_text()
-        verifier = HostNativeVerifier(task_dir / "tests", task_dir / "environment")
+        project_relative = _project_relative(task_dir)
+        solution_relative = _solution_project_relative(task_dir)
+        verifier = HostNativeVerifier(task_dir / "tests", task_dir / "environment", project_relative)
         workspace = str((task_dir / "environment").resolve())
         if index <= 3:
             cache_path = artifact_cache / f"{spec['task_id']}.json" if artifact_cache else None
             if cache_path and cache_path.exists():
                 artifact = json.loads(cache_path.read_text())
             else:
-                artifact = _materialize_expert_artifact(task_dir) if materialize_artifacts else {}
+                artifact = _materialize_expert_artifact(task_dir, solution_relative) if materialize_artifacts else {}
                 if cache_path:
                     cache_path.parent.mkdir(parents=True, exist_ok=True)
                     temporary = cache_path.with_suffix(".tmp")
