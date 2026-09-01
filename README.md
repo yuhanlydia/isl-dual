@@ -124,6 +124,15 @@ calls are checkpointed just like proposer and critic calls. The runner also free
 deploys every initial candidate graph for candidate-level correlation metrics without
 feeding held-out rewards back into learning.
 
+After the main and upper-information baselines, each family runner executes both causal
+controls in separate namespaces. Edge shuffle preserves the selected nodes and edge count,
+randomizes only valid dependency edges, freezes the resulting skill, and evaluates it on
+deployment. Artifact shuffle pairs the family's acquisition inputs with the next family's
+successful outcomes (a deterministic cyclic derangement), reruns the complete dual loop,
+and evaluates the frozen result on the original family's deployment tasks. A zero-edge
+winner is recorded as `not_applicable` for edge shuffle rather than assigned a fabricated
+control score.
+
 ## Long-run discipline
 
 - Use a wall-clock deadline and atomic checkpoints at family/task/graph boundaries.

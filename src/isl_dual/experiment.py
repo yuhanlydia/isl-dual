@@ -3,18 +3,22 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+from dataclasses import replace
 from pathlib import Path
+
+import yaml
 
 from .cache import CachedCritic, CachedExecutor, CachedJSONClient, CachedMutator, CachedProposer, JSONCache
 from .baselines import Baseline, SelectedSkill, direct_text_skill, full_trajectory_skill, select_dag_baseline, upper_information_skill
 from .codex_components import CodexCritic, CodexJSON, CodexMutator, CodexProposer, graph_to_dict
 from .executor import CodexExecutor
-from .models import Graph, Node
+from .models import DeploymentTask, Graph, Node
 from .compile import compile_graph_to_skill
+from .controls import edge_shuffle
 from .report import go_gate, scientific_report
 from .config import PilotConfig
 from .pipeline import _leakage_audit_skill, train_inverse_skill
-from .skillevol_host import audit_no_curated_access, load_family
+from .skillevol_host import FamilyBundle, audit_no_curated_access, load_family
 
 
 def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None, config: PilotConfig | None = None) -> dict[str, object]:
@@ -87,7 +91,12 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
         q2=result.posterior,
         tau_artifact=0.8, tau_transfer=0.5,
     )
-    summary = {"family_id": family_id, "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "baseline_task_scores": baseline_task_scores, "baseline_rewards": baseline_rewards, "go_gate": go_gate({"B1": baseline_rewards[Baseline.DIRECT_TEXT.value], "B3": baseline_rewards[Baseline.STATIC_CRITIC.value], "B4": baseline_rewards[Baseline.GREEDY_FORWARD.value], "B6": baseline_rewards[Baseline.ISL_DUAL.value]}), "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics}
+    edge_control = _edge_shuffle_control(result.graph, bundle.deployment, executor, (config or PilotConfig()).seed)
+    artifact_control = _artifact_shuffle_control(
+        benchmark_root, family_id, bundle, output / "controls" / "artifact_shuffle",
+        model, config or PilotConfig(), benchmark_commit,
+    )
+    summary = {"family_id": family_id, "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "baseline_task_scores": baseline_task_scores, "baseline_rewards": baseline_rewards, "go_gate": go_gate({"B1": baseline_rewards[Baseline.DIRECT_TEXT.value], "B3": baseline_rewards[Baseline.STATIC_CRITIC.value], "B4": baseline_rewards[Baseline.GREEDY_FORWARD.value], "B6": baseline_rewards[Baseline.ISL_DUAL.value]}), "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics, "causal_controls": {"edge_shuffle": edge_control, "artifact_shuffle": artifact_control}}
     (output / "result.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
 
@@ -98,7 +107,7 @@ def _skill_graph(identifier: str, skill: str) -> Graph:
     return Graph("deployment-" + identifier, (skill_node, verify_node), (("skill", "verify"),))
 
 
-def _evaluate_graph(graph: Graph, plan: tuple[str, ...], tasks: list[object], executor: CachedExecutor) -> dict[str, float]:
+def _evaluate_graph(graph: Graph, plan: tuple[str, ...], tasks: list[DeploymentTask], executor: CachedExecutor) -> dict[str, float]:
     scores: dict[str, float] = {}
     for task in tasks:
         produced = executor.execute(task, graph, plan)
@@ -128,6 +137,53 @@ def _curated_skill(benchmark_root: Path, task_dir: Path) -> str:
     if not path.exists():
         raise FileNotFoundError(f"curated skill declared by benchmark is missing: {path}")
     return path.read_text()
+
+
+def _edge_shuffle_control(graph: Graph, deployment_tasks: list[DeploymentTask], executor: CachedExecutor, seed: int) -> dict[str, object]:
+    if not graph.edges:
+        return {"status": "not_applicable", "reason": "selected graph has no edges to shuffle"}
+    try:
+        shuffled = edge_shuffle(graph, seed)
+    except RuntimeError as error:
+        return {"status": "not_applicable", "reason": str(error)}
+    skill = compile_graph_to_skill(shuffled)
+    scores = _evaluate_graph(_skill_graph("edge-shuffle", skill), ("skill", "verify"), deployment_tasks, executor)
+    return {"status": "completed", "graph": graph_to_dict(shuffled), "task_scores": scores, "mean_reward": sum(scores.values()) / len(scores)}
+
+
+def _artifact_shuffle_control(
+    benchmark_root: Path, family_id: str, target_bundle: FamilyBundle, output: Path,
+    model: str | None, config: PilotConfig, benchmark_commit: str,
+) -> dict[str, object]:
+    """Run full ISL with target inputs paired to a deterministic donor family's outcomes."""
+    families = sorted({
+        str(yaml.safe_load(path.read_text())["family_id"])
+        for path in (benchmark_root / "benchmark" / "tasks").glob("*/task-spec.yaml")
+    })
+    donor_id = families[(families.index(family_id) + 1) % len(families)]
+    donor = load_family(benchmark_root, donor_id, artifact_cache=output / "donor_artifacts" / benchmark_commit)
+    shuffled_tasks = [
+        replace(task, expert_artifact=donor.acquisition[index].expert_artifact)
+        for index, task in enumerate(target_bundle.acquisition)
+    ]
+    cache = JSONCache(output / "cache")
+    client = CodexJSON(model=model)
+    result = train_inverse_skill(
+        shuffled_tasks,
+        CachedProposer(CodexProposer(client), cache),
+        CachedCritic(CodexCritic(client), cache),
+        CachedExecutor(CodexExecutor(model=model), cache),
+        CachedMutator(CodexMutator(client), cache),
+        config,
+    )
+    audit_no_curated_access(benchmark_root, result.skill)
+    executor = CachedExecutor(CodexExecutor(model=model), cache)
+    graph = _skill_graph("artifact-shuffle", result.skill)
+    scores = _evaluate_graph(graph, ("skill", "verify"), target_bundle.deployment, executor)
+    payload = {"status": "completed", "donor_family": donor_id, "winner": result.graph.id, "task_scores": scores, "mean_reward": sum(scores.values()) / len(scores)}
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "result.json").write_text(json.dumps(payload, indent=2, sort_keys=True))
+    return payload
 
 
 def main() -> None:

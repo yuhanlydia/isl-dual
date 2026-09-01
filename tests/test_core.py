@@ -12,6 +12,7 @@ from isl_dual.cache import CachedExecutor, CachedJSONClient, JSONCache
 from isl_dual.baselines import Baseline, deterministic_plan, full_trajectory_skill, upper_information_skill
 from isl_dual.compile import compile_graph_to_skill
 from isl_dual.executor import CodexExecutor
+from isl_dual.experiment import _edge_shuffle_control
 from isl_dual.report import go_gate
 from isl_dual.subprocesses import run_process_group
 from isl_dual.pipeline import train_inverse_skill
@@ -178,3 +179,9 @@ def test_full_trajectory_baseline_requires_explicit_trajectory_per_task():
         def call(self, prompt, schema): return {"skill": "# Skill\n\n## Procedure\n\n1. Diagnose."}
     with pytest.raises(ValueError):
         full_trajectory_skill(toy_tasks(), ["only one"], Client())
+
+
+def test_edge_control_explicitly_reports_graph_without_edges():
+    graph = Graph("g", (node("a", "a"), node("b", "b")))
+    result = _edge_shuffle_control(graph, [], None, 7)
+    assert result["status"] == "not_applicable"
