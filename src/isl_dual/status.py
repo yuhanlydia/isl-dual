@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections import Counter
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -36,6 +37,22 @@ def summarize(run_root: Path) -> dict[str, object]:
             verified_artifacts += json.loads(path.read_text()).get("all_passed") is True
         except (OSError, json.JSONDecodeError):
             pass
+    verifier_rewards: dict[str, list[float]] = defaultdict(list)
+    for path in run_root.glob("**/cache/verifier/*.json"):
+        try:
+            value = json.loads(path.read_text())
+            verifier_rewards[str(value["task_id"])].append(float(value["reward"]))
+        except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+            pass
+    verifier_progress = {
+        task_id: {
+            "count": len(rewards),
+            "mean": sum(rewards) / len(rewards),
+            "min": min(rewards),
+            "max": max(rewards),
+        }
+        for task_id, rewards in sorted(verifier_rewards.items())
+    }
     return {
         "supervisor_status": supervisor.get("status", "missing"),
         "campaign_pid": campaign_pid,
@@ -51,6 +68,7 @@ def summarize(run_root: Path) -> dict[str, object]:
         "latest_cache_activity": dict(sorted(latest_cache_activity.items())),
         "verified_artifact_families": verified_artifacts,
         "completed_result_files": sum(1 for _ in run_root.glob("**/result.json")),
+        "verifier_progress": verifier_progress,
     }
 
 

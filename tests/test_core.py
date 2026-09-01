@@ -192,6 +192,16 @@ def test_status_reports_latest_cache_activity(tmp_path):
     assert summary["campaign_process_live"] is False
 
 
+def test_status_summarizes_rewards_without_failure_text(tmp_path):
+    cache = tmp_path / "families" / "f" / "cache" / "verifier"
+    cache.mkdir(parents=True)
+    (cache / "one.json").write_text('{"task_id":"t1","reward":0.25,"failure":"SECRET"}')
+    (cache / "two.json").write_text('{"task_id":"t1","reward":0.75,"failure":null}')
+    progress = summarize(tmp_path)["verifier_progress"]["t1"]
+    assert progress == {"count": 2, "mean": 0.5, "min": 0.25, "max": 0.75}
+    assert "SECRET" not in str(progress)
+
+
 def test_status_does_not_trust_stale_running_file(tmp_path):
     (tmp_path / "supervisor.json").write_text('{"status":"running","pid":99999999}')
     summary = summarize(tmp_path)
