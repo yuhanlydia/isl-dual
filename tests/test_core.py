@@ -11,6 +11,7 @@ from isl_dual.cache import CachedExecutor, JSONCache
 from isl_dual.baselines import Baseline, deterministic_plan, upper_information_skill
 from isl_dual.compile import compile_graph_to_skill
 from isl_dual.executor import CodexExecutor
+from isl_dual.report import go_gate
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -116,3 +117,8 @@ def test_binary_artifacts_are_losslessly_encoded(tmp_path):
     assert encoded["encoding"] == "base64"
     import base64
     assert base64.b64decode(encoded["data"]) == b"\x00\xff\x10"
+
+
+def test_go_gate_matches_pilot_decision_rule():
+    gate = go_gate({"B1": 0.2, "B3": 0.4, "B4": 0.6, "B6": 0.8})
+    assert gate["go"] is True

@@ -29,3 +29,19 @@ def scientific_report(
         "posterior_entropy_q2": entropy(q2),
         "posterior_entropy_reduction": entropy(q0) - entropy(q2),
     }
+
+
+def go_gate(baseline_rewards: Mapping[str, float]) -> dict[str, Any]:
+    required = {"B1", "B3", "B4", "B6"}
+    missing = required - set(baseline_rewards)
+    if missing:
+        raise ValueError(f"GO gate missing baselines: {sorted(missing)}")
+    forward_beats_static = baseline_rewards["B4"] > baseline_rewards["B3"]
+    dual_beats_direct = baseline_rewards["B6"] > baseline_rewards["B1"]
+    flat = max(baseline_rewards[k] for k in ("B3", "B4", "B6")) - min(baseline_rewards[k] for k in ("B3", "B4", "B6")) < 1e-9
+    return {
+        "B4_gt_B3": forward_beats_static,
+        "B6_gt_B1": dual_beats_direct,
+        "B3_B4_B6_flat": flat,
+        "go": forward_beats_static and dual_beats_direct and not flat,
+    }

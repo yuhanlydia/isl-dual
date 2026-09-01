@@ -57,8 +57,9 @@ def train_inverse_skill(
     proposed: list[Graph] = []
     attempts = 0
     while len(proposed) < config.candidate_graphs and attempts < 4:
+        per_mode_count = 2 + attempts
         for mode in PROPOSAL_MODES:
-            proposed.extend(proposer.propose(acquisition_tasks, mode, 2))
+            proposed.extend(proposer.propose(acquisition_tasks, mode, per_mode_count))
         proposed = validate_dedupe(proposed, config.max_graph_nodes)
         attempts += 1
     if len(proposed) < config.candidate_graphs:
