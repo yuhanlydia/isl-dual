@@ -32,7 +32,7 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
     for task in bundle.deployment:
         produced = executor.execute(task, deployment_graph, ("skill", "verify"))
         deployment_scores[task.id] = task.verifier(produced)
-    summary = {"family_id": family_id, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores}
+    summary = {"family_id": family_id, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores}
     (output / "result.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
 

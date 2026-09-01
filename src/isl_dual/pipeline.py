@@ -66,8 +66,10 @@ def train_inverse_skill(
     graphs = proposed[:config.candidate_graphs]
 
     log_weights: dict[str, float] = {}
+    artifact_scores: dict[str, float] = {}
     for graph in graphs:
         artifact = critic.score(graph, acquisition_tasks).artifact_score
+        artifact_scores[graph.id] = artifact
         log_weights[graph.id] = (
             config.beta_artifact * artifact
             - config.complexity_penalty * complexity(graph)
@@ -122,6 +124,7 @@ def train_inverse_skill(
         q0=q0,
         q1=q1,
         forward_scores=forward2,
+        artifact_scores=artifact_scores,
         evidence=all_evidence,
     )
 
@@ -131,4 +134,3 @@ def _leakage_audit_skill(skill: str, tasks: list[AcquisitionTask]) -> None:
         artifact = task.expert_artifact
         if isinstance(artifact, str) and artifact and artifact in skill:
             raise AssertionError(f"acquisition artifact leaked into compiled skill: {task.id}")
-

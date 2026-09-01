@@ -104,6 +104,7 @@ class TrainingResult:
     q0: dict[str, float]
     q1: dict[str, float]
     forward_scores: dict[str, float]
+    artifact_scores: dict[str, float]
     evidence: dict[tuple[str, str], MCTSResult]
 
 
@@ -132,4 +133,3 @@ class Mutator(Protocol):
 
 def clone_graph(graph: Graph, **changes: Any) -> Graph:
     return replace(graph, **changes)
-

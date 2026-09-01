@@ -5,6 +5,7 @@ from isl_dual.leakage import SecretBundle, assert_forward_input
 from isl_dual.models import Graph
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
+from isl_dual.controls import artifact_shuffle, edge_shuffle
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -47,3 +48,11 @@ def test_supervisor_records_completion(tmp_path):
     state = tmp_path / "supervisor.json"
     assert supervise(["/bin/true"], 0.001, state) == 0
     assert '"status": "completed"' in state.read_text()
+
+
+def test_edge_shuffle_preserves_nodes_and_edge_count():
+    graph = Graph("g", (node("a", "a"), node("b", "b"), node("c", "c")), (("a", "b"),))
+    shuffled = edge_shuffle(graph, 4)
+    assert shuffled.nodes == graph.nodes
+    assert len(shuffled.edges) == len(graph.edges)
+    assert shuffled.edges != graph.edges
