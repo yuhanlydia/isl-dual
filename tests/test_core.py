@@ -1,4 +1,6 @@
 import pytest
+import subprocess
+import sys
 
 from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
@@ -226,6 +228,13 @@ def test_passing_expert_artifact_verification_is_checkpointed(tmp_path):
     assert _verified_artifact_rewards(tasks, checkpoint) == {"t1": 1.0}
     assert _verified_artifact_rewards(tasks, checkpoint) == {"t1": 1.0}
     assert len(calls) == 1
+
+
+def test_smoke_cli_accepts_output_after_subcommand(tmp_path):
+    target = tmp_path / "chosen"
+    subprocess.run([sys.executable, "-m", "isl_dual.cli", "smoke", "--output", str(target)], check=True)
+    assert (target / "SKILL.md").is_file()
+    assert (target / "result.json").is_file()
 
 
 def test_declared_edge_mutation_rejects_hidden_node_edit():

@@ -11,19 +11,23 @@ from .supervisor import supervise
 
 
 def main() -> None:
+    raw = sys.argv[1:]
+    if "--" in raw:
+        separator = raw.index("--")
+        cli_args, experiment_command = raw[:separator], raw[separator + 1:]
+    else:
+        cli_args, experiment_command = raw, []
     parser = argparse.ArgumentParser(description="ISL-Dual pilot runner")
     parser.add_argument("command", choices=["smoke", "supervise"])
     parser.add_argument("--output", type=Path, default=Path("runs/smoke"))
     parser.add_argument("--hours", type=float, default=10.0)
-    parser.add_argument("experiment_command", nargs=argparse.REMAINDER)
-    args = parser.parse_args()
+    args = parser.parse_args(cli_args)
     if args.command == "supervise":
-        command = args.experiment_command
-        if command and command[0] == "--":
-            command = command[1:]
-        if not command:
+        if not experiment_command:
             parser.error("supervise requires an experiment command after --")
-        raise SystemExit(supervise(command, args.hours, args.output / "supervisor.json"))
+        raise SystemExit(supervise(experiment_command, args.hours, args.output / "supervisor.json"))
+    if experiment_command:
+        parser.error("smoke does not accept an experiment command after --")
     result = train_inverse_skill(toy_tasks(), ToyProposer(), ToyCritic(), ToyExecutor(), ToyMutator())
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "SKILL.md").write_text(result.skill)
