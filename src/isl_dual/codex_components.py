@@ -1,0 +1,142 @@
+from __future__ import annotations
+
+import json
+import hashlib
+import subprocess
+import tempfile
+from pathlib import Path
+from typing import Any, Mapping
+
+from .models import AcquisitionTask, CriticScore, Graph, MCTSResult, Mutator, Node, OrGroup, Utility
+from .graph import InvalidGraph, validate_graph
+
+
+def graph_from_dict(data: Mapping[str, Any], graph_id: str | None = None) -> Graph:
+    nodes = tuple(Node(
+        id=str(n["id"]), name=str(n["name"]),
+        preconditions=tuple(map(str, n.get("preconditions", []))),
+        inputs=tuple(map(str, n.get("inputs", []))), action=str(n["action"]),
+        outputs=tuple(map(str, n.get("outputs", []))), validator=str(n.get("validator", "")),
+        required=bool(n.get("required", True)),
+    ) for n in data["nodes"])
+    edges = tuple((str(e[0]), str(e[1])) for e in data.get("edges", []))
+    groups = tuple(OrGroup(str(g["id"]), tuple(map(str, g["members"])), bool(g.get("required", False))) for g in data.get("or_groups", []))
+    return Graph(id=graph_id or str(data["id"]), nodes=nodes, edges=edges, or_groups=groups, metadata=data.get("metadata", {}))
+
+
+def graph_to_dict(graph: Graph) -> dict[str, Any]:
+    return {
+        "id": graph.id,
+        "nodes": [{
+            "id": n.id, "name": n.name, "preconditions": list(n.preconditions),
+            "inputs": list(n.inputs), "action": n.action, "outputs": list(n.outputs),
+            "validator": n.validator, "required": n.required,
+        } for n in graph.nodes],
+        "edges": [list(e) for e in graph.edges],
+        "or_groups": [{"id": g.id, "members": list(g.members), "required": g.required} for g in graph.or_groups],
+        "metadata": dict(graph.metadata),
+    }
+
+
+class CodexJSON:
+    def __init__(self, model: str | None = None, timeout_seconds: int = 900):
+        self.model, self.timeout_seconds = model, timeout_seconds
+
+    def call(self, prompt: str, schema: dict[str, Any]) -> Any:
+        with tempfile.TemporaryDirectory(prefix="isl-dual-json-") as temp:
+            root = Path(temp)
+            schema_path, output_path = root / "schema.json", root / "output.json"
+            schema_path.write_text(json.dumps(schema))
+            command = ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "-C", str(root), "--output-schema", str(schema_path), "-o", str(output_path)]
+            if self.model:
+                command.extend(["--model", self.model])
+            command.append(prompt)
+            result = subprocess.run(command, text=True, capture_output=True, timeout=self.timeout_seconds)
+            if result.returncode != 0:
+                raise RuntimeError(result.stderr[-4000:])
+            return json.loads(output_path.read_text())
+
+
+GRAPH_SCHEMA: dict[str, Any] = {
+    "type": "object", "additionalProperties": False,
+    "required": ["id", "nodes", "edges", "or_groups", "metadata"],
+    "properties": {
+        "id": {"type": "string"},
+        "nodes": {"type": "array", "minItems": 2, "maxItems": 12, "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["id", "name", "preconditions", "inputs", "action", "outputs", "validator", "required"],
+            "properties": {
+                "id": {"type": "string"}, "name": {"type": "string"},
+                "preconditions": {"type": "array", "items": {"type": "string"}},
+                "inputs": {"type": "array", "items": {"type": "string"}},
+                "action": {"type": "string"}, "outputs": {"type": "array", "items": {"type": "string"}},
+                "validator": {"type": "string"}, "required": {"type": "boolean"},
+            }}},
+        "edges": {"type": "array", "items": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "string"}}},
+        "or_groups": {"type": "array", "items": {"type": "object", "additionalProperties": False, "required": ["id", "members", "required"], "properties": {"id": {"type": "string"}, "members": {"type": "array", "minItems": 2, "items": {"type": "string"}}, "required": {"type": "boolean"}}}},
+        "metadata": {"type": "object", "additionalProperties": False, "properties": {}},
+    },
+}
+
+
+def _artifact_text(tasks: list[AcquisitionTask]) -> str:
+    return json.dumps([{"task_id": t.id, "task": t.x, "successful_final_artifact": t.expert_artifact} for t in tasks], ensure_ascii=False)
+
+
+class CodexProposer:
+    def __init__(self, client: CodexJSON): self.client = client
+
+    def propose(self, tasks: list[AcquisitionTask], mode: str, count: int) -> list[Graph]:
+        results = []
+        attempts = 0
+        last_error = ""
+        while len(results) < count and attempts < count * 6:
+            index = len(results)
+            attempts += 1
+            prompt = f"""You do not know the expert's actual execution history. Do not reconstruct chain-of-thought.
+Infer one reusable {mode} procedural DAG that could explain the successful final artifacts and transfer to related unseen tasks.
+Do not copy case-specific answers, filenames, constants, or output content unless genuinely reusable. This is variant {index + 1}, attempt {attempts}; make it structurally distinct.
+The previous rejected attempt failed validation with: {last_error or 'none'}.
+Observed outcome-only data:\n{_artifact_text(tasks)}"""
+            data = self.client.call(prompt, GRAPH_SCHEMA)
+            digest = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()[:10]
+            graph = graph_from_dict(data, f"{mode}-{index + 1}-{digest}")
+            try:
+                validate_graph(graph)
+            except InvalidGraph as error:
+                last_error = str(error)
+                continue
+            if graph.fingerprint() in {item.fingerprint() for item in results}:
+                last_error = "semantic duplicate of an accepted graph"
+                continue
+            results.append(graph)
+            last_error = ""
+        if len(results) != count:
+            raise RuntimeError(f"Codex proposer produced only {len(results)}/{count} valid graphs after {attempts} attempts: {last_error}")
+        return results
+
+
+class CodexCritic:
+    SCHEMA = {"type": "object", "additionalProperties": False, "required": ["sufficiency", "transfer", "consistency"], "properties": {k: {"type": "number", "minimum": 0, "maximum": 1} for k in ("sufficiency", "transfer", "consistency")}}
+
+    def __init__(self, client: CodexJSON): self.client = client
+
+    def score(self, graph: Graph, tasks: list[AcquisitionTask]) -> CriticScore:
+        prompt = "Score this candidate procedural DAG against all three outcome-only examples. Judge sufficiency, case-independent transfer, and consistency in [0,1]. Do not infer an expert trajectory.\nDAG:\n" + json.dumps(graph_to_dict(graph)) + "\nDATA:\n" + _artifact_text(tasks)
+        value = self.client.call(prompt, self.SCHEMA)
+        return CriticScore(float(value["sufficiency"]), float(value["transfer"]), float(value["consistency"]))
+
+
+class CodexMutator:
+    def __init__(self, client: CodexJSON): self.client = client
+
+    def mutate(self, graph: Graph, evidence: Mapping[tuple[str, str], MCTSResult], node_utilities: Mapping[tuple[str, str], Utility], edge_utilities: Mapping[tuple[str, tuple[str, str]], Utility], count: int) -> list[Graph]:
+        rollouts = [{"task": task, "plan": list(r.plan), "reward": r.reward, "failure": r.failure} for (gid, task), result in evidence.items() if gid == graph.id for r in result.rollouts]
+        utilities = {node: {"delta": u.delta, "n_with": u.n_with, "n_without": u.n_without} for (gid, node), u in node_utilities.items() if gid == graph.id}
+        results = []
+        for index in range(count):
+            prompt = "Revise the procedural graph using execution evidence. Prefer one minimal edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + f"\nProduce distinct mutant {index + 1}."
+            data = self.client.call(prompt, GRAPH_SCHEMA)
+            mutant = graph_from_dict(data, f"{graph.id}-m{index + 1}")
+            results.append(Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": str(data.get("metadata", {}).get("mutation", "UNKNOWN"))}))
+        return results

@@ -131,6 +131,19 @@ The supervisor writes `supervisor.json`, forwards SIGINT/SIGTERM, stops at the d
 and preserves the child's exit status. The child runner remains responsible for
 algorithm-level family/task/graph checkpoints.
 
+For the official 30-family queue, the host-native research adapter can be launched with:
+
+```bash
+isl-dual supervise --hours 10 --output runs/skillevol-10h -- \
+  isl-dual-campaign --benchmark-root /path/to/SkillEvolBench \
+  --output runs/skillevol-10h
+```
+
+The campaign immediately advances after a completed family and atomically records failures
+before continuing. Its verifier invokes each task's unmodified `tests/test.sh`; this adapter
+must be reported as host-native and is not a substitute for an official Harbor score unless
+the expert outcome for all three acquisition tasks first receives native reward `1.0`.
+
 ## License
 
 MIT
