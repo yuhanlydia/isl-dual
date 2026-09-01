@@ -13,6 +13,7 @@ dependencies = ["PyYAML>=6.0", "tomli>=2.0; python_version < '3.11'"]
 isl-dual = "isl_dual.cli:main"
 isl-dual-family = "isl_dual.experiment:main"
 isl-dual-campaign = "isl_dual.campaign:main"
+isl-dual-status = "isl_dual.status:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

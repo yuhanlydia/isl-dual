@@ -142,6 +142,12 @@ The supervisor writes `supervisor.json`, forwards SIGINT/SIGTERM, stops at the d
 and preserves the child's exit status. The child runner remains responsible for
 algorithm-level family/task/graph checkpoints.
 
+Inspect a live run without printing prompts or artifact contents:
+
+```bash
+isl-dual-status runs/skillevol-10h
+```
+
 For the official 30-family queue, the host-native research adapter can be launched with:
 
 ```bash
