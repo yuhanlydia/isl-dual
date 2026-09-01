@@ -39,22 +39,33 @@ def graph_to_dict(graph: Graph) -> dict[str, Any]:
 
 
 class CodexJSON:
-    def __init__(self, model: str | None = None, timeout_seconds: int = 300):
-        self.model, self.timeout_seconds = model, timeout_seconds
+    def __init__(self, model: str | None = None, timeout_seconds: int = 300, transient_attempts: int = 3):
+        self.model, self.timeout_seconds, self.transient_attempts = model, timeout_seconds, transient_attempts
 
     def call(self, prompt: str, schema: dict[str, Any]) -> Any:
-        with tempfile.TemporaryDirectory(prefix="isl-dual-json-") as temp:
-            root = Path(temp)
-            schema_path, output_path = root / "schema.json", root / "output.json"
-            schema_path.write_text(json.dumps(schema))
-            command = ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "-C", str(root), "--output-schema", str(schema_path), "-o", str(output_path)]
-            if self.model:
-                command.extend(["--model", self.model])
-            command.append(prompt)
-            result = subprocess.run(command, text=True, capture_output=True, timeout=self.timeout_seconds)
-            if result.returncode != 0:
-                raise RuntimeError(result.stderr[-4000:])
-            return json.loads(output_path.read_text())
+        errors: list[str] = []
+        for attempt in range(1, self.transient_attempts + 1):
+            with tempfile.TemporaryDirectory(prefix="isl-dual-json-") as temp:
+                root = Path(temp)
+                schema_path, output_path = root / "schema.json", root / "output.json"
+                schema_path.write_text(json.dumps(schema))
+                command = ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "-C", str(root), "--output-schema", str(schema_path), "-o", str(output_path)]
+                if self.model:
+                    command.extend(["--model", self.model])
+                command.append(prompt + f"\nTransient call attempt: {attempt}.")
+                try:
+                    result = subprocess.run(command, text=True, capture_output=True, timeout=self.timeout_seconds)
+                except subprocess.TimeoutExpired:
+                    errors.append(f"attempt {attempt}: timed out after {self.timeout_seconds}s")
+                    continue
+                if result.returncode != 0:
+                    errors.append(f"attempt {attempt}: exit {result.returncode}: {result.stderr[-2000:]}")
+                    continue
+                try:
+                    return json.loads(output_path.read_text())
+                except (OSError, json.JSONDecodeError) as error:
+                    errors.append(f"attempt {attempt}: invalid structured output: {error}")
+        raise RuntimeError("Codex structured call failed after transient retries:\n" + "\n".join(errors))
 
 
 GRAPH_SCHEMA: dict[str, Any] = {
