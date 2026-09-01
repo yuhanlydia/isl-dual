@@ -111,7 +111,14 @@ def train_inverse_skill(
     q2 = softmax(second_weights)
     winner = max(pool, key=lambda graph: q2[graph.id])
 
-    all_evidence = {**evidence1, **evidence2}
+    all_evidence: dict[tuple[str, str], MCTSResult] = {}
+    for key in set(evidence1) | set(evidence2):
+        combined_rollouts = []
+        if key in evidence1:
+            combined_rollouts.extend(evidence1[key].rollouts)
+        if key in evidence2:
+            combined_rollouts.extend(evidence2[key].rollouts)
+        all_evidence[key] = MCTSResult(rollouts=combined_rollouts)
     pool_map = {graph.id: graph for graph in pool}
     final_node_utils, _ = estimate_utilities(pool_map, all_evidence)
     winner = operational_pruning(winner, final_node_utils, config.utility_threshold)
