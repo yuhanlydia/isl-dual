@@ -2,7 +2,7 @@ import pytest
 
 from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
-from isl_dual.models import Graph, OrGroup
+from isl_dual.models import AcquisitionTask, Graph, OrGroup, Utility
 from isl_dual.mcts import STOP, legal_actions
 from isl_dual.mcts import TreeState, _uct, mcts
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
@@ -10,9 +10,11 @@ from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
 from isl_dual.cache import CachedExecutor, CachedJSONClient, JSONCache
 from isl_dual.baselines import Baseline, deterministic_plan, full_trajectory_skill, upper_information_skill
-from isl_dual.compile import compile_graph_to_skill
+from isl_dual.compile import compile_graph_to_skill, operational_pruning
+from isl_dual.codex_components import validate_declared_mutation
+from isl_dual.config import PilotConfig
 from isl_dual.executor import CodexExecutor
-from isl_dual.experiment import _edge_shuffle_control
+from isl_dual.experiment import _edge_shuffle_control, _verified_artifact_rewards
 from isl_dual.report import go_gate
 from isl_dual.subprocesses import run_process_group
 from isl_dual.pipeline import train_inverse_skill
@@ -22,6 +24,12 @@ from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, 
 
 def test_cycle_is_rejected():
     graph = Graph("bad", (node("a", "a"), node("b", "b")), (("a", "b"), ("b", "a")))
+    with pytest.raises(InvalidGraph):
+        validate_graph(graph)
+
+
+def test_duplicate_edge_is_rejected():
+    graph = Graph("bad", (node("a", "a"), node("b", "b")), (("a", "b"), ("a", "b")))
     with pytest.raises(InvalidGraph):
         validate_graph(graph)
 
@@ -46,6 +54,14 @@ def test_dual_loop_runs_and_compiles_procedure():
     assert len(result.q0) == 8
     assert 8 < len(result.posterior) <= 12
     assert abs(sum(result.posterior.values()) - 1.0) < 1e-9
+
+
+def test_pilot_rejects_unimplemented_outer_loop_count():
+    with pytest.raises(ValueError, match="T_outer=2"):
+        train_inverse_skill(
+            toy_tasks(), ToyProposer(), ToyCritic(), ToyExecutor(), ToyMutator(),
+            PilotConfig(outer_loops=3),
+        )
 
 
 def test_scientific_metrics():
@@ -198,3 +214,35 @@ def test_edge_control_explicitly_reports_graph_without_edges():
     graph = Graph("g", (node("a", "a"), node("b", "b")))
     result = _edge_shuffle_control(graph, [], None, 7)
     assert result["status"] == "not_applicable"
+
+
+def test_passing_expert_artifact_verification_is_checkpointed(tmp_path):
+    calls = []
+    def verifier(artifact):
+        calls.append(artifact)
+        return 1.0
+    tasks = [AcquisitionTask("t1", "x", {"delta": {"a": "b"}}, verifier)]
+    checkpoint = tmp_path / "native.json"
+    assert _verified_artifact_rewards(tasks, checkpoint) == {"t1": 1.0}
+    assert _verified_artifact_rewards(tasks, checkpoint) == {"t1": 1.0}
+    assert len(calls) == 1
+
+
+def test_declared_edge_mutation_rejects_hidden_node_edit():
+    parent = Graph("g", (node("a", "a"), node("b", "b")))
+    valid = Graph("m", parent.nodes, (("a", "b"),))
+    validate_declared_mutation(parent, valid, "ADD_EDGE")
+    changed = Graph("m2", (node("a", "changed"), parent.nodes[1]), (("a", "b"),))
+    with pytest.raises(InvalidGraph):
+        validate_declared_mutation(parent, changed, "ADD_EDGE")
+
+
+def test_pruning_preserves_required_or_group_semantics():
+    graph = Graph(
+        "g", (node("a", "a"), node("b", "b", False), node("c", "c", False)),
+        or_groups=(OrGroup("choice", ("b", "c"), True),),
+    )
+    pruned = operational_pruning(graph, {("g", "b"): Utility(-0.2, 2, 2)})
+    assert {item.id for item in pruned.nodes} == {"a", "c"}
+    assert pruned.node_map()["c"].required is True
+    assert pruned.or_groups == ()

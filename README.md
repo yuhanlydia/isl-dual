@@ -73,7 +73,6 @@ model from unit tests would be costly and flaky.
 - `controls.py`: deterministic artifact-shuffle and DAG-edge-shuffle causal controls.
 - `report.py`: candidate-level forward/static transfer correlations and posterior metrics.
 - `cache.py`: model-scoped, occurrence-aware checkpoints that preserve fresh rollouts.
-- `run_state.py`: atomic checkpoint primitive for resumable long jobs.
 - `supervisor.py`: signal-aware wall-clock supervisor for a fixed ten-hour command.
 
 ## SkillEvolBench integration

@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from typing import Any
 
-from .leakage import SecretBundle, assert_forward_input
+from .leakage import SecretBundle, assert_deployment_input, assert_forward_input
 from .models import AcquisitionTask, DeploymentTask, Graph
 from .subprocesses import run_process_group
 
@@ -44,6 +44,9 @@ class CodexExecutor:
         payload = {"task": task.x, "procedural_plan": procedural_plan}
         if isinstance(task, AcquisitionTask):
             assert_forward_input(payload, SecretBundle(expert_artifact=task.expert_artifact))
+        else:
+            assert set(payload) == {"task", "procedural_plan"}
+            assert_deployment_input(payload, SecretBundle())
         prompt = (
             "ISOLATED WORKSPACE MAPPING:\nThe current working directory is this rollout's virtual /root/task. "
             "Resolve every task reference under /root/task relative to the current working directory; "

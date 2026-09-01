@@ -22,6 +22,8 @@ def validate_graph(graph: Graph, max_nodes: int = 12) -> None:
         raise InvalidGraph("all edge endpoints must exist")
     if any(src == dst for src, dst in graph.edges):
         raise InvalidGraph("self edges are invalid")
+    if len(graph.edges) != len(set(graph.edges)):
+        raise InvalidGraph("duplicate edges are invalid")
 
     children = {node_id: [] for node_id in ids}
     indegree = {node_id: 0 for node_id in ids}

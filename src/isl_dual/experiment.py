@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
-from dataclasses import replace
+from dataclasses import asdict, replace
 from pathlib import Path
 
 import yaml
@@ -12,7 +13,7 @@ from .cache import CachedCritic, CachedExecutor, CachedJSONClient, CachedMutator
 from .baselines import Baseline, SelectedSkill, direct_text_skill, full_trajectory_skill, select_dag_baseline, upper_information_skill
 from .codex_components import CodexCritic, CodexJSON, CodexMutator, CodexProposer, graph_to_dict
 from .executor import CodexExecutor
-from .models import DeploymentTask, Graph, Node
+from .models import AcquisitionTask, DeploymentTask, Graph, Node
 from .compile import compile_graph_to_skill
 from .controls import edge_shuffle
 from .report import go_gate, scientific_report
@@ -24,8 +25,9 @@ from .skillevol_host import FamilyBundle, audit_no_curated_access, load_family
 def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None, config: PilotConfig | None = None) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
-    bundle = load_family(benchmark_root, family_id, artifact_cache=output / "artifacts" / benchmark_commit)
-    artifact_rewards = {task.id: task.verifier(task.expert_artifact) for task in bundle.acquisition}
+    artifact_root = output / "artifacts" / benchmark_commit
+    bundle = load_family(benchmark_root, family_id, artifact_cache=artifact_root)
+    artifact_rewards = _verified_artifact_rewards(bundle.acquisition, artifact_root / "native-verification.json")
     if any(reward < 1.0 for reward in artifact_rewards.values()):
         raise RuntimeError(f"expert outcomes fail native verifier: {artifact_rewards}")
     cache = JSONCache(output / "cache")
@@ -96,7 +98,7 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
         benchmark_root, family_id, bundle, output / "controls" / "artifact_shuffle",
         model, config or PilotConfig(), benchmark_commit,
     )
-    summary = {"family_id": family_id, "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "baseline_task_scores": baseline_task_scores, "baseline_rewards": baseline_rewards, "go_gate": go_gate({"B1": baseline_rewards[Baseline.DIRECT_TEXT.value], "B3": baseline_rewards[Baseline.STATIC_CRITIC.value], "B4": baseline_rewards[Baseline.GREEDY_FORWARD.value], "B6": baseline_rewards[Baseline.ISL_DUAL.value]}), "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics, "causal_controls": {"edge_shuffle": edge_control, "artifact_shuffle": artifact_control}}
+    summary = {"family_id": family_id, "run_metadata": _run_metadata(output, benchmark_commit, model, config or PilotConfig()), "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "baseline_task_scores": baseline_task_scores, "baseline_rewards": baseline_rewards, "go_gate": go_gate({"B1": baseline_rewards[Baseline.DIRECT_TEXT.value], "B3": baseline_rewards[Baseline.STATIC_CRITIC.value], "B4": baseline_rewards[Baseline.GREEDY_FORWARD.value], "B6": baseline_rewards[Baseline.ISL_DUAL.value]}), "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics, "causal_controls": {"edge_shuffle": edge_control, "artifact_shuffle": artifact_control}}
     (output / "result.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
 
@@ -139,6 +141,45 @@ def _curated_skill(benchmark_root: Path, task_dir: Path) -> str:
     return path.read_text()
 
 
+def _run_metadata(output: Path, benchmark_commit: str, model: str | None, config: PilotConfig) -> dict[str, object]:
+    source_root = Path(__file__).resolve().parents[2]
+    source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=source_root, text=True, capture_output=True)
+    codex = subprocess.run(["codex", "--version"], text=True, capture_output=True)
+    cache_digests = sorted(path.stem for path in (output / "cache").glob("*/*.json"))
+    return {
+        "adapter": "host-native",
+        "official_harbor_score": False,
+        "benchmark_commit": benchmark_commit,
+        "native_verifier": f"unmodified SkillEvolBench tests/test.sh@{benchmark_commit}",
+        "isl_dual_commit": source.stdout.strip() if source.returncode == 0 else None,
+        "codex_model": model or "codex_default",
+        "codex_cli": codex.stdout.strip() if codex.returncode == 0 else None,
+        "pilot_config": asdict(config),
+        "component_cache_digests": cache_digests,
+    }
+
+
+def _verified_artifact_rewards(tasks: list[AcquisitionTask], checkpoint: Path) -> dict[str, float]:
+    """Checkpoint native verification only when all outcome artifacts pass at 1.0."""
+    digests = {
+        task.id: hashlib.sha256(json.dumps(task.expert_artifact, sort_keys=True).encode()).hexdigest()
+        for task in tasks
+    }
+    if checkpoint.exists():
+        value = json.loads(checkpoint.read_text())
+        if value.get("artifact_digests") == digests and value.get("all_passed") is True:
+            return {str(key): float(reward) for key, reward in value["rewards"].items()}
+    rewards = {task.id: float(task.verifier(task.expert_artifact)) for task in tasks}
+    if any(reward < 1.0 for reward in rewards.values()):
+        return rewards
+    payload = {"artifact_digests": digests, "all_passed": True, "rewards": rewards}
+    checkpoint.parent.mkdir(parents=True, exist_ok=True)
+    temporary = checkpoint.with_suffix(".tmp")
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True))
+    temporary.replace(checkpoint)
+    return rewards
+
+
 def _edge_shuffle_control(graph: Graph, deployment_tasks: list[DeploymentTask], executor: CachedExecutor, seed: int) -> dict[str, object]:
     if not graph.edges:
         return {"status": "not_applicable", "reason": "selected graph has no edges to shuffle"}
@@ -162,6 +203,9 @@ def _artifact_shuffle_control(
     })
     donor_id = families[(families.index(family_id) + 1) % len(families)]
     donor = load_family(benchmark_root, donor_id, artifact_cache=output / "donor_artifacts" / benchmark_commit)
+    donor_artifact_rewards = _verified_artifact_rewards(donor.acquisition, output / "donor_artifacts" / benchmark_commit / "native-verification.json")
+    if any(reward < 1.0 for reward in donor_artifact_rewards.values()):
+        raise RuntimeError(f"artifact-shuffle donor outcomes fail native verifier: {donor_artifact_rewards}")
     shuffled_tasks = [
         replace(task, expert_artifact=donor.acquisition[index].expert_artifact)
         for index, task in enumerate(target_bundle.acquisition)
@@ -180,7 +224,7 @@ def _artifact_shuffle_control(
     executor = CachedExecutor(CodexExecutor(model=model), cache)
     graph = _skill_graph("artifact-shuffle", result.skill)
     scores = _evaluate_graph(graph, ("skill", "verify"), target_bundle.deployment, executor)
-    payload = {"status": "completed", "donor_family": donor_id, "winner": result.graph.id, "task_scores": scores, "mean_reward": sum(scores.values()) / len(scores)}
+    payload = {"status": "completed", "donor_family": donor_id, "donor_artifact_rewards": donor_artifact_rewards, "winner": result.graph.id, "task_scores": scores, "mean_reward": sum(scores.values()) / len(scores)}
     output.mkdir(parents=True, exist_ok=True)
     (output / "result.json").write_text(json.dumps(payload, indent=2, sort_keys=True))
     return payload

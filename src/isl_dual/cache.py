@@ -100,7 +100,8 @@ class CachedMutator:
     def mutate(self, graph: Graph, evidence: Mapping[tuple[str, str], MCTSResult], node_utilities: Mapping[tuple[str, str], Utility], edge_utilities: Mapping[tuple[str, tuple[str, str]], Utility], count: int) -> list[Graph]:
         evidence_digest = [{"key": key, "plans": [(r.plan, r.reward) for r in result.rollouts]} for key, result in evidence.items() if key[0] == graph.id]
         utility_digest = {str(key): (value.delta, value.n_with, value.n_without) for key, value in node_utilities.items() if key[0] == graph.id}
-        path = self.cache.key("mutator", {"component": _identity(self.inner), "graph": graph_to_dict(graph), "evidence": evidence_digest, "utilities": utility_digest, "count": count})
+        edge_digest = {str(key): (value.delta, value.n_with, value.n_without) for key, value in edge_utilities.items() if key[0] == graph.id}
+        path = self.cache.key("mutator", {"component": _identity(self.inner), "graph": graph_to_dict(graph), "evidence": evidence_digest, "node_utilities": utility_digest, "edge_utilities": edge_digest, "count": count})
         value = self.cache.get(path)
         if value is None:
             graphs = self.inner.mutate(graph, evidence, node_utilities, edge_utilities, count)

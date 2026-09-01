@@ -4,7 +4,7 @@ from collections.abc import Mapping
 
 from .compile import compile_graph_to_skill, operational_pruning
 from .config import PilotConfig
-from .graph import validate_dedupe
+from .graph import validate_dedupe, validate_graph
 from .leakage import SecretBundle, assert_inverse_input
 from .mcts import mcts
 from .models import AcquisitionTask, Critic, Executor, Graph, MCTSResult, Mutator, Proposer, TrainingResult
@@ -49,6 +49,8 @@ def train_inverse_skill(
     config: PilotConfig | None = None,
 ) -> TrainingResult:
     config = config or PilotConfig()
+    if config.outer_loops != 2:
+        raise ValueError("this implementation fixes T_outer=2 for the pilot")
     if len(acquisition_tasks) != config.acquisition_tasks:
         raise ValueError(f"pilot requires exactly {config.acquisition_tasks} acquisition tasks")
     inverse_payload = [(task.x, task.expert_artifact) for task in acquisition_tasks]
@@ -88,13 +90,21 @@ def train_inverse_skill(
     node_utils, edge_utils = estimate_utilities(graph_map, evidence1)
 
     top_ids = sorted(q1, key=q1.get, reverse=True)[:config.graphs_mutated]
-    mutants: list[Graph] = []
+    mutant_groups: list[list[Graph]] = []
     for graph_id in top_ids:
         generated = mutator.mutate(
             graph_map[graph_id], evidence1, node_utils, edge_utils,
             config.mutants_per_graph,
         )
-        mutants.extend(generated)
+        mutant_groups.append(generated)
+    # Round-robin avoids the K_max truncation retaining all mutants from only
+    # the first posterior parent.
+    mutants = [
+        group[index]
+        for index in range(config.mutants_per_graph)
+        for group in mutant_groups
+        if index < len(group)
+    ]
     pool = validate_dedupe(graphs + mutants, config.max_graph_nodes)[:config.max_pool]
 
     # Mutants inherit their parent's evidence weight; this is explicit metadata, not artifact re-critique.
@@ -123,6 +133,7 @@ def train_inverse_skill(
     pool_map = {graph.id: graph for graph in pool}
     final_node_utils, _ = estimate_utilities(pool_map, all_evidence)
     winner = operational_pruning(winner, final_node_utils, config.utility_threshold)
+    validate_graph(winner, config.max_graph_nodes)
     skill = compile_graph_to_skill(winner)
     _leakage_audit_skill(skill, acquisition_tasks)
     return TrainingResult(

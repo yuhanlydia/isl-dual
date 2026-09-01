@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 from .models import Graph, Utility, clone_graph
 from .graph import topological_node_ids
 
@@ -17,13 +19,21 @@ def operational_pruning(
         and utility.n_with >= 2
         and utility.n_without >= 2
     }
+    surviving_nodes = tuple(node for node in graph.nodes if node.id not in remove)
+    surviving_groups = []
+    force_required: set[str] = set()
+    for group in graph.or_groups:
+        members = tuple(member for member in group.members if member not in remove)
+        if len(members) >= 2:
+            surviving_groups.append(replace(group, members=members))
+        elif len(members) == 1 and group.required:
+            force_required.add(members[0])
+    surviving_nodes = tuple(replace(node, required=True) if node.id in force_required else node for node in surviving_nodes)
     return clone_graph(
         graph,
-        nodes=tuple(node for node in graph.nodes if node.id not in remove),
+        nodes=surviving_nodes,
         edges=tuple((a, b) for a, b in graph.edges if a not in remove and b not in remove),
-        or_groups=tuple(
-            group for group in graph.or_groups if not (set(group.members) & remove)
-        ),
+        or_groups=tuple(surviving_groups),
     )
 
 

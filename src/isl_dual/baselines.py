@@ -72,11 +72,16 @@ def full_trajectory_skill(
 
 
 def _candidate_graphs(tasks: list[AcquisitionTask], proposer: Proposer, config: PilotConfig) -> list[Graph]:
-    graphs = [graph for mode in PROPOSAL_MODES for graph in proposer.propose(tasks, mode, 2)]
-    graphs = validate_dedupe(graphs, config.max_graph_nodes)
-    if len(graphs) != config.candidate_graphs:
+    graphs: list[Graph] = []
+    attempts = 0
+    while len(graphs) < config.candidate_graphs and attempts < 4:
+        count = 2 + attempts
+        graphs.extend(graph for mode in PROPOSAL_MODES for graph in proposer.propose(tasks, mode, count))
+        graphs = validate_dedupe(graphs, config.max_graph_nodes)
+        attempts += 1
+    if len(graphs) < config.candidate_graphs:
         raise RuntimeError(f"expected {config.candidate_graphs} valid distinct candidates, got {len(graphs)}")
-    return graphs
+    return graphs[:config.candidate_graphs]
 
 
 def _static(graphs: list[Graph], tasks: list[AcquisitionTask], critic: Critic, config: PilotConfig) -> dict[str, float]:

@@ -159,15 +159,17 @@ class CodexMutator:
     def mutate(self, graph: Graph, evidence: Mapping[tuple[str, str], MCTSResult], node_utilities: Mapping[tuple[str, str], Utility], edge_utilities: Mapping[tuple[str, tuple[str, str]], Utility], count: int) -> list[Graph]:
         rollouts = [{"task": task, "plan": list(r.plan), "reward": r.reward, "failure": r.failure} for (gid, task), result in evidence.items() if gid == graph.id for r in result.rollouts]
         utilities = {node: {"delta": u.delta, "n_with": u.n_with, "n_without": u.n_without} for (gid, node), u in node_utilities.items() if gid == graph.id}
+        edge_values = {str(edge): {"delta": u.delta, "n_with": u.n_with, "n_without": u.n_without} for (gid, edge), u in edge_utilities.items() if gid == graph.id}
         results = []; attempts = 0; last_error = ""
         while len(results) < count and attempts < count * 6:
             index = len(results); attempts += 1
-            prompt = "Revise the procedural graph using execution evidence. Prefer one minimal edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on a lone optional node, and valid non-overlapping OR groups. Incoming edges from alternatives in one OR group form a single any-of dependency clause.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + f"\nProduce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
+            prompt = "Revise the procedural graph using execution evidence. Make exactly one edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on a lone optional node, and valid non-overlapping OR groups. Incoming edges from alternatives in one OR group form a single any-of dependency clause.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + "\nEDGE UTILITIES:\n" + json.dumps(edge_values) + f"\nProduce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
             data = self.client.call(prompt, MUTANT_SCHEMA)
             mutant = graph_from_dict(data, f"{graph.id}-m{index + 1}")
             mutant = Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": str(data["metadata"]["mutation"])})
             try:
                 validate_graph(mutant)
+                validate_declared_mutation(graph, mutant, str(data["metadata"]["mutation"]))
             except InvalidGraph as error:
                 last_error = str(error); continue
             if mutant.fingerprint() == graph.fingerprint() or mutant.fingerprint() in {item.fingerprint() for item in results}:
@@ -176,3 +178,34 @@ class CodexMutator:
         if len(results) != count:
             raise RuntimeError(f"Codex mutator produced only {len(results)}/{count} valid mutants after {attempts} attempts: {last_error}")
         return results
+
+
+def validate_declared_mutation(parent: Graph, mutant: Graph, operation: str) -> None:
+    """Reject a model response whose actual structural edit is outside its declared operator."""
+    old, new = parent.node_map(), mutant.node_map()
+    old_ids, new_ids = set(old), set(new)
+    shared_unchanged = all(old[node_id] == new[node_id] for node_id in old_ids & new_ids)
+    old_edges, new_edges = set(parent.edges), set(mutant.edges)
+    same_groups = parent.or_groups == mutant.or_groups
+    if operation == "ADD_NODE":
+        added = new_ids - old_ids
+        valid = len(added) == 1 and not (old_ids - new_ids) and shared_unchanged and old_edges <= new_edges and all(set(edge) & added for edge in new_edges - old_edges) and same_groups
+    elif operation == "REMOVE_OPTIONAL_NODE":
+        removed = old_ids - new_ids
+        expected_edges = {edge for edge in old_edges if not (set(edge) & removed)}
+        expected_groups = tuple(group for group in parent.or_groups if not (set(group.members) & removed))
+        valid = len(removed) == 1 and not (new_ids - old_ids) and not old[next(iter(removed))].required and shared_unchanged and new_edges == expected_edges and mutant.or_groups == expected_groups
+    elif operation == "SPLIT_NODE":
+        valid = len(new_ids) == len(old_ids) + 1
+    elif operation == "MERGE_NODES":
+        valid = len(new_ids) == len(old_ids) - 1
+    elif operation == "ADD_EDGE":
+        valid = old_ids == new_ids and shared_unchanged and same_groups and old_edges < new_edges and len(new_edges - old_edges) == 1
+    elif operation == "REMOVE_EDGE":
+        valid = old_ids == new_ids and shared_unchanged and same_groups and new_edges < old_edges and len(old_edges - new_edges) == 1
+    elif operation == "CHANGE_BRANCH":
+        valid = old_ids == new_ids and shared_unchanged and (old_edges != new_edges or not same_groups)
+    else:
+        valid = False
+    if not valid:
+        raise InvalidGraph(f"mutant does not implement exactly one declared {operation} operation")
