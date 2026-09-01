@@ -41,10 +41,6 @@ def validate_graph(graph: Graph, max_nodes: int = 12) -> None:
         raise InvalidGraph("graph must be acyclic")
 
     node_map = graph.node_map()
-    for src, dst in graph.edges:
-        if node_map[dst].required and not node_map[src].required:
-            raise InvalidGraph("mandatory node cannot depend on an optional node")
-
     seen_members: set[str] = set()
     for group in graph.or_groups:
         members = set(group.members)
@@ -53,8 +49,19 @@ def validate_graph(graph: Graph, max_nodes: int = 12) -> None:
         if seen_members & members:
             raise InvalidGraph("a node cannot occur in multiple OR groups")
         seen_members |= members
-        if group.required and not any(node_map[m].required for m in members):
-            raise InvalidGraph("required OR group must contain a required alternative")
+
+    member_to_group = {member: group for group in graph.or_groups for member in group.members}
+    parents_by_child = {node_id: {src for src, dst in graph.edges if dst == node_id} for node_id in ids}
+    for node in graph.nodes:
+        if not node.required:
+            continue
+        for parent in parents_by_child[node.id]:
+            if node_map[parent].required:
+                continue
+            group = member_to_group.get(parent)
+            grouped_parents = parents_by_child[node.id] & set(group.members) if group else set()
+            if len(grouped_parents) < 2:
+                raise InvalidGraph("mandatory node cannot depend on an excluded optional node")
 
 
 def validate_dedupe(graphs: list[Graph], max_nodes: int = 12) -> list[Graph]:

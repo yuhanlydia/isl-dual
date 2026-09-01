@@ -102,6 +102,19 @@ def test_or_group_selects_exactly_one_branch_before_stop():
     assert legal_actions(graph, ("a", "b"), 12) == [STOP]
 
 
+def test_or_branch_edges_are_alternative_dependencies_for_merge_node():
+    graph = Graph(
+        "diamond",
+        (node("a", "start"), node("b", "branch b", False), node("c", "branch c", False), node("d", "merge")),
+        (("a", "b"), ("a", "c"), ("b", "d"), ("c", "d")),
+        (OrGroup("branch", ("b", "c"), True),),
+    )
+    validate_graph(graph)
+    assert "d" in legal_actions(graph, ("a", "b"), 12)
+    assert "d" in legal_actions(graph, ("a", "c"), 12)
+    assert "c" not in legal_actions(graph, ("a", "b"), 12)
+
+
 def test_baseline_contracts_are_explicit():
     graph = Graph("g", (node("a", "a"), node("b", "b")), (("a", "b"),))
     assert deterministic_plan(graph) == ("a", "b")

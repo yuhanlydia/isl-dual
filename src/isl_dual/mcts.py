@@ -25,7 +25,7 @@ def legal_actions(graph: Graph, prefix: tuple[str, ...], max_len: int) -> list[s
         node.id
         for node in graph.nodes
         if node.id not in used
-        and graph.parents(node.id) <= used
+        and dependencies_satisfied(graph, node.id, used)
         and not (node.id in member_to_group and (set(member_to_group[node.id].members) & used))
     ]
     if requirements_satisfied(graph, used):
@@ -33,6 +33,18 @@ def legal_actions(graph: Graph, prefix: tuple[str, ...], max_len: int) -> list[s
     if len(prefix) >= max_len:
         return [STOP] if requirements_satisfied(graph, used) else []
     return actions
+
+
+def dependencies_satisfied(graph: Graph, node_id: str, used: set[str]) -> bool:
+    """Treat same-OR-group incoming edges as one alternative dependency clause."""
+    remaining = graph.parents(node_id)
+    for group in graph.or_groups:
+        alternatives = remaining & set(group.members)
+        if alternatives:
+            if not alternatives & used:
+                return False
+            remaining -= alternatives
+    return remaining <= used
 
 
 def requirements_satisfied(graph: Graph, used: set[str]) -> bool:

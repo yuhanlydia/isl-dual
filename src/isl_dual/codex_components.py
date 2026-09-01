@@ -121,7 +121,7 @@ class CodexProposer:
             prompt = f"""You do not know the expert's actual execution history. Do not reconstruct chain-of-thought.
 Infer one reusable {mode} procedural DAG that could explain the successful final artifacts and transfer to related unseen tasks.
 Do not copy case-specific answers, filenames, constants, or output content unless genuinely reusable. This is variant {index + 1}, attempt {attempts}; make it structurally distinct.
-Validity contract: use 2-12 unique nodes; non-empty actions; existing edge endpoints; no self-edge or cycle; a required node may not depend on an optional node; OR groups contain at least two existing non-overlapping members, and a required OR group contains a required alternative.
+Validity contract: use 2-12 unique nodes; non-empty actions; existing edge endpoints; no self-edge or cycle; a required node may not depend on a lone optional node; OR groups contain at least two existing non-overlapping members. Incoming edges from alternatives in one OR group form a single any-of dependency clause.
 The previous rejected attempt failed validation with: {last_error or 'none'}.
 Observed outcome-only data:\n{_artifact_text(tasks)}"""
             data = self.client.call(prompt, GRAPH_SCHEMA)
@@ -162,7 +162,7 @@ class CodexMutator:
         results = []; attempts = 0; last_error = ""
         while len(results) < count and attempts < count * 6:
             index = len(results); attempts += 1
-            prompt = "Revise the procedural graph using execution evidence. Prefer one minimal edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on an optional node, and valid non-overlapping OR groups.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + f"\nProduce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
+            prompt = "Revise the procedural graph using execution evidence. Prefer one minimal edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on a lone optional node, and valid non-overlapping OR groups. Incoming edges from alternatives in one OR group form a single any-of dependency clause.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + f"\nProduce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
             data = self.client.call(prompt, MUTANT_SCHEMA)
             mutant = graph_from_dict(data, f"{graph.id}-m{index + 1}")
             mutant = Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": str(data["metadata"]["mutation"])})
