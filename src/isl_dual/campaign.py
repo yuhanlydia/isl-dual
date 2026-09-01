@@ -43,6 +43,10 @@ def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -
     for previous in state["attempts"]:
         if previous.get("status") == "running":
             previous.update(status="interrupted", finished_at=datetime.now(timezone.utc).isoformat())
+        if len(str(previous.get("error", ""))) > 2000:
+            previous["error"] = str(previous["error"])[:2000] + "... [truncated]"
+        if len(str(previous.get("traceback", ""))) > 8000:
+            previous["traceback"] = str(previous["traceback"])[-8000:]
     _atomic(state_path, state)
     families = discover_families(benchmark_root)
     if len(families) != 30:

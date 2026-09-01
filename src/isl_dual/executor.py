@@ -70,7 +70,10 @@ class CodexExecutor:
             command.append(prompt)
             process_env = os.environ.copy()
             process_env["PATH"] = str(tool_bin) + os.pathsep + process_env.get("PATH", "")
-            completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env)
+            try:
+                completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env)
+            except subprocess.TimeoutExpired as error:
+                raise CodexExecutionError(f"ephemeral Codex execution timed out after {self.timeout_seconds}s") from error
             if completed.returncode != 0:
                 raise CodexExecutionError(completed.stderr[-4000:])
             files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".npm-cache", ".poetry_env", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
