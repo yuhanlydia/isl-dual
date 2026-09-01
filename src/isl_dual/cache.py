@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -54,9 +55,14 @@ class CachedCritic:
 
 
 class CachedExecutor:
-    def __init__(self, inner: Any, cache: JSONCache): self.inner, self.cache = inner, cache
+    def __init__(self, inner: Any, cache: JSONCache):
+        self.inner, self.cache = inner, cache
+        self._occurrences: dict[tuple[str, str, tuple[str, ...]], int] = defaultdict(int)
     def execute(self, task: Any, graph: Graph, plan: tuple[str, ...]) -> Any:
-        path = self.cache.key("executor", {"task_id": task.id, "x": task.x, "graph": graph_to_dict(graph), "plan": plan})
+        identity = (task.id, graph.id, plan)
+        occurrence = self._occurrences[identity]
+        self._occurrences[identity] += 1
+        path = self.cache.key("executor", {"task_id": task.id, "x": task.x, "graph": graph_to_dict(graph), "plan": plan, "occurrence": occurrence})
         value = self.cache.get(path)
         if value is None:
             value = self.inner.execute(task, graph, plan); self.cache.put(path, value)

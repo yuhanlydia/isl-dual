@@ -6,6 +6,7 @@ from isl_dual.models import Graph
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
+from isl_dual.cache import CachedExecutor, JSONCache
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -56,3 +57,20 @@ def test_edge_shuffle_preserves_nodes_and_edge_count():
     assert shuffled.nodes == graph.nodes
     assert len(shuffled.edges) == len(graph.edges)
     assert shuffled.edges != graph.edges
+
+
+def test_rollout_cache_keeps_duplicate_occurrences_distinct(tmp_path):
+    class CountingExecutor:
+        def __init__(self): self.calls = 0
+        def execute(self, task, graph, plan):
+            self.calls += 1
+            return {"call": self.calls}
+    task = toy_tasks()[0]
+    graph = Graph("g", (node("a", "a"), node("b", "b")), (("a", "b"),))
+    inner = CountingExecutor(); cached = CachedExecutor(inner, JSONCache(tmp_path))
+    assert cached.execute(task, graph, ("a", "b"))["call"] == 1
+    assert cached.execute(task, graph, ("a", "b"))["call"] == 2
+    resumed_inner = CountingExecutor(); resumed = CachedExecutor(resumed_inner, JSONCache(tmp_path))
+    assert resumed.execute(task, graph, ("a", "b"))["call"] == 1
+    assert resumed.execute(task, graph, ("a", "b"))["call"] == 2
+    assert resumed_inner.calls == 0
