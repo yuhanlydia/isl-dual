@@ -4,6 +4,7 @@ from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
 from isl_dual.models import Graph, OrGroup
 from isl_dual.mcts import STOP, legal_actions
+from isl_dual.mcts import mcts
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
@@ -128,3 +129,12 @@ def test_go_gate_matches_pilot_decision_rule():
 def test_isolated_process_accepts_private_stdin():
     result = run_process_group(["/bin/sh", "-c", "read value; printf %s \"$value\""], timeout=2, input_text="private prompt\n")
     assert result.stdout == "private prompt"
+
+
+def test_one_failed_rollout_becomes_zero_reward_not_family_abort():
+    class FailingExecutor:
+        def execute(self, task, graph, plan): raise RuntimeError("transient")
+    graph = Graph("g", (node("a", "a"), node("b", "b")), (("a", "b"),))
+    result = mcts(graph, toy_tasks()[0], FailingExecutor(), budget=1)
+    assert result.rewards == [0.0]
+    assert "RuntimeError" in result.rollouts[0].failure

@@ -112,13 +112,18 @@ def mcts(
             state = state.children[action]
 
         plan = _complete_plan(graph, state.prefix, rng, max_plan_length, p_stop)
-        output = executor.execute(task, graph, plan)
-        evaluator = getattr(task.verifier, "evaluate", None)
-        if evaluator is not None:
-            raw_reward, failure = evaluator(output)
-        else:
-            raw_reward, failure = task.verifier(output), None
-        reward = max(0.0, min(1.0, float(raw_reward)))
+        try:
+            output = executor.execute(task, graph, plan)
+            evaluator = getattr(task.verifier, "evaluate", None)
+            if evaluator is not None:
+                raw_reward, failure = evaluator(output)
+            else:
+                raw_reward, failure = task.verifier(output), None
+            reward = max(0.0, min(1.0, float(raw_reward)))
+        except Exception as error:
+            output = None
+            reward = 0.0
+            failure = f"rollout execution failed: {type(error).__name__}: {str(error)[:1000]}"
         rollouts.append(Rollout(plan=plan, reward=reward, output=output, failure=failure))
 
         for parent, action in path:
