@@ -1,12 +1,36 @@
 from __future__ import annotations
 
+import json
 import math
+import os
 import random
 from dataclasses import dataclass, field
 
 from .models import AcquisitionTask, Executor, Graph, MCTSResult, Rollout
 
 STOP = "__STOP__"
+
+
+class EvidenceJournal:
+    """Atomic, artifact-free checkpoint of rollout evidence by stable occurrence ID."""
+
+    def __init__(self, path):
+        self.path = path
+        try:
+            self.records = json.loads(path.read_text()) if path.exists() else {}
+        except (OSError, json.JSONDecodeError):
+            self.records = {}
+
+    def record(self, record_id: str, *, graph_id: str, task_id: str, phase: str, rollout_id: int, plan: tuple[str, ...], reward: float, failure: str | None) -> None:
+        self.records[record_id] = {
+            "graph_id": graph_id, "task_id": task_id, "phase": phase,
+            "rollout_id": rollout_id, "plan": list(plan), "reward": reward,
+            "failure": failure,
+        }
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = self.path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(self.records, indent=2, sort_keys=True))
+        os.replace(temporary, self.path)
 
 
 @dataclass
@@ -97,12 +121,14 @@ def mcts(
     max_plan_length: int = 12,
     p_stop: float = 0.4,
     seed: int = 0,
+    journal: EvidenceJournal | None = None,
+    journal_prefix: str = "",
 ) -> MCTSResult:
     rng = random.Random(seed)
     root = TreeState(prefix=())
     rollouts: list[Rollout] = []
 
-    for _ in range(budget):
+    for rollout_id in range(budget):
         state = root
         path: list[tuple[TreeState, str]] = []
         while True:
@@ -144,6 +170,12 @@ def mcts(
             reward = 0.0
             failure = f"rollout execution failed: {type(error).__name__}: {str(error)[:1000]}"
         rollouts.append(Rollout(plan=plan, reward=reward, output=output, failure=failure))
+        if journal is not None:
+            journal.record(
+                f"{journal_prefix}:{rollout_id}", graph_id=graph.id, task_id=task.id,
+                phase=journal_prefix.split(":", 1)[0] if journal_prefix else "forward",
+                rollout_id=rollout_id, plan=plan, reward=reward, failure=failure,
+            )
 
         for parent, action in path:
             parent.visits += 1

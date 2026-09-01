@@ -6,7 +6,7 @@ from .compile import compile_graph_to_skill, operational_pruning
 from .config import PilotConfig
 from .graph import validate_dedupe, validate_graph
 from .leakage import SecretBundle, assert_inverse_input
-from .mcts import mcts
+from .mcts import EvidenceJournal, mcts
 from .models import AcquisitionTask, Critic, Executor, Graph, MCTSResult, Mutator, Proposer, TrainingResult
 from .scoring import complexity, estimate_utilities, softmax, summarize_forward, top2_mean
 
@@ -19,6 +19,7 @@ def _forward_loop(
     executor: Executor,
     config: PilotConfig,
     seed_offset: int,
+    journal: EvidenceJournal | None = None,
 ) -> tuple[dict[str, float], dict[str, float], dict[tuple[str, str], MCTSResult]]:
     forward: dict[str, float] = {}
     stability: dict[str, float] = {}
@@ -33,6 +34,8 @@ def _forward_loop(
                 max_plan_length=config.max_plan_length,
                 p_stop=config.p_stop,
                 seed=config.seed + seed_offset + graph_index * 101 + task_index,
+                journal=journal,
+                journal_prefix=f"{'round1' if seed_offset == 0 else 'round2'}:{graph.id}:{task.id}",
             )
             evidence[(graph.id, task.id)] = result
             scores.append(top2_mean(result.rewards))
@@ -47,6 +50,7 @@ def train_inverse_skill(
     executor: Executor,
     mutator: Mutator,
     config: PilotConfig | None = None,
+    evidence_journal: EvidenceJournal | None = None,
 ) -> TrainingResult:
     config = config or PilotConfig()
     if config.outer_loops != 2:
@@ -79,7 +83,7 @@ def train_inverse_skill(
         )
     q0 = softmax(log_weights)
 
-    forward1, stability1, evidence1 = _forward_loop(graphs, acquisition_tasks, executor, config, 0)
+    forward1, stability1, evidence1 = _forward_loop(graphs, acquisition_tasks, executor, config, 0, evidence_journal)
     for graph in graphs:
         log_weights[graph.id] += (
             config.beta_forward * forward1[graph.id]
@@ -112,7 +116,7 @@ def train_inverse_skill(
     for graph in pool:
         parent_id = str(graph.metadata.get("parent_id", graph.id))
         second_base[graph.id] = log_weights.get(parent_id, min(log_weights.values()))
-    forward2, stability2, evidence2 = _forward_loop(pool, acquisition_tasks, executor, config, 100_000)
+    forward2, stability2, evidence2 = _forward_loop(pool, acquisition_tasks, executor, config, 100_000, evidence_journal)
     second_weights = {
         graph.id: second_base[graph.id]
         + config.beta_forward * forward2[graph.id]

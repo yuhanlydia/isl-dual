@@ -14,6 +14,7 @@ from .baselines import Baseline, SelectedSkill, direct_text_skill, full_trajecto
 from .codex_components import CodexCritic, CodexJSON, CodexMutator, CodexProposer, graph_to_dict
 from .executor import CodexExecutor
 from .models import AcquisitionTask, DeploymentTask, Graph, Node
+from .mcts import EvidenceJournal
 from .compile import compile_graph_to_skill
 from .controls import edge_shuffle
 from .report import go_gate, scientific_report
@@ -38,7 +39,10 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
     critic = CachedCritic(CodexCritic(client), cache)
     executor = CachedExecutor(CodexExecutor(model=model), cache)
     mutator = CachedMutator(CodexMutator(client), cache)
-    result = train_inverse_skill(bundle.acquisition, proposer, critic, executor, mutator, config=config)
+    result = train_inverse_skill(
+        bundle.acquisition, proposer, critic, executor, mutator, config=config,
+        evidence_journal=EvidenceJournal(output / "evidence.json"),
+    )
     audit_no_curated_access(benchmark_root, result.skill)
     (output / "SKILL.md").write_text(result.skill)
     skill_node = Node("skill", "Apply the following frozen procedural skill exactly as reusable guidance:\n\n" + result.skill, ("A deployment task is available",), ("task",), "Apply the following frozen procedural skill exactly as reusable guidance:\n\n" + result.skill, ("completed_task",), "Verify the task requirements", True)
@@ -232,6 +236,7 @@ def _artifact_shuffle_control(
         CachedExecutor(CodexExecutor(model=model), cache),
         CachedMutator(CodexMutator(client), cache),
         config,
+        evidence_journal=EvidenceJournal(output / "evidence.json"),
     )
     audit_no_curated_access(benchmark_root, result.skill)
     executor = CachedExecutor(CodexExecutor(model=model), cache)

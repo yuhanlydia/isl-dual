@@ -1,12 +1,13 @@
 import pytest
 import subprocess
 import sys
+import json
 
 from isl_dual.graph import InvalidGraph, validate_graph
 from isl_dual.leakage import SecretBundle, assert_forward_input
 from isl_dual.models import AcquisitionTask, Graph, OrGroup, Utility
 from isl_dual.mcts import STOP, legal_actions
-from isl_dual.mcts import TreeState, _uct, mcts
+from isl_dual.mcts import EvidenceJournal, TreeState, _uct, mcts
 from isl_dual.metrics import entropy, spearman, spurious_skill_rejection_rate
 from isl_dual.supervisor import supervise
 from isl_dual.controls import artifact_shuffle, edge_shuffle
@@ -261,6 +262,14 @@ def test_native_verifier_reward_and_failure_are_checkpointed(tmp_path):
     resumed = CachedVerifier("task", inner, JSONCache(tmp_path))
     assert resumed.evaluate({"workspace": {"a": "b"}}) == (0.25, "observable failure")
     assert inner.calls == 1
+
+
+def test_rollout_evidence_journal_overwrites_stable_occurrence(tmp_path):
+    journal = EvidenceJournal(tmp_path / "evidence.json")
+    journal.record("round1:g:t:0", graph_id="g", task_id="t", phase="round1", rollout_id=0, plan=("a",), reward=0.25, failure="failure")
+    journal.record("round1:g:t:0", graph_id="g", task_id="t", phase="round1", rollout_id=0, plan=("a",), reward=1.0, failure=None)
+    data = json.loads((tmp_path / "evidence.json").read_text())
+    assert len(data) == 1 and data["round1:g:t:0"]["reward"] == 1.0
 
 
 def test_smoke_cli_accepts_output_after_subcommand(tmp_path):
