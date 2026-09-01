@@ -67,11 +67,11 @@ class CodexExecutor:
             ]
             if self.model:
                 command.extend(["--model", self.model])
-            command.append(prompt)
+            command.append("-")
             process_env = os.environ.copy()
             process_env["PATH"] = str(tool_bin) + os.pathsep + process_env.get("PATH", "")
             try:
-                completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env)
+                completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env, input_text=prompt)
             except subprocess.TimeoutExpired as error:
                 raise CodexExecutionError(f"ephemeral Codex execution timed out after {self.timeout_seconds}s") from error
             if completed.returncode != 0:

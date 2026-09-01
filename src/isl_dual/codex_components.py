@@ -53,9 +53,9 @@ class CodexJSON:
                 command = ["codex", "exec", "--ephemeral", "--skip-git-repo-check", "--sandbox", "read-only", "-C", str(root), "--output-schema", str(schema_path), "-o", str(output_path)]
                 if self.model:
                     command.extend(["--model", self.model])
-                command.append(prompt + f"\nTransient call attempt: {attempt}.")
+                command.append("-")
                 try:
-                    result = run_process_group(command, timeout=self.timeout_seconds)
+                    result = run_process_group(command, timeout=self.timeout_seconds, input_text=prompt + f"\nTransient call attempt: {attempt}.")
                 except subprocess.TimeoutExpired:
                     errors.append(f"attempt {attempt}: timed out after {self.timeout_seconds}s")
                     continue
