@@ -45,7 +45,9 @@ class CodexExecutor:
         if isinstance(task, AcquisitionTask):
             assert_forward_input(payload, SecretBundle(expert_artifact=task.expert_artifact))
         prompt = (
-            "TASK:\n" + task.x + "\n\nPROCEDURAL PLAN:\n" +
+            "ISOLATED WORKSPACE MAPPING:\nThe current working directory is this rollout's virtual /root/task. "
+            "Resolve every task reference under /root/task relative to the current working directory; "
+            "do not access a literal host /root/task path.\n\nTASK:\n" + task.x + "\n\nPROCEDURAL PLAN:\n" +
             json.dumps(procedural_plan, indent=2, ensure_ascii=False) +
             "\n\nFollow the plan as procedural guidance. Use tools and observable environment "
             "feedback as normally allowed. Do not assume access to any expert solution. "
