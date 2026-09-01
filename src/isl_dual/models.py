@@ -105,6 +105,7 @@ class TrainingResult:
     q1: dict[str, float]
     forward_scores: dict[str, float]
     artifact_scores: dict[str, float]
+    candidates: dict[str, Graph]
     evidence: dict[tuple[str, str], MCTSResult]
 
 

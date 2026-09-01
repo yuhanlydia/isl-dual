@@ -125,6 +125,7 @@ def train_inverse_skill(
         q1=q1,
         forward_scores=forward2,
         artifact_scores=artifact_scores,
+        candidates={graph.id: graph for graph in pool},
         evidence=all_evidence,
     )
 

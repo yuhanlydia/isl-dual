@@ -8,6 +8,8 @@ from .cache import CachedCritic, CachedExecutor, CachedMutator, CachedProposer, 
 from .codex_components import CodexCritic, CodexJSON, CodexMutator, CodexProposer, graph_to_dict
 from .executor import CodexExecutor
 from .models import Graph, Node
+from .compile import compile_graph_to_skill
+from .report import scientific_report
 from .pipeline import train_inverse_skill
 from .skillevol_host import load_family
 
@@ -32,7 +34,36 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
     for task in bundle.deployment:
         produced = executor.execute(task, deployment_graph, ("skill", "verify"))
         deployment_scores[task.id] = task.verifier(produced)
-    summary = {"family_id": family_id, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores}
+    no_skill_node = Node("act", "Complete the task using only the task input and observable environment feedback", (), ("task",), "Complete the task using only the task input and observable environment feedback", ("completed_task",), "Check observable requirements", True)
+    no_skill_graph = Graph("no-skill-deployment", (no_skill_node,))
+    no_skill_scores = {}
+    for task in bundle.deployment:
+        produced = executor.execute(task, no_skill_graph, ("act",))
+        no_skill_scores[task.id] = task.verifier(produced)
+    # Candidate diagnostics are evaluation-only: no score is fed into q or graph mutation.
+    candidate_deployment: dict[str, float] = {}
+    for graph_id in result.artifact_scores:  # initial K have both A_k and F_k
+        graph = result.candidates[graph_id]
+        candidate_skill = compile_graph_to_skill(graph)
+        candidate_node = Node("skill", "Frozen candidate skill", ("A deployment task is available",), ("task",), candidate_skill, ("completed_task",), "Verify observable requirements", True)
+        candidate_graph = Graph("candidate-deployment-" + graph_id, (candidate_node,))
+        rewards = []
+        for task in bundle.deployment:
+            produced = executor.execute(task, candidate_graph, ("skill",))
+            rewards.append(task.verifier(produced))
+        candidate_deployment[graph_id] = sum(rewards) / len(rewards)
+    common_forward = {k: result.forward_scores[k] for k in result.artifact_scores}
+    q2_initial_raw = {k: result.posterior.get(k, 0.0) for k in result.q0}
+    q2_initial_total = sum(q2_initial_raw.values())
+    q2_initial = {k: value / q2_initial_total for k, value in q2_initial_raw.items()}
+    diagnostics = scientific_report(
+        no_skill_reward=sum(no_skill_scores.values()) / len(no_skill_scores), isl_reward=sum(deployment_scores.values()) / len(deployment_scores),
+        artifact_scores=result.artifact_scores, forward_scores=common_forward,
+        deployment_scores=candidate_deployment, q0=result.q0,
+        q2=q2_initial,
+        tau_artifact=0.8, tau_transfer=0.5,
+    )
+    summary = {"family_id": family_id, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics}
     (output / "result.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
 
