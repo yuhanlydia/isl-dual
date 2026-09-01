@@ -26,6 +26,8 @@ def test_required_cannot_depend_on_optional():
 def test_forward_leakage_guard():
     with pytest.raises(AssertionError):
         assert_forward_input("prompt contains SECRET", SecretBundle(expert_artifact="SECRET"))
+    with pytest.raises(AssertionError):
+        assert_forward_input({"copied": {"answer": [1, 2, 3]}}, SecretBundle(expert_artifact={"answer": [1, 2, 3]}))
 
 
 def test_dual_loop_runs_and_compiles_procedure():

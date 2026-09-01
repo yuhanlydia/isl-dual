@@ -40,22 +40,26 @@ def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -
         _atomic(state_path, state)
     if state.get("benchmark_commit") != benchmark_commit:
         raise RuntimeError("benchmark commit changed; refusing to reuse cached rollouts")
+    for previous in state["attempts"]:
+        if previous.get("status") == "running":
+            previous.update(status="interrupted", finished_at=datetime.now(timezone.utc).isoformat())
+    _atomic(state_path, state)
     families = discover_families(benchmark_root)
     if len(families) != 30:
         raise RuntimeError(f"expected 30 SkillEvolBench families, found {len(families)}")
-    for family_id in families:
-        if family_id in state["completed"]:
-            continue
-        attempt = {"family": family_id, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
-        state["attempts"].append(attempt); _atomic(state_path, state)
-        try:
-            run_family(benchmark_root, family_id, output / "families" / family_id, model)
-        except Exception as error:
-            attempt.update(status="failed", finished_at=datetime.now(timezone.utc).isoformat(), error=f"{type(error).__name__}: {error}", traceback=traceback.format_exc()[-8000:])
-            _atomic(state_path, state)
-            continue
-        attempt.update(status="completed", finished_at=datetime.now(timezone.utc).isoformat())
-        state["completed"].append(family_id); _atomic(state_path, state)
+    while len(state["completed"]) < len(families):
+        pending = [family for family in families if family not in state["completed"]]
+        for family_id in pending:
+            attempt = {"family": family_id, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
+            state["attempts"].append(attempt); _atomic(state_path, state)
+            try:
+                run_family(benchmark_root, family_id, output / "families" / family_id, model)
+            except Exception as error:
+                attempt.update(status="failed", finished_at=datetime.now(timezone.utc).isoformat(), error=f"{type(error).__name__}: {error}", traceback=traceback.format_exc()[-8000:])
+                _atomic(state_path, state)
+                continue
+            attempt.update(status="completed", finished_at=datetime.now(timezone.utc).isoformat())
+            state["completed"].append(family_id); _atomic(state_path, state)
     state["finished_at"] = datetime.now(timezone.utc).isoformat()
     state["status"] = "completed"
     _atomic(state_path, state)

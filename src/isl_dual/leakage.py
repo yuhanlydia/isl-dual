@@ -21,6 +21,12 @@ def _contains(payload: Any, secret: Any) -> bool:
         return False
     if payload is secret:
         return True
+    if type(payload) is type(secret) and not isinstance(payload, str):
+        try:
+            if payload == secret:
+                return True
+        except (TypeError, ValueError):
+            pass
     if isinstance(payload, str) and isinstance(secret, str):
         return bool(secret) and secret in payload
     if isinstance(payload, dict):
@@ -44,4 +50,3 @@ def assert_forward_input(payload: Any, secrets: SecretBundle) -> None:
 def assert_deployment_input(payload: Any, secrets: SecretBundle) -> None:
     assert not _contains(payload, secrets.expert_artifact), "expert artifact leaked into deployment input"
     assert not _contains(payload, secrets.benchmark_hidden_reward), "hidden reward leaked into deployment input"
-

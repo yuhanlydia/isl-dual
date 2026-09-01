@@ -134,3 +134,14 @@ def _leakage_audit_skill(skill: str, tasks: list[AcquisitionTask]) -> None:
         artifact = task.expert_artifact
         if isinstance(artifact, str) and artifact and artifact in skill:
             raise AssertionError(f"acquisition artifact leaked into compiled skill: {task.id}")
+        if isinstance(artifact, dict):
+            files = artifact.get("delta", artifact.get("files", {}))
+            if isinstance(files, dict):
+                for path, content in files.items():
+                    if str(path).split("/")[-1] in skill:
+                        raise AssertionError(f"acquisition filename leaked into compiled skill: {task.id}:{path}")
+                    if isinstance(content, str):
+                        for line in content.splitlines():
+                            stripped = line.strip()
+                            if len(stripped) >= 80 and stripped in skill:
+                                raise AssertionError(f"acquisition content leaked into compiled skill: {task.id}:{path}")
