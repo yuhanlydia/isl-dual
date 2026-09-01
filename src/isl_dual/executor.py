@@ -28,13 +28,22 @@ class CodexExecutor:
         graph: Graph,
         plan: tuple[str, ...],
     ) -> dict[str, Any]:
-        actions = [graph.node_map()[node_id].action for node_id in plan]
-        payload = {"task": task.x, "procedural_plan": actions}
+        selected_nodes = [graph.node_map()[node_id] for node_id in plan]
+        procedural_plan = [{
+            "name": node.name,
+            "preconditions": list(node.preconditions),
+            "input_requirements": list(node.inputs),
+            "action": node.action,
+            "expected_outputs": list(node.outputs),
+            "validator": node.validator,
+            "required": node.required,
+        } for node in selected_nodes]
+        payload = {"task": task.x, "procedural_plan": procedural_plan}
         if isinstance(task, AcquisitionTask):
             assert_forward_input(payload, SecretBundle(expert_artifact=task.expert_artifact))
         prompt = (
             "TASK:\n" + task.x + "\n\nPROCEDURAL PLAN:\n" +
-            "\n".join(f"{i}. {action}" for i, action in enumerate(actions, 1)) +
+            json.dumps(procedural_plan, indent=2, ensure_ascii=False) +
             "\n\nFollow the plan as procedural guidance. Use tools and observable environment "
             "feedback as normally allowed. Do not assume access to any expert solution. "
             "Complete the task in the current workspace."
