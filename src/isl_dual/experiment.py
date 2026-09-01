@@ -11,11 +11,12 @@ from .executor import CodexExecutor
 from .models import Graph, Node
 from .compile import compile_graph_to_skill
 from .report import scientific_report
+from .config import PilotConfig
 from .pipeline import train_inverse_skill
 from .skillevol_host import audit_no_curated_access, load_family
 
 
-def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None) -> dict[str, object]:
+def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None, config: PilotConfig | None = None) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
     bundle = load_family(benchmark_root, family_id, artifact_cache=output / "artifacts" / benchmark_commit)
@@ -28,7 +29,7 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
     critic = CachedCritic(CodexCritic(client), cache)
     executor = CachedExecutor(CodexExecutor(model=model), cache)
     mutator = CachedMutator(CodexMutator(client), cache)
-    result = train_inverse_skill(bundle.acquisition, proposer, critic, executor, mutator)
+    result = train_inverse_skill(bundle.acquisition, proposer, critic, executor, mutator, config=config)
     audit_no_curated_access(benchmark_root, result.skill)
     (output / "SKILL.md").write_text(result.skill)
     skill_node = Node("skill", "Apply the following frozen procedural skill exactly as reusable guidance:\n\n" + result.skill, ("A deployment task is available",), ("task",), "Apply the following frozen procedural skill exactly as reusable guidance:\n\n" + result.skill, ("completed_task",), "Verify the task requirements", True)

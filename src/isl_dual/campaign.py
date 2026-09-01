@@ -11,6 +11,7 @@ from pathlib import Path
 import yaml
 
 from .experiment import run_family
+from .config import PilotConfig
 
 
 def _atomic(path: Path, value: dict[str, object]) -> None:
@@ -64,9 +65,29 @@ def run_campaign(benchmark_root: Path, output: Path, model: str | None = None) -
                 continue
             attempt.update(status="completed", finished_at=datetime.now(timezone.utc).isoformat())
             state["completed"].append(family_id); _atomic(state_path, state)
-    state["finished_at"] = datetime.now(timezone.utc).isoformat()
-    state["status"] = "completed"
+    state["primary_finished_at"] = datetime.now(timezone.utc).isoformat()
+    state["status"] = "replicating"
+    state.setdefault("replications", {})
     _atomic(state_path, state)
+    replication = 1
+    while True:  # supervisor owns the ten-hour wall-clock stop
+        key = str(replication)
+        completed_replication = state["replications"].setdefault(key, [])
+        config = PilotConfig(seed=PilotConfig().seed + replication)
+        for family_id in families:
+            if family_id in completed_replication:
+                continue
+            attempt = {"family": family_id, "replication": replication, "seed": config.seed, "started_at": datetime.now(timezone.utc).isoformat(), "status": "running"}
+            state["attempts"].append(attempt); _atomic(state_path, state)
+            try:
+                run_family(benchmark_root, family_id, output / "replications" / f"seed-{config.seed}" / "families" / family_id, model, config)
+            except Exception as error:
+                attempt.update(status="failed", finished_at=datetime.now(timezone.utc).isoformat(), error=f"{type(error).__name__}: {error}", traceback=traceback.format_exc()[-8000:])
+                _atomic(state_path, state)
+                continue
+            attempt.update(status="completed", finished_at=datetime.now(timezone.utc).isoformat())
+            completed_replication.append(family_id); _atomic(state_path, state)
+        replication += 1
 
 
 def main() -> None:

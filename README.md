@@ -154,6 +154,9 @@ The campaign immediately advances after a completed family and atomically record
 before continuing. Its verifier invokes each task's unmodified `tests/test.sh`; this adapter
 must be reported as host-native and is not a substitute for an official Harbor score unless
 the expert outcome for all three acquisition tasks first receives native reward `1.0`.
+If all 30 primary families finish before the supervisor deadline, the campaign immediately
+starts independent full-family replications with incremented fixed seeds. It continues
+useful robustness work and checkpointing until the wall-clock supervisor stops it.
 
 ## License
 
