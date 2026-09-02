@@ -109,7 +109,9 @@ and workspaces belong under ignored paths; `runs/` is excluded from Git.
 
 Required baselines are B0 no skill, B1 direct outcome-to-text skill, B2 one-shot DAG,
 B3 eight DAGs plus static critic, B4 greedy forward, B5 MCTS forward, and B6 full
-ISL-Dual. B7 full trajectory and B8 curated skill are upper-information controls.
+ISL-Dual. B7 oracle solution procedure (the benchmark's executable `solve.sh`) and
+B8 curated skill are upper-information controls. B7 is not an observed agent trajectory;
+a true trajectory baseline is reserved for B9 when trajectory logs are available.
 Artifact shuffle and edge shuffle are the two required causal controls.
 
 Primary metrics are skill lift, acquisition-forward versus held-out Spearman correlation,
@@ -120,8 +122,8 @@ equal, do not scale the run before revisiting the method.
 The real family runner executes B0–B8 and writes per-task scores, family means, and the
 GO-gate decision to `result.json`. B0 uses the same deployment executor with no procedural
 skill. B7 explicitly treats each acquisition task's benchmark `solution/solve.sh` as its
-upper-information execution trajectory; B8 explicitly reads the benchmark-declared curated
-`SKILL.md`. Neither source is loaded by B1–B6 or fed into ISL. Non-graph skill-generation
+oracle solution procedure; B8 explicitly reads the benchmark-declared curated `SKILL.md`.
+Neither source is loaded by B1–B6 or fed into ISL. Non-graph skill-generation
 calls are checkpointed just like proposer and critic calls. The runner also freezes and
 deploys every initial candidate graph for candidate-level correlation metrics without
 feeding held-out rewards back into learning.
@@ -176,6 +178,24 @@ the expert outcome for all three acquisition tasks first receives native reward 
 If all 30 primary families finish before the supervisor deadline, the campaign immediately
 starts independent full-family replications with incremented fixed seeds. It continues
 useful robustness work and checkpointing until the wall-clock supervisor stops it.
+
+## Corrected mechanism pilot
+
+The exploratory namespace is retained as `runs/skillevol-10h`. Before scientific claims,
+run the corrected mechanism pilot in a new namespace:
+
+```bash
+isl-dual-mechanism --benchmark-root /path/to/SkillEvolBench \
+  --output runs/v1-corrected --model gpt-5.4
+```
+
+This six-family pilot uses one `LS1` family from each benchmark environment and records
+the primary B0/B1/B3/B4/B5/B6/B8 results plus within-family artifact permutation, 1/2/3
+artifact learning curves, equal-budget random/greedy/MCTS search, and controlled spurious
+graph diagnostics. It is resumable through `runs/v1-corrected/mechanism.json` and never
+reuses the exploratory namespace. MCTS STOP is terminal and explorable, B4 shares the
+MCTS OR-group dependency semantics, and the second-round mutation prior conserves q1
+probability mass with `mu=0.3`.
 
 ## License
 

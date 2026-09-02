@@ -20,7 +20,7 @@ from isl_dual.executor import CodexExecutor
 from isl_dual.experiment import _edge_shuffle_control, _verified_artifact_rewards
 from isl_dual.report import go_gate
 from isl_dual.subprocesses import run_process_group
-from isl_dual.pipeline import train_inverse_skill
+from isl_dual.pipeline import _mutation_prior, train_inverse_skill
 from isl_dual.status import summarize
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
@@ -134,10 +134,87 @@ def test_or_branch_edges_are_alternative_dependencies_for_merge_node():
     assert "c" not in legal_actions(graph, ("a", "b"), 12)
 
 
+def test_stop_really_terminates_plan(monkeypatch):
+    """Selecting STOP must execute exactly the current prefix, not optionals."""
+    import isl_dual.mcts as mcts_module
+
+    class StopPreferringRandom:
+        def choice(self, values):
+            return STOP if STOP in values else values[0]
+
+        def random(self):
+            return 0.99
+
+    monkeypatch.setattr(mcts_module.random, "Random", lambda seed: StopPreferringRandom())
+    seen = []
+
+    class RecordingExecutor:
+        def execute(self, task, graph, plan):
+            seen.append(plan)
+            return {"plan": plan}
+
+    graph = Graph("stop", (node("a", "required"), node("b", "optional", False)), (("a", "b"),))
+    result = mcts(graph, toy_tasks()[0], RecordingExecutor(), budget=2)
+    assert result.rollouts[1].plan == ("a",)
+    assert seen[-1] == ("a",)
+
+
+def test_mcts_can_select_stop_before_all_optional_nodes(monkeypatch):
+    import isl_dual.mcts as mcts_module
+
+    class StopPreferringRandom:
+        def choice(self, values):
+            return STOP if STOP in values else values[0]
+
+        def random(self):
+            return 0.99
+
+    monkeypatch.setattr(mcts_module.random, "Random", lambda seed: StopPreferringRandom())
+    graph = Graph(
+        "early-stop",
+        (node("a", "required"), node("b", "optional b", False), node("c", "optional c", False)),
+        (("a", "b"), ("a", "c")),
+    )
+    class RecordingExecutor:
+        def execute(self, task, graph, plan):
+            return {"plan": plan}
+
+    result = mcts(graph, toy_tasks()[0], RecordingExecutor(), budget=2)
+    assert result.rollouts[1].plan == ("a",)
+
+
 def test_baseline_contracts_are_explicit():
     graph = Graph("g", (node("a", "a"), node("b", "b")), (("a", "b"),))
     assert deterministic_plan(graph) == ("a", "b")
     assert upper_information_skill(Baseline.CURATED_SKILL, "procedure").skill == "procedure"
+
+
+def test_greedy_matches_or_semantics():
+    graph = Graph(
+        "greedy-or",
+        (node("a", "start"), node("b", "branch b", False), node("c", "branch c", False), node("d", "merge")),
+        (("a", "b"), ("a", "c"), ("b", "d"), ("c", "d")),
+        (OrGroup("branch", ("b", "c"), True),),
+    )
+    plan = deterministic_plan(graph)
+    assert plan == ("a", "b", "d")
+    assert not ({"b", "c"} <= set(plan))
+
+
+def test_mutation_prior_mass_conservation():
+    parent = Graph("parent", (node("a", "a"),))
+    mutants = [
+        Graph(f"parent-m{i}", parent.nodes, metadata={"parent_id": "parent"})
+        for i in range(3)
+    ]
+    other = Graph("other", (node("b", "b"),))
+    priors = _mutation_prior(
+        {"parent": 0.6, "other": 0.4}, [parent, *mutants, other], mutation_probability=0.3,
+    )
+    assert sum(priors.values()) == pytest.approx(1.0)
+    assert priors["parent"] == pytest.approx(0.42)
+    assert all(priors[item.id] == pytest.approx(0.06) for item in mutants)
+    assert priors["other"] == pytest.approx(0.4)
 
 
 def test_skill_compilation_is_topological_not_json_order():

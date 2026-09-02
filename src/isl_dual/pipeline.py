@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping
 
 from .compile import compile_graph_to_skill, operational_pruning
@@ -11,6 +12,53 @@ from .models import AcquisitionTask, Critic, Executor, Graph, MCTSResult, Mutato
 from .scoring import complexity, estimate_utilities, softmax, summarize_forward, top2_mean
 
 PROPOSAL_MODES = ("minimal", "verification_first", "failure_aware", "transfer_first")
+
+
+def _mutation_prior(
+    q1: Mapping[str, float],
+    pool: list[Graph],
+    mutation_probability: float = 0.3,
+) -> dict[str, float]:
+    """Allocate q1 mass over retained parents and their retained mutants.
+
+    A mutated parent keeps (1-mu) of its mass and its retained children share
+    mu of that mass.  If pool truncation removes a child, the mutation mass is
+    divided among the children actually retained, preserving total support
+    mass rather than silently losing probability.
+    """
+    if not 0.0 <= mutation_probability <= 1.0:
+        raise ValueError("mutation_probability must be in [0, 1]")
+    pool_ids = {graph.id for graph in pool}
+    children: dict[str, list[Graph]] = {}
+    for graph in pool:
+        parent_id = str(graph.metadata.get("parent_id", graph.id))
+        if parent_id != graph.id:
+            children.setdefault(parent_id, []).append(graph)
+
+    priors: dict[str, float] = {}
+    for graph in pool:
+        parent_id = str(graph.metadata.get("parent_id", graph.id))
+        parent_mass = float(q1.get(parent_id, q1.get(graph.id, 0.0)))
+        retained_children = children.get(parent_id, [])
+        if parent_id == graph.id:
+            if retained_children:
+                priors[graph.id] = (1.0 - mutation_probability) * parent_mass
+            else:
+                priors[graph.id] = parent_mass
+        elif retained_children:
+            priors[graph.id] = mutation_probability * parent_mass / len(retained_children)
+        else:
+            priors[graph.id] = parent_mass
+
+    # A malformed/truncated pool must not create a zero-mass posterior.  Keep
+    # any q1 support whose parent survived but had no retained child intact.
+    for graph_id, mass in q1.items():
+        if graph_id in pool_ids and graph_id not in priors:
+            priors[graph_id] = float(mass)
+    total = sum(priors.values())
+    if total <= 0.0:
+        raise ValueError("mutation prior has no positive mass")
+    return {graph_id: mass / total for graph_id, mass in priors.items()}
 
 
 def _forward_loop(
@@ -112,13 +160,10 @@ def train_inverse_skill(
     pool = validate_dedupe(graphs + mutants, config.max_graph_nodes)[:config.max_pool]
 
     # Mutants inherit their parent's evidence weight; this is explicit metadata, not artifact re-critique.
-    second_base: dict[str, float] = {}
-    for graph in pool:
-        parent_id = str(graph.metadata.get("parent_id", graph.id))
-        second_base[graph.id] = log_weights.get(parent_id, min(log_weights.values()))
+    mutation_priors = _mutation_prior(q1, pool, config.mutation_probability)
     forward2, stability2, evidence2 = _forward_loop(pool, acquisition_tasks, executor, config, 100_000, evidence_journal)
     second_weights = {
-        graph.id: second_base[graph.id]
+        graph.id: math.log(mutation_priors[graph.id])
         + config.beta_forward * forward2[graph.id]
         - config.stability_penalty * stability2[graph.id]
         for graph in pool

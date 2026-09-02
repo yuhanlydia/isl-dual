@@ -23,12 +23,19 @@ from .pipeline import _leakage_audit_skill, train_inverse_skill
 from .skillevol_host import FamilyBundle, audit_no_curated_access, load_family
 
 
-def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | None = None, config: PilotConfig | None = None) -> dict[str, object]:
+def run_family(
+    benchmark_root: Path,
+    family_id: str,
+    output: Path,
+    model: str | None = None,
+    config: PilotConfig | None = None,
+    bundle_override: FamilyBundle | None = None,
+) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
     cache = JSONCache(output / "cache")
     artifact_root = output / "artifacts" / benchmark_commit
-    bundle = load_family(benchmark_root, family_id, artifact_cache=artifact_root)
+    bundle = bundle_override or load_family(benchmark_root, family_id, artifact_cache=artifact_root)
     bundle = _with_checkpointed_verifiers(bundle, cache)
     artifact_rewards = _verified_artifact_rewards(bundle.acquisition, artifact_root / "native-verification.json")
     if any(reward < 1.0 for reward in artifact_rewards.values()):
@@ -63,14 +70,14 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
 
     # Upper-information controls are explicitly sourced and never enter ISL training.
     task_dirs = _family_task_dirs(benchmark_root, family_id)
-    trajectories = [(task_dirs[index] / "solution" / "solve.sh").read_text() for index in (1, 2, 3)]
-    selected[Baseline.FULL_TRAJECTORY] = full_trajectory_skill(bundle.acquisition, trajectories, baseline_client)
+    oracle_procedures = [(task_dirs[index] / "solution" / "solve.sh").read_text() for index in (1, 2, 3)]
+    selected[Baseline.ORACLE_SOLUTION] = full_trajectory_skill(bundle.acquisition, oracle_procedures, baseline_client)
     selected[Baseline.CURATED_SKILL] = upper_information_skill(Baseline.CURATED_SKILL, _curated_skill(benchmark_root, task_dirs[1]))
 
     baseline_task_scores: dict[str, dict[str, float]] = {Baseline.NO_SKILL.value: no_skill_scores}
     for baseline, selection in selected.items():
         assert selection.skill is not None
-        if baseline not in {Baseline.FULL_TRAJECTORY, Baseline.CURATED_SKILL}:
+        if baseline not in {Baseline.ORACLE_SOLUTION, Baseline.CURATED_SKILL}:
             _leakage_audit_skill(selection.skill, bundle.acquisition)
         if baseline == Baseline.ISL_DUAL:
             baseline_task_scores[baseline.value] = deployment_scores
@@ -103,7 +110,7 @@ def run_family(benchmark_root: Path, family_id: str, output: Path, model: str | 
         benchmark_root, family_id, bundle, output / "controls" / "artifact_shuffle",
         model, config or PilotConfig(), benchmark_commit,
     )
-    summary = {"family_id": family_id, "run_metadata": _run_metadata(output, benchmark_commit, model, config or PilotConfig()), "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "baseline_task_scores": baseline_task_scores, "baseline_rewards": baseline_rewards, "go_gate": go_gate({"B1": baseline_rewards[Baseline.DIRECT_TEXT.value], "B3": baseline_rewards[Baseline.STATIC_CRITIC.value], "B4": baseline_rewards[Baseline.GREEDY_FORWARD.value], "B6": baseline_rewards[Baseline.ISL_DUAL.value]}), "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics, "causal_controls": {"edge_shuffle": edge_control, "artifact_shuffle": artifact_control}}
+    summary = {"family_id": family_id, "run_metadata": _run_metadata(output, benchmark_commit, model, config or PilotConfig()), "benchmark_commit": benchmark_commit, "artifact_rewards": artifact_rewards, "winner": result.graph.id, "graph": graph_to_dict(result.graph), "candidate_graphs": {graph_id: graph_to_dict(graph) for graph_id, graph in result.candidates.items()}, "artifact_scores": result.artifact_scores, "q0": result.q0, "q1": result.q1, "q2": result.posterior, "forward_scores": result.forward_scores, "deployment_scores": deployment_scores, "no_skill_scores": no_skill_scores, "baseline_task_scores": baseline_task_scores, "baseline_rewards": baseline_rewards, "go_gate": go_gate({"B1": baseline_rewards[Baseline.DIRECT_TEXT.value], "B3": baseline_rewards[Baseline.STATIC_CRITIC.value], "B4": baseline_rewards[Baseline.GREEDY_FORWARD.value], "B6": baseline_rewards[Baseline.ISL_DUAL.value]}), "candidate_deployment_scores": candidate_deployment, "scientific_metrics": diagnostics, "causal_controls": {"edge_shuffle": edge_control, "artifact_shuffle": artifact_control}}
     (output / "result.json").write_text(json.dumps(summary, indent=2, sort_keys=True))
     return summary
 

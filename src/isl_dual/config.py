@@ -18,7 +18,7 @@ class PilotConfig:
     complexity_penalty: float = 0.1
     graphs_mutated: int = 2
     mutants_per_graph: int = 3
+    mutation_probability: float = 0.3
     max_pool: int = 12
     utility_threshold: float = 0.05
     seed: int = 20260901
-

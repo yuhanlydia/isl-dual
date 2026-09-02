@@ -131,16 +131,31 @@ def mcts(
     for rollout_id in range(budget):
         state = root
         path: list[tuple[TreeState, str]] = []
+        selected_stop = False
         while True:
             actions = legal_actions(graph, state.prefix, max_plan_length)
             if not actions:
                 break
             if actions == [STOP]:
                 path.append((state, STOP))
+                selected_stop = True
                 break
-            unvisited = [a for a in actions if a not in state.children and a != STOP]
+            # STOP is a real terminal action.  It must be eligible for first
+            # expansion even while optional node actions remain unexplored.
+            # Track it through action_visits rather than traversing it as a
+            # prefix element, since STOP is not a graph node.
+            unvisited = [
+                a for a in actions
+                if (a != STOP and a not in state.children)
+                or (a == STOP and a not in state.action_visits)
+            ]
             if unvisited:
                 action = rng.choice(unvisited)
+                if action == STOP:
+                    state.children[STOP] = TreeState(prefix=state.prefix)
+                    path.append((state, STOP))
+                    selected_stop = True
+                    break
                 child = TreeState(prefix=state.prefix + (action,))
                 state.children[action] = child
                 path.append((state, action))
@@ -152,11 +167,15 @@ def mcts(
                 # otherwise its UCT exploration term never decays and it remains
                 # spuriously attractive on every later visit to this state.
                 path.append((state, STOP))
+                selected_stop = True
                 break
             path.append((state, action))
             state = state.children[action]
 
-        plan = _complete_plan(graph, state.prefix, rng, max_plan_length, p_stop)
+        # A selected STOP must evaluate exactly the current prefix.  Completing
+        # optional nodes after STOP would assign their reward to the wrong
+        # terminal action and bias MCTS toward unnecessarily long procedures.
+        plan = state.prefix if selected_stop else _complete_plan(graph, state.prefix, rng, max_plan_length, p_stop)
         try:
             output = executor.execute(task, graph, plan)
             evaluator = getattr(task.verifier, "evaluate", None)

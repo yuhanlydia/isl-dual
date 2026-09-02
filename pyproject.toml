@@ -14,6 +14,7 @@ isl-dual = "isl_dual.cli:main"
 isl-dual-family = "isl_dual.experiment:main"
 isl-dual-campaign = "isl_dual.campaign:main"
 isl-dual-status = "isl_dual.status:main"
+isl-dual-mechanism = "isl_dual.mechanism:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -9,7 +9,7 @@ from .codex_components import CodexJSON, observable_artifact
 from .compile import compile_graph_to_skill
 from .config import PilotConfig
 from .graph import validate_dedupe
-from .mcts import mcts
+from .mcts import STOP, legal_actions, mcts, requirements_satisfied
 from .models import AcquisitionTask, Critic, Executor, Graph, Proposer
 from .pipeline import PROPOSAL_MODES
 from .scoring import complexity, softmax, top2_mean
@@ -23,7 +23,10 @@ class Baseline(str, Enum):
     GREEDY_FORWARD = "B4_greedy_forward"
     MCTS_FORWARD = "B5_mcts_forward"
     ISL_DUAL = "B6_isl_dual"
-    FULL_TRAJECTORY = "B7_full_trajectory"
+    ORACLE_SOLUTION = "B7_oracle_solution_procedure"
+    # Backward-compatible symbol; SkillEvolBench's solve.sh is an oracle
+    # solution procedure, not an observed agent trajectory.
+    FULL_TRAJECTORY = ORACLE_SOLUTION
     CURATED_SKILL = "B8_curated_skill"
 
 
@@ -53,17 +56,21 @@ def direct_text_skill(tasks: list[AcquisitionTask], client: CodexJSON) -> Select
 def full_trajectory_skill(
     tasks: list[AcquisitionTask], trajectories: list[str], client: CodexJSON,
 ) -> SelectedSkill:
-    """B7 upper-information baseline; trajectories must be supplied explicitly."""
+    """B7 upper-information oracle-solution baseline.
+
+    The benchmark's ``solution/solve.sh`` is executable oracle procedure
+    information, not a recorded agent execution trajectory.
+    """
     import json
     if len(tasks) != len(trajectories) or not all(item.strip() for item in trajectories):
         raise ValueError("B7 requires one non-empty expert trajectory per acquisition task")
     observed = [
-        {"task": task.x, "expert_execution_trajectory": trajectory}
+        {"task": task.x, "oracle_solution_procedure": trajectory}
         for task, trajectory in zip(tasks, trajectories, strict=True)
     ]
     prompt = (
         "Write a portable SKILL.md containing reusable procedural knowledge from the "
-        "explicit expert execution trajectories below. Abstract away task-specific answers, "
+        "explicit oracle solution procedures below. Abstract away task-specific answers, "
         "filenames, constants, and output content. Include Preconditions, Procedure, Failure "
         "checks, and Stop condition.\n" + json.dumps(observed)
     )
@@ -90,13 +97,20 @@ def _static(graphs: list[Graph], tasks: list[AcquisitionTask], critic: Critic, c
 
 def deterministic_plan(graph: Graph) -> tuple[str, ...]:
     plan: list[str] = []
-    remaining = {node.id for node in graph.nodes if node.required}
-    while remaining:
-        available = sorted(node for node in remaining if graph.parents(node) <= set(plan))
-        if not available:
-            raise RuntimeError("required nodes cannot be topologically completed")
-        plan.append(available[0]); remaining.remove(available[0])
-    return tuple(plan)
+    max_len = 12
+    while True:
+        actions = legal_actions(graph, tuple(plan), max_len)
+        non_stop = sorted(action for action in actions if action != STOP)
+        required = [action for action in non_stop if graph.node_map()[action].required]
+        if required:
+            plan.append(required[0])
+            continue
+        if requirements_satisfied(graph, set(plan)):
+            return tuple(plan)
+        if non_stop:
+            plan.append(non_stop[0])
+            continue
+        raise RuntimeError("required nodes cannot be topologically completed")
 
 
 def select_dag_baseline(
@@ -132,7 +146,7 @@ def select_dag_baseline(
 
 
 def upper_information_skill(baseline: Baseline, skill_text: str) -> SelectedSkill:
-    if baseline not in {Baseline.FULL_TRAJECTORY, Baseline.CURATED_SKILL}:
+    if baseline not in {Baseline.ORACLE_SOLUTION, Baseline.CURATED_SKILL}:
         raise ValueError("upper-information helper is only for B7/B8")
     if not skill_text.strip():
         raise ValueError("upper-information skill must be explicitly supplied")
