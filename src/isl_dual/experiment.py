@@ -30,6 +30,7 @@ def run_family(
     model: str | None = None,
     config: PilotConfig | None = None,
     bundle_override: FamilyBundle | None = None,
+    require_passing_artifacts: bool = True,
 ) -> dict[str, object]:
     output.mkdir(parents=True, exist_ok=True)
     benchmark_commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=benchmark_root, text=True, capture_output=True, check=True).stdout.strip()
@@ -38,7 +39,7 @@ def run_family(
     bundle = bundle_override or load_family(benchmark_root, family_id, artifact_cache=artifact_root)
     bundle = _with_checkpointed_verifiers(bundle, cache)
     artifact_rewards = _verified_artifact_rewards(bundle.acquisition, artifact_root / "native-verification.json")
-    if any(reward < 1.0 for reward in artifact_rewards.values()):
+    if require_passing_artifacts and any(reward < 1.0 for reward in artifact_rewards.values()):
         raise RuntimeError(f"expert outcomes fail native verifier: {artifact_rewards}")
     client = CodexJSON(model=model)
     baseline_client = CachedJSONClient(client, cache, "baseline_skill")

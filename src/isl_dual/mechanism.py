@@ -194,7 +194,15 @@ def run_mechanism_pilot(benchmark_root: Path, output: Path, model: str | None = 
         within_out = output / "ablations" / "within_family_shuffle" / family_id
         if not (within_out / "result.json").exists():
             try:
-                run_family(benchmark_root, family_id, within_out, model, PilotConfig(), bundle_override=_within_family_permutation(bundle))
+                run_family(
+                    benchmark_root,
+                    family_id,
+                    within_out,
+                    model,
+                    PilotConfig(),
+                    bundle_override=_within_family_permutation(bundle),
+                    require_passing_artifacts=False,
+                )
                 entry["within_family_shuffle"] = "completed"
                 _atomic(manifest_path, state)
             except Exception as error:
