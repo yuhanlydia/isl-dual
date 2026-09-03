@@ -1,8 +1,9 @@
 """Corrected six-family mechanism pilot and its diagnostic ablations.
 
 This module is deliberately separate from the exploratory 30-family campaign.
-It writes only under the caller-provided namespace (normally ``runs/v1-corrected``)
-and resumes completed family/ablation units from atomic JSON manifests.
+It writes only under the caller-provided namespace and resumes completed
+family/ablation units from atomic JSON manifests. Expensive diagnostic
+ablations are opt-in: the default run completes primary scientific gates first.
 """
 
 from __future__ import annotations
@@ -66,7 +67,6 @@ def _train_subset(bundle: FamilyBundle, n: int, output: Path, model: str | None,
     subset = bundle.acquisition[:n]
     config = PilotConfig(acquisition_tasks=n, seed=seed)
     proposer, critic, executor = _components(output, model)
-    # Mutator is imported lazily to keep this module's top-level import graph small.
     from .cache import CachedMutator
     from .codex_components import CodexMutator
     mutator = CachedMutator(CodexMutator(critic.inner.client), JSONCache(output / "cache"))
@@ -115,7 +115,7 @@ def _search_ablation(bundle: FamilyBundle, output: Path, model: str | None, seed
             plan = deterministic_plan(graph)
             for task_index, task in enumerate(bundle.acquisition):
                 for rollout_id in range(budget):
-                    random_rewards.append(float(task.verifier(executor.execute(task, graph, _random_plan(graph, seed + graph_index * 1000 + task_index * 100 + rollout_id)))) )
+                    random_rewards.append(float(task.verifier(executor.execute(task, graph, _random_plan(graph, seed + graph_index * 1000 + task_index * 100 + rollout_id)))))
                     greedy_rewards.append(float(task.verifier(executor.execute(task, graph, plan))))
                 mcts_rewards.extend(mcts(graph, task, executor, budget=budget, c_uct=config.c_uct, max_plan_length=config.max_plan_length, p_stop=config.p_stop, seed=seed + graph_index * 101 + task_index).rewards)
             methods[str(budget)]["random"][graph.id] = max(random_rewards) if random_rewards else 0.0
@@ -170,12 +170,29 @@ def _spurious_ablation(bundle: FamilyBundle, primary: dict[str, Any], output: Pa
     return scores
 
 
-def run_mechanism_pilot(benchmark_root: Path, output: Path, model: str | None = None, families: Iterable[str] = MECHANISM_FAMILIES) -> dict[str, Any]:
-    """Run/resume the six-family corrected mechanism pilot and diagnostics."""
+def run_mechanism_pilot(
+    benchmark_root: Path,
+    output: Path,
+    model: str | None = None,
+    families: Iterable[str] = MECHANISM_FAMILIES,
+    run_diagnostics: bool = False,
+) -> dict[str, Any]:
+    """Run/resume the corrected pilot.
+
+    The default primary stage stops after each family's main result so the
+    scientific GO gates are available before spending the much larger budget on
+    learning curves, search sweeps, shuffles, and spurious-DAG diagnostics.
+    Re-run with ``run_diagnostics=True`` to fill those ablations from the same
+    namespace after primary results have been inspected.
+    """
     output.mkdir(parents=True, exist_ok=True)
     manifest_path = output / "mechanism.json"
-    state = json.loads(manifest_path.read_text()) if manifest_path.exists() else {"families": {}, "config": {"families": list(families), "model": model}}
-    for family_id in families:
+    family_list = list(families)
+    state = json.loads(manifest_path.read_text()) if manifest_path.exists() else {
+        "families": {},
+        "config": {"families": family_list, "model": model},
+    }
+    for family_id in family_list:
         family_out = output / "families" / family_id
         entry = state["families"].setdefault(family_id, {})
         result_path = family_out / "result.json"
@@ -190,6 +207,12 @@ def run_mechanism_pilot(benchmark_root: Path, output: Path, model: str | None = 
                 continue
         else:
             result = json.loads(result_path.read_text())
+            entry["primary"] = "completed"
+            _atomic(manifest_path, state)
+
+        if not run_diagnostics:
+            continue
+
         bundle = _with_checkpointed_verifiers(load_family(benchmark_root, family_id, artifact_cache=family_out / "artifacts"), JSONCache(family_out / "cache"))
         within_out = output / "ablations" / "within_family_shuffle" / family_id
         if not (within_out / "result.json").exists():
@@ -233,8 +256,20 @@ def main() -> None:
     parser.add_argument("--benchmark-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--model", default="gpt-5.4")
+    parser.add_argument(
+        "--diagnostics",
+        action="store_true",
+        help="after primary family results exist, run expensive diagnostic ablations",
+    )
     args = parser.parse_args()
-    print(json.dumps(run_mechanism_pilot(args.benchmark_root, args.output, args.model), indent=2, sort_keys=True))
+    print(json.dumps(
+        run_mechanism_pilot(
+            args.benchmark_root, args.output, args.model,
+            run_diagnostics=args.diagnostics,
+        ),
+        indent=2,
+        sort_keys=True,
+    ))
 
 
 if __name__ == "__main__":
