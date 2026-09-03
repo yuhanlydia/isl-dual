@@ -18,3 +18,33 @@ jobs:
         run: python -m pip install -e . pytest
       - name: Test
         run: python -m pytest -q
+
+  e2-native-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install ISL-Dual
+        run: python -m pip install -e .
+      - name: Pin SkillEvolBench
+        run: |
+          git clone https://github.com/AIoT-MLSys-Lab/SkillEvolBench.git /tmp/SkillEvolBench
+          git -C /tmp/SkillEvolBench checkout 9e3daa339987c3cfa624121e1be442593a53d43c
+      - name: Verify E2-LS1 expert outcomes through host-native adapter
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from isl_dual.skillevol_host import load_family
+
+          root = Path('/tmp/SkillEvolBench')
+          bundle = load_family(root, 'E2-LS1', artifact_cache=Path('/tmp/e2-artifacts'))
+          results = {}
+          for task in bundle.acquisition:
+              reward, failure = task.verifier.evaluate(task.expert_artifact)
+              results[task.id] = {'reward': reward, 'failure': failure}
+          print(json.dumps(results, indent=2, sort_keys=True))
+          assert all(item['reward'] == 1.0 for item in results.values()), results
+          PY
