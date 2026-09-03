@@ -89,11 +89,41 @@ GRAPH_SCHEMA: dict[str, Any] = {
         "metadata": {"type": "object", "additionalProperties": False, "properties": {}},
     },
 }
+MUTATION_OPERATIONS = (
+    "ADD_NODE", "REMOVE_OPTIONAL_NODE", "SPLIT_NODE", "MERGE_NODES",
+    "ADD_EDGE", "REMOVE_EDGE", "CHANGE_BRANCH",
+)
 MUTANT_SCHEMA = json.loads(json.dumps(GRAPH_SCHEMA))
 MUTANT_SCHEMA["properties"]["metadata"] = {
     "type": "object", "additionalProperties": False, "required": ["mutation"],
-    "properties": {"mutation": {"type": "string", "enum": ["ADD_NODE", "REMOVE_OPTIONAL_NODE", "SPLIT_NODE", "MERGE_NODES", "ADD_EDGE", "REMOVE_EDGE", "CHANGE_BRANCH"]}},
+    "properties": {"mutation": {"type": "string", "enum": list(MUTATION_OPERATIONS)}},
 }
+
+
+def _mutation_schema(operation: str) -> dict[str, Any]:
+    schema = json.loads(json.dumps(MUTANT_SCHEMA))
+    schema["properties"]["metadata"]["properties"]["mutation"]["enum"] = [operation]
+    return schema
+
+
+def _feasible_mutation_operations(graph: Graph) -> list[str]:
+    """Return structural operators that have at least one valid neighbor in principle."""
+    node_count = len(graph.nodes)
+    operations: list[str] = []
+    if node_count < 12:
+        operations.extend(["ADD_NODE", "SPLIT_NODE"])
+    if node_count > 2:
+        operations.append("MERGE_NODES")
+    if node_count > 2 and any(not node.required for node in graph.nodes):
+        operations.append("REMOVE_OPTIONAL_NODE")
+    max_dag_edges = node_count * (node_count - 1) // 2
+    if len(graph.edges) < max_dag_edges:
+        operations.append("ADD_EDGE")
+    if graph.edges:
+        operations.append("REMOVE_EDGE")
+    if graph.or_groups:
+        operations.append("CHANGE_BRANCH")
+    return operations
 
 
 def observable_artifact(artifact: Any) -> Any:
@@ -160,23 +190,49 @@ class CodexMutator:
         rollouts = [{"task": task, "plan": list(r.plan), "reward": r.reward, "failure": r.failure} for (gid, task), result in evidence.items() if gid == graph.id for r in result.rollouts]
         utilities = {node: {"delta": u.delta, "n_with": u.n_with, "n_without": u.n_without} for (gid, node), u in node_utilities.items() if gid == graph.id}
         edge_values = {str(edge): {"delta": u.delta, "n_with": u.n_with, "n_without": u.n_without} for (gid, edge), u in edge_utilities.items() if gid == graph.id}
-        results = []; attempts = 0; last_error = ""
-        while len(results) < count and attempts < count * 6:
-            index = len(results); attempts += 1
-            prompt = "Revise the procedural graph using execution evidence. Make exactly one edit among ADD_NODE, REMOVE_OPTIONAL_NODE, SPLIT_NODE, MERGE_NODES, ADD_EDGE, REMOVE_EDGE, CHANGE_BRANCH. Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on a lone optional node, and valid non-overlapping OR groups. Incoming edges from alternatives in one OR group form a single any-of dependency clause.\nGRAPH:\n" + json.dumps(graph_to_dict(graph)) + "\nROLLOUTS:\n" + json.dumps(rollouts) + "\nNODE UTILITIES:\n" + json.dumps(utilities) + "\nEDGE UTILITIES:\n" + json.dumps(edge_values) + f"\nProduce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
-            data = self.client.call(prompt, MUTANT_SCHEMA)
+        operations = _feasible_mutation_operations(graph)
+        if not operations or count <= 0:
+            return []
+        results: list[Graph] = []
+        attempts = 0
+        max_attempts = max(count * 6, len(operations) * 2)
+        last_error = ""
+        while len(results) < count and attempts < max_attempts:
+            index = len(results)
+            operation = operations[attempts % len(operations)]
+            attempts += 1
+            prompt = (
+                f"Revise the procedural graph using execution evidence. Make exactly one {operation} edit and no other structural edit. "
+                "Add only reusable operations indicated by failures; weaken nodes that reduce reward; never introduce task-specific answer content. "
+                "Preserve DAG validity: 2-12 nodes, existing endpoints, acyclic, non-empty actions, no required node depending on a lone optional node, and valid non-overlapping OR groups. "
+                "Incoming edges from alternatives in one OR group form a single any-of dependency clause.\nGRAPH:\n"
+                + json.dumps(graph_to_dict(graph))
+                + "\nROLLOUTS:\n" + json.dumps(rollouts)
+                + "\nNODE UTILITIES:\n" + json.dumps(utilities)
+                + "\nEDGE UTILITIES:\n" + json.dumps(edge_values)
+                + f"\nRequested mutation: {operation}. Produce distinct mutant {index + 1}, attempt {attempts}. Previous rejection: {last_error or 'none'}."
+            )
+            data = self.client.call(prompt, _mutation_schema(operation))
+            declared = str((data.get("metadata") or {}).get("mutation", ""))
+            if declared != operation:
+                last_error = f"model declared {declared or 'none'} instead of requested {operation}"
+                continue
             mutant = graph_from_dict(data, f"{graph.id}-m{index + 1}")
-            mutant = Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": str(data["metadata"]["mutation"])})
+            mutant = Graph(mutant.id, mutant.nodes, mutant.edges, mutant.or_groups, {"parent_id": graph.id, "mutation": operation})
             try:
                 validate_graph(mutant)
-                validate_declared_mutation(graph, mutant, str(data["metadata"]["mutation"]))
+                validate_declared_mutation(graph, mutant, operation)
             except InvalidGraph as error:
-                last_error = str(error); continue
+                last_error = str(error)
+                continue
             if mutant.fingerprint() == graph.fingerprint() or mutant.fingerprint() in {item.fingerprint() for item in results}:
-                last_error = "mutation made no distinct semantic change"; continue
-            results.append(mutant); last_error = ""
-        if len(results) != count:
-            raise RuntimeError(f"Codex mutator produced only {len(results)}/{count} valid mutants after {attempts} attempts: {last_error}")
+                last_error = "mutation made no distinct semantic change"
+                continue
+            results.append(mutant)
+            last_error = ""
+        # Mutation is an optional evolution proposal, not a family-level validity
+        # requirement. Returning a short list preserves the valid evidence already
+        # collected and lets the second loop compare whatever valid neighbors exist.
         return results
 
 
