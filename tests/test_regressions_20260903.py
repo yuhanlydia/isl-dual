@@ -1,9 +1,11 @@
 import json
+from pathlib import Path
 
 from isl_dual.codex_components import CodexMutator, graph_to_dict
 from isl_dual.config import PilotConfig
 from isl_dual.executor import CodexExecutor
 from isl_dual.experiment import _verified_artifact_rewards
+from isl_dual.mechanism import run_mechanism_pilot
 from isl_dual.models import AcquisitionTask, Graph
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.skillevol_host import snapshot
@@ -111,3 +113,25 @@ def test_executor_dependency_installs_use_ephemeral_caches(tmp_path, monkeypatch
     assert "--no-cache-dir" in pip_command
     assert npm_command[:2] == ["npm", "ci"]
     assert npm_kwargs["env"]["npm_config_cache"].startswith(str(tmp_path))
+
+
+def test_mechanism_pilot_defaults_to_primary_only(tmp_path, monkeypatch):
+    calls = []
+
+    def fake_run_family(benchmark_root, family_id, output, model=None, config=None, **kwargs):
+        calls.append(family_id)
+        return {"family_id": family_id}
+
+    monkeypatch.setattr("isl_dual.mechanism.run_family", fake_run_family)
+    monkeypatch.setattr(
+        "isl_dual.mechanism.load_family",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("diagnostics should be deferred")),
+    )
+
+    state = run_mechanism_pilot(
+        Path("/unused"), tmp_path, model="test", families=("E1-LS1",)
+    )
+
+    assert calls == ["E1-LS1"]
+    assert state["families"]["E1-LS1"]["primary"] == "completed"
+    assert not (tmp_path / "ablations").exists()
