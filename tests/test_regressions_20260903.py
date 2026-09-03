@@ -1,12 +1,13 @@
 import json
 from pathlib import Path
 
+from isl_dual.baselines import Baseline, selected_from_training
 from isl_dual.codex_components import CodexMutator, graph_to_dict
 from isl_dual.config import PilotConfig
 from isl_dual.executor import CodexExecutor
 from isl_dual.experiment import _verified_artifact_rewards
 from isl_dual.mechanism import run_mechanism_pilot
-from isl_dual.models import AcquisitionTask, Graph
+from isl_dual.models import AcquisitionTask, Graph, TrainingResult
 from isl_dual.pipeline import train_inverse_skill
 from isl_dual.skillevol_host import snapshot
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
@@ -135,3 +136,27 @@ def test_mechanism_pilot_defaults_to_primary_only(tmp_path, monkeypatch):
     assert calls == ["E1-LS1"]
     assert state["families"]["E1-LS1"]["primary"] == "completed"
     assert not (tmp_path / "ablations").exists()
+
+
+def test_static_and_mcts_ablation_reuse_nested_training_states():
+    g_static = Graph("g-static", (node("a", "inspect"), node("b", "solve")), (("a", "b"),))
+    g_forward = Graph("g-forward", (node("a", "inspect"), node("b", "solve"), node("v", "verify", False)), (("a", "b"),))
+    result = TrainingResult(
+        skill="# Skill",
+        graph=g_forward,
+        posterior={"g-static": 0.2, "g-forward": 0.8},
+        q0={"g-static": 0.9, "g-forward": 0.1},
+        q1={"g-static": 0.25, "g-forward": 0.75},
+        forward_scores={"g-static": 0.4, "g-forward": 0.8},
+        artifact_scores={"g-static": 0.9, "g-forward": 0.7},
+        candidates={"g-static": g_static, "g-forward": g_forward},
+        evidence={},
+    )
+
+    static = selected_from_training(Baseline.STATIC_CRITIC, result)
+    forward = selected_from_training(Baseline.MCTS_FORWARD, result)
+
+    assert static.graph.id == "g-static"
+    assert forward.graph.id == "g-forward"
+    assert static.posterior == result.q0
+    assert forward.posterior == result.q1
