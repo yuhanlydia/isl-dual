@@ -75,13 +75,15 @@ class CodexExecutor:
             command.append("-")
             process_env = os.environ.copy()
             process_env["PATH"] = str(tool_bin) + os.pathsep + process_env.get("PATH", "")
+            process_env["PIP_NO_CACHE_DIR"] = "1"
+            process_env["npm_config_cache"] = str(workspace / ".npm-cache")
             try:
                 completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env, input_text=prompt)
             except subprocess.TimeoutExpired as error:
                 raise CodexExecutionError(f"ephemeral Codex execution timed out after {self.timeout_seconds}s") from error
             if completed.returncode != 0:
                 raise CodexExecutionError(completed.stderr[-4000:])
-            files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".npm-cache", ".poetry_env", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
+            files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".npm-cache", ".poetry_env", ".venv", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
             return {
                 "workspace": {str(p.relative_to(workspace)): self._read_artifact(p) for p in files},
                 "modes": {str(p.relative_to(workspace)): p.stat().st_mode & 0o777 for p in files},
@@ -99,6 +101,23 @@ class CodexExecutor:
     def _prepare_dependencies(self, workspace: Path) -> None:
         requirements = workspace / "requirements.txt"
         if requirements.exists():
-            subprocess.run(["python3", "-m", "pip", "install", "-r", str(requirements)], cwd=workspace, text=True, capture_output=True, timeout=self.timeout_seconds, check=True)
+            subprocess.run(
+                ["python3", "-m", "pip", "install", "--no-cache-dir", "-r", str(requirements)],
+                cwd=workspace,
+                text=True,
+                capture_output=True,
+                timeout=self.timeout_seconds,
+                check=True,
+            )
         if (workspace / "package-lock.json").exists():
-            subprocess.run(["npm", "ci", "--ignore-scripts"], cwd=workspace, text=True, capture_output=True, timeout=self.timeout_seconds, check=True)
+            env = os.environ.copy()
+            env["npm_config_cache"] = str(workspace / ".npm-cache")
+            subprocess.run(
+                ["npm", "ci", "--ignore-scripts"],
+                cwd=workspace,
+                env=env,
+                text=True,
+                capture_output=True,
+                timeout=self.timeout_seconds,
+                check=True,
+            )

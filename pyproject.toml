@@ -7,7 +7,7 @@ name = "isl-dual"
 version = "0.1.0"
 description = "Inverse Skill Learning with an inverse-forward dual loop"
 requires-python = ">=3.10"
-dependencies = ["PyYAML>=6.0", "tomli>=2.0; python_version < '3.11'"]
+dependencies = ["PyYAML>=6.0", "tomli>=2.0"]
 
 [project.scripts]
 isl-dual = "isl_dual.cli:main"

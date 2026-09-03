@@ -16,7 +16,10 @@ import tomli
 
 from .models import AcquisitionTask, DeploymentTask
 
-EPHEMERAL_PARTS = {"node_modules", ".npm-cache", ".poetry_env", "__pycache__", ".pytest_cache"}
+EPHEMERAL_PARTS = {
+    "node_modules", ".npm-cache", ".poetry_env", ".venv", ".git",
+    "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache", "dist", "build",
+}
 
 
 def _observable_path(path: str) -> bool:
@@ -24,17 +27,21 @@ def _observable_path(path: str) -> bool:
 
 
 def snapshot(root: Path) -> dict[str, Any]:
-    files = {}
+    files: dict[str, Any] = {}
+    modes: dict[str, int] = {}
     for path in root.rglob("*"):
         if not path.is_file() or path.name == "Dockerfile":
+            continue
+        relative = str(path.relative_to(root))
+        if not _observable_path(relative):
             continue
         raw = path.read_bytes()
         try:
             value: Any = raw.decode("utf-8")
         except UnicodeDecodeError:
             value = {"encoding": "base64", "data": base64.b64encode(raw).decode("ascii")}
-        files[str(path.relative_to(root))] = value
-    modes = {str(path.relative_to(root)): path.stat().st_mode & 0o777 for path in root.rglob("*") if path.is_file() and path.name != "Dockerfile"}
+        files[relative] = value
+        modes[relative] = path.stat().st_mode & 0o777
     return {"files": files, "modes": modes}
 
 
@@ -81,7 +88,12 @@ class HostNativeVerifier:
                     target.chmod(int(modes[relative]))
             self._prepare_dependencies(root)
             env = os.environ.copy()
-            env.update(PROJECT_ROOT=str((root / self.project_relative).resolve()), TASK_ROOT=str(root), HARBOR_LOG_DIR=str(logs), PYTHON_BIN="python3", PATH=str(tool_bin) + os.pathsep + env["PATH"])
+            env.update(
+                PROJECT_ROOT=str((root / self.project_relative).resolve()),
+                TASK_ROOT=str(root), HARBOR_LOG_DIR=str(logs), PYTHON_BIN="python3",
+                PATH=str(tool_bin) + os.pathsep + env["PATH"],
+                PIP_NO_CACHE_DIR="1", npm_config_cache=str(Path(temp) / "npm-cache"),
+            )
             completed = subprocess.run(["bash", str(self.tests_dir / "test.sh")], env=env, text=True, capture_output=True, timeout=self.timeout_seconds)
             reward_path = logs / "reward.txt"
             if not reward_path.exists():
@@ -103,9 +115,17 @@ class HostNativeVerifier:
     def _prepare_dependencies(self, root: Path) -> None:
         requirements = root / "requirements.txt"
         if requirements.exists():
-            subprocess.run(["python3", "-m", "pip", "install", "-r", str(requirements)], cwd=root, text=True, capture_output=True, timeout=self.timeout_seconds, check=True)
+            subprocess.run(
+                ["python3", "-m", "pip", "install", "--no-cache-dir", "-r", str(requirements)],
+                cwd=root, text=True, capture_output=True, timeout=self.timeout_seconds, check=True,
+            )
         if (root / "package-lock.json").exists():
-            subprocess.run(["npm", "ci", "--ignore-scripts"], cwd=root, text=True, capture_output=True, timeout=self.timeout_seconds, check=True)
+            env = os.environ.copy()
+            env["npm_config_cache"] = str(root / ".npm-cache")
+            subprocess.run(
+                ["npm", "ci", "--ignore-scripts"], cwd=root, env=env,
+                text=True, capture_output=True, timeout=self.timeout_seconds, check=True,
+            )
 
 
 @dataclass(frozen=True)
@@ -140,12 +160,16 @@ def _materialize_expert_artifact(task_dir: Path, project_relative: str) -> dict[
         tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
         shutil.copytree(task_dir / "environment", root, ignore=shutil.ignore_patterns("Dockerfile"))
         before = snapshot(root)
-        env = os.environ.copy(); env["PROJECT_ROOT"] = str((root / project_relative).resolve()); env["TASK_ROOT"] = str(root); env["PYTHON_BIN"] = "python3"; env["PATH"] = str(tool_bin) + os.pathsep + env["PATH"]
+        env = os.environ.copy()
+        env.update(
+            PROJECT_ROOT=str((root / project_relative).resolve()), TASK_ROOT=str(root),
+            PYTHON_BIN="python3", PATH=str(tool_bin) + os.pathsep + env["PATH"],
+            PIP_NO_CACHE_DIR="1", npm_config_cache=str(Path(temp) / "npm-cache"),
+        )
         completed = subprocess.run(["bash", str(task_dir / "solution" / "solve.sh")], env=env, cwd=root, text=True, capture_output=True, timeout=600)
         if completed.returncode != 0:
             raise RuntimeError(f"expert artifact materialization failed for {task_dir.name}: {completed.stderr[-2000:]}")
         after = snapshot(root)
-        # Outcome representation intentionally contains no command log or solution script.
         replay_changed = {path: content for path, content in after["files"].items() if before["files"].get(path) != content or before["modes"].get(path) != after["modes"].get(path)}
         changed = {path: content for path, content in replay_changed.items() if _observable_path(path)}
         deleted = sorted(set(before["files"]) - set(after["files"]))

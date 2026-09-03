@@ -22,7 +22,7 @@ def _mutation_prior(
     """Allocate q1 mass over retained parents and their retained mutants.
 
     A mutated parent keeps (1-mu) of its mass and its retained children share
-    mu of that mass.  If pool truncation removes a child, the mutation mass is
+    mu of that mass. If pool truncation removes a child, the mutation mass is
     divided among the children actually retained, preserving total support
     mass rather than silently losing probability.
     """
@@ -50,8 +50,6 @@ def _mutation_prior(
         else:
             priors[graph.id] = parent_mass
 
-    # A malformed/truncated pool must not create a zero-mass posterior.  Keep
-    # any q1 support whose parent survived but had no retained child intact.
     for graph_id, mass in q1.items():
         if graph_id in pool_ids and graph_id not in priors:
             priors[graph_id] = float(mass)
@@ -131,7 +129,9 @@ def train_inverse_skill(
         )
     q0 = softmax(log_weights)
 
-    forward1, stability1, evidence1 = _forward_loop(graphs, acquisition_tasks, executor, config, 0, evidence_journal)
+    forward1, stability1, evidence1 = _forward_loop(
+        graphs, acquisition_tasks, executor, config, 0, evidence_journal
+    )
     for graph in graphs:
         log_weights[graph.id] += (
             config.beta_forward * forward1[graph.id]
@@ -149,8 +149,6 @@ def train_inverse_skill(
             config.mutants_per_graph,
         )
         mutant_groups.append(generated)
-    # Round-robin avoids the K_max truncation retaining all mutants from only
-    # the first posterior parent.
     mutants = [
         group[index]
         for index in range(config.mutants_per_graph)
@@ -159,15 +157,43 @@ def train_inverse_skill(
     ]
     pool = validate_dedupe(graphs + mutants, config.max_graph_nodes)[:config.max_pool]
 
-    # Mutants inherit their parent's evidence weight; this is explicit metadata, not artifact re-critique.
     mutation_priors = _mutation_prior(q1, pool, config.mutation_probability)
-    forward2, stability2, evidence2 = _forward_loop(pool, acquisition_tasks, executor, config, 100_000, evidence_journal)
-    second_weights = {
-        graph.id: math.log(mutation_priors[graph.id])
-        + config.beta_forward * forward2[graph.id]
-        - config.stability_penalty * stability2[graph.id]
-        for graph in pool
-    }
+
+    # Round two evaluates only genuinely new graph structures. Re-running the
+    # unchanged parent DAGs burns the dominant rollout budget and double-counts
+    # the same acquisition evidence. Parents retain q1 as their prior; a mutant
+    # receives an incremental likelihood based on improvement over its parent.
+    retained_mutants = [
+        graph for graph in pool
+        if str(graph.metadata.get("parent_id", graph.id)) != graph.id
+    ]
+    if retained_mutants:
+        mutant_forward, mutant_stability, evidence2 = _forward_loop(
+            retained_mutants, acquisition_tasks, executor, config, 100_000, evidence_journal
+        )
+    else:
+        mutant_forward, mutant_stability, evidence2 = {}, {}, {}
+
+    forward2: dict[str, float] = {}
+    stability2: dict[str, float] = {}
+    second_weights: dict[str, float] = {}
+    for graph in pool:
+        parent_id = str(graph.metadata.get("parent_id", graph.id))
+        if parent_id == graph.id:
+            forward2[graph.id] = forward1[graph.id]
+            stability2[graph.id] = stability1[graph.id]
+            second_weights[graph.id] = math.log(mutation_priors[graph.id])
+            continue
+        forward2[graph.id] = mutant_forward[graph.id]
+        stability2[graph.id] = mutant_stability[graph.id]
+        improvement = mutant_forward[graph.id] - forward1[parent_id]
+        instability_increase = max(0.0, mutant_stability[graph.id] - stability1[parent_id])
+        second_weights[graph.id] = (
+            math.log(mutation_priors[graph.id])
+            + config.beta_forward * improvement
+            - config.stability_penalty * instability_increase
+        )
+
     q2 = softmax(second_weights)
     winner = max(pool, key=lambda graph: q2[graph.id])
 
