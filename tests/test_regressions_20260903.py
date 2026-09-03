@@ -2,6 +2,7 @@ import json
 
 from isl_dual.codex_components import CodexMutator, graph_to_dict
 from isl_dual.config import PilotConfig
+from isl_dual.executor import CodexExecutor
 from isl_dual.experiment import _verified_artifact_rewards
 from isl_dual.models import AcquisitionTask, Graph
 from isl_dual.pipeline import train_inverse_skill
@@ -88,3 +89,25 @@ def test_failed_expert_artifact_preflight_is_checkpointed_with_diagnostics(tmp_p
     payload = json.loads(checkpoint.read_text())
     assert payload["all_passed"] is False
     assert payload["failures"]["t1"] == "reference artifact failed hidden check"
+
+
+def test_executor_dependency_installs_use_ephemeral_caches(tmp_path, monkeypatch):
+    (tmp_path / "requirements.txt").write_text("example-package==1.0\n")
+    (tmp_path / "package-lock.json").write_text("{}")
+    calls = []
+
+    class Completed:
+        returncode = 0
+
+    def fake_run(command, **kwargs):
+        calls.append((command, kwargs))
+        return Completed()
+
+    monkeypatch.setattr("isl_dual.executor.subprocess.run", fake_run)
+    CodexExecutor()._prepare_dependencies(tmp_path)
+
+    pip_command, pip_kwargs = calls[0]
+    npm_command, npm_kwargs = calls[1]
+    assert "--no-cache-dir" in pip_command
+    assert npm_command[:2] == ["npm", "ci"]
+    assert npm_kwargs["env"]["npm_config_cache"].startswith(str(tmp_path))
