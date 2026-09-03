@@ -181,6 +181,10 @@ useful robustness work and checkpointing until the wall-clock supervisor stops i
 
 ## Corrected mechanism pilot
 
+The latest audited state and known failures are recorded in
+[`docs/PILOT_STATUS.md`](docs/PILOT_STATUS.md). The pilot is not considered a
+scientific success until its deployment results and prespecified GO gates are complete.
+
 The exploratory namespace is retained as `runs/skillevol-10h`. Before scientific claims,
 run the corrected mechanism pilot in a new namespace:
 
