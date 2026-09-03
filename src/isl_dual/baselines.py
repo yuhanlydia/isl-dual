@@ -10,7 +10,7 @@ from .compile import compile_graph_to_skill
 from .config import PilotConfig
 from .graph import validate_dedupe
 from .mcts import STOP, legal_actions, mcts, requirements_satisfied
-from .models import AcquisitionTask, Critic, Executor, Graph, Proposer
+from .models import AcquisitionTask, Critic, Executor, Graph, Proposer, TrainingResult
 from .pipeline import PROPOSAL_MODES
 from .scoring import complexity, softmax, top2_mean
 
@@ -24,8 +24,6 @@ class Baseline(str, Enum):
     MCTS_FORWARD = "B5_mcts_forward"
     ISL_DUAL = "B6_isl_dual"
     ORACLE_SOLUTION = "B7_oracle_solution_procedure"
-    # Backward-compatible symbol; SkillEvolBench's solve.sh is an oracle
-    # solution procedure, not an observed agent trajectory.
     FULL_TRAJECTORY = ORACLE_SOLUTION
     CURATED_SKILL = "B8_curated_skill"
 
@@ -45,6 +43,37 @@ DIRECT_SKILL_SCHEMA = {
 }
 
 
+def selected_from_training(baseline: Baseline, result: TrainingResult) -> SelectedSkill:
+    """Materialize nested B3/B5 ablations from the full run's shared states.
+
+    B3 is exactly the q0 winner before execution evidence, and B5 is exactly
+    the q1 winner after the first MCTS forward loop but before mutation. Sharing
+    the same candidate pool and first-loop evidence makes these ablations paired
+    with B6 and avoids paying for a second stochastic copy of identical rollouts.
+    """
+    if baseline == Baseline.STATIC_CRITIC:
+        posterior = result.q0
+    elif baseline == Baseline.MCTS_FORWARD:
+        posterior = result.q1
+    else:
+        raise ValueError("training-state reuse is only defined for B3/B5")
+    if not posterior:
+        raise ValueError(f"{baseline.value} requires a non-empty training posterior")
+    graph_id = max(posterior, key=posterior.get)
+    graph = result.candidates[graph_id]
+    forward = (
+        {key: result.forward_scores[key] for key in posterior if key in result.forward_scores}
+        if baseline == Baseline.MCTS_FORWARD else {}
+    )
+    return SelectedSkill(
+        baseline=baseline,
+        skill=compile_graph_to_skill(graph),
+        graph=graph,
+        posterior=dict(posterior),
+        forward_scores=forward,
+    )
+
+
 def direct_text_skill(tasks: list[AcquisitionTask], client: CodexJSON) -> SelectedSkill:
     import json
     observed = [{"task": task.x, "successful_final_artifact": observable_artifact(task.expert_artifact)} for task in tasks]
@@ -56,11 +85,7 @@ def direct_text_skill(tasks: list[AcquisitionTask], client: CodexJSON) -> Select
 def full_trajectory_skill(
     tasks: list[AcquisitionTask], trajectories: list[str], client: CodexJSON,
 ) -> SelectedSkill:
-    """B7 upper-information oracle-solution baseline.
-
-    The benchmark's ``solution/solve.sh`` is executable oracle procedure
-    information, not a recorded agent execution trajectory.
-    """
+    """B7 upper-information oracle-solution baseline."""
     import json
     if len(tasks) != len(trajectories) or not all(item.strip() for item in trajectories):
         raise ValueError("B7 requires one non-empty expert trajectory per acquisition task")
