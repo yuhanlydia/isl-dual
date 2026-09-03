@@ -1,63 +1,36 @@
 # Pilot status (2026-09-03)
 
-The long-running processes were stopped on request. Existing run directories and
-checkpointed evidence were preserved; no run data was deleted.
+## Scientific conclusion
 
-## Current conclusion
+There is **not yet a valid positive scientific result** because no repaired run has completed the frozen T4--T6 deployment comparisons needed for the B0--B8 GO gates and transfer-correlation analysis. The old `runs/skillevol-10h` and `runs/v1-corrected` namespaces remain exploratory evidence only and must not be used as the paper's main result.
 
-There is **not yet a valid positive scientific result**. The available records are
-exploratory/acquisition-time evidence only. No corrected six-family pilot produced a
-complete `result.json`, frozen deployment scores for T4--T6, or the required B0--B8
-GO-gate and transfer-correlation report. Therefore the current run must not be used as
-the paper's main result.
+The important update is that the known blockers now have engineering explanations and regression coverage; none of them is evidence that the inverse-skill hypothesis failed.
 
-## Preserved namespaces
+## Repaired implementation
 
-- `runs/skillevol-10h`: exploratory campaign. It contains partial family evidence but
-  no complete campaign result.
-- `runs/v1-corrected`: corrected mechanism-pilot checkpoint. It contains E1-LS1 and
-  partial E3-LS1 rollout evidence, plus the atomic mechanism manifest; it has no
-  completed pilot result.
+The repair branch fixes the previous blockers and redundant experiment cost:
 
-The corrected code already includes the three required algorithmic safeguards:
+1. MCTS `STOP` remains terminal/explorable and B4 uses the same OR/dependency semantics as MCTS.
+2. Mutation posterior mass remains conserved with `mu=0.3`.
+3. The Codex mutator is conditioned on structurally feasible mutation operators. Failure to produce all requested mutants no longer aborts a family; the dual loop continues with the valid neighborhood actually found.
+4. Round two reuses first-round evidence for unchanged parent DAGs and executes only retained mutants. Mutants are scored by forward improvement relative to their parent.
+5. B3 and B5 are exact nested ablations of B6: B3 reuses q0 and B5 reuses q1/first-loop MCTS evidence instead of rerunning a stochastic copy.
+6. Artifact snapshots exclude generated dependency/cache trees such as `node_modules`, `.venv`, and package caches. Pip/npm installation uses ephemeral no-cache paths.
+7. Failed expert-artifact preflights are checkpointed with verifier diagnostics instead of being lost.
+8. The mechanism runner is primary-first. Cross-family artifact shuffle, learning curves, search-budget sweeps, and spurious-DAG diagnostics are deferred until primary GO/NO-GO evidence exists.
 
-1. MCTS `STOP` is a terminal, explorable action and executes exactly the current
-   prefix.
-2. The greedy baseline reuses MCTS dependency semantics, including OR groups.
-3. Mutation children receive a mass-conserving transition prior (`mu=0.3`) instead of
-   copying the parent's posterior log weight.
+## E2 artifact failure resolved
 
-## Why the corrected pilot did not finish
+The earlier E2-LS1-T2 expert artifact reward of `0.0` was not reproduced on a clean runner. CI now pins official SkillEvolBench commit `9e3daa339987c3cfa624121e1be442593a53d43c` and runs the full host-native materialize/replay/verifier chain. E2-LS1-T1, T2, and T3 each receive native reward `1.0` with no verifier failure. This indicates that the old T2=0 observation came from the previous run environment/cache/disk state rather than an intrinsically invalid benchmark solution.
 
-The manifest records the following blocking observations:
+## Verification
 
-- E1-LS1: the Codex mutator failed to produce three valid `CHANGE_BRANCH` mutants
-  after its bounded retry budget.
-- E2-LS1: the benchmark expert artifact for T2 received native reward `0.0`, so the
-  family was correctly rejected by the artifact preflight.
-- E3--E6: materialization failed with `OSError: [Errno 28] No space left on device`.
-
-The disk-pressure issue was mitigated by cleaning only the disposable UV package
-cache (about 8.6 GiB); run evidence and benchmark data were retained. A later resume
-attempt was stopped before it could establish a complete result. GPU utilization was
-zero during this work: the pipeline performs Codex/CPU orchestration, not parameter
-training.
+The repaired PR merge snapshot passes the complete Python suite (`43 passed`) and the pinned E2 native-preflight integration job. These checks validate code and benchmark replay mechanics; they do **not** substitute for running the Codex-backed SkillEvolBench scientific experiment.
 
 ## Required next run
 
-Before making claims or scaling to all 30 families:
+Use a fresh namespace, not an old cache. The staged commands and exact GO/NO-GO criteria are in [`NEXT_EXPERIMENT.md`](NEXT_EXPERIMENT.md).
 
-1. Keep the corrected namespace and resume atomically, or start a clearly named
-   `v1-corrected-rerun` namespace; never overwrite evidence.
-2. Resolve the E1 mutation-schema failure and the E2 native-artifact preflight failure
-   (or report those families as excluded with a prespecified rule).
-3. Run all six mechanism families to completion, including deployment and ablations:
-   within-family artifact permutation, 1/2/3-artifact curves, search-budget controls,
-   and spurious-DAG diagnostics.
-4. Report paired family differences, B0/B1/B3/B4/B5/B6/B8, forward-vs-deployment and
-   static-vs-deployment Spearman correlations, posterior entropy, top-1 identification,
-   skill lift, and curated-gap closure.
+Start with the two-family primary signal check, then the six-environment primary pilot. Run expensive diagnostics only after the primary mechanism has signal. Scale to all 30 families only if paired family means support outcome-only skill lift, forward-tested selection over static selection, and B6 improvement over B1/B3.
 
-The minimum scientific gates remain `B1 > B0`, forward-tested selection above static
-selection, and `B6 > B1`/`B6 > B3` on paired family means. Until those are measured,
-the method is an implementation pilot rather than a validated result.
+The local GPU requirement remains zero for the current Codex-backed experiment: the pipeline performs remote model inference plus CPU graph/MCTS/verifier orchestration. A separate 16 GB local-model reproducibility configuration is specified in `NEXT_EXPERIMENT.md` and should be attempted only after the main mechanism passes its gate.
