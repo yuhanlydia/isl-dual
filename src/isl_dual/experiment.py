@@ -60,8 +60,6 @@ def run_family(
     no_skill_graph = Graph("no-skill-deployment", (no_skill_node,))
     no_skill_scores = _evaluate_graph(no_skill_graph, ("act",), bundle.deployment, executor)
 
-    # B1--B5 are outcome-only baselines. Each is selected using acquisition data,
-    # frozen, and then evaluated once on deployment tasks without feedback.
     selected: dict[Baseline, SelectedSkill] = {
         Baseline.DIRECT_TEXT: direct_text_skill(bundle.acquisition, baseline_client),
     }
@@ -69,7 +67,6 @@ def run_family(
         selected[baseline] = select_dag_baseline(baseline, bundle.acquisition, proposer, critic, executor, config)
     selected[Baseline.ISL_DUAL] = SelectedSkill(Baseline.ISL_DUAL, result.skill, result.graph, result.posterior, result.forward_scores)
 
-    # Upper-information controls are explicitly sourced and never enter ISL training.
     task_dirs = _family_task_dirs(benchmark_root, family_id)
     oracle_procedures = [(task_dirs[index] / "solution" / "solve.sh").read_text() for index in (1, 2, 3)]
     selected[Baseline.ORACLE_SOLUTION] = full_trajectory_skill(bundle.acquisition, oracle_procedures, baseline_client)
@@ -86,9 +83,9 @@ def run_family(
             graph = _skill_graph(baseline.value, selection.skill)
             baseline_task_scores[baseline.value] = _evaluate_graph(graph, ("skill", "verify"), bundle.deployment, executor)
     baseline_rewards = {name: sum(scores.values()) / len(scores) for name, scores in baseline_task_scores.items()}
-    # Candidate diagnostics are evaluation-only: no score is fed into q or graph mutation.
+
     candidate_deployment: dict[str, float] = {}
-    for graph_id in result.artifact_scores:  # initial K have both A_k and F_k
+    for graph_id in result.artifact_scores:
         graph = result.candidates[graph_id]
         candidate_skill = compile_graph_to_skill(graph)
         candidate_node = Node("skill", "Frozen candidate skill", ("A deployment task is available",), ("task",), candidate_skill, ("completed_task",), "Verify observable requirements", True)
@@ -182,19 +179,35 @@ def _with_checkpointed_verifiers(bundle: FamilyBundle, cache: JSONCache) -> Fami
 
 
 def _verified_artifact_rewards(tasks: list[AcquisitionTask], checkpoint: Path) -> dict[str, float]:
-    """Checkpoint native verification only when all outcome artifacts pass at 1.0."""
+    """Persist both passing and failing expert-artifact preflight evidence."""
     digests = {
         task.id: hashlib.sha256(json.dumps(task.expert_artifact, sort_keys=True).encode()).hexdigest()
         for task in tasks
     }
     if checkpoint.exists():
         value = json.loads(checkpoint.read_text())
-        if value.get("artifact_digests") == digests and value.get("all_passed") is True:
+        if value.get("artifact_digests") == digests and "rewards" in value:
             return {str(key): float(reward) for key, reward in value["rewards"].items()}
-    rewards = {task.id: float(task.verifier(task.expert_artifact)) for task in tasks}
-    if any(reward < 1.0 for reward in rewards.values()):
-        return rewards
-    payload = {"artifact_digests": digests, "all_passed": True, "rewards": rewards}
+
+    rewards: dict[str, float] = {}
+    failures: dict[str, str] = {}
+    for task in tasks:
+        evaluator = getattr(task.verifier, "evaluate", None)
+        if evaluator is not None:
+            reward, failure = evaluator(task.expert_artifact)
+        else:
+            reward, failure = task.verifier(task.expert_artifact), None
+        reward = float(reward)
+        rewards[task.id] = reward
+        if reward < 1.0:
+            failures[task.id] = failure or "expert artifact received native reward below 1.0 without verifier diagnostics"
+
+    payload = {
+        "artifact_digests": digests,
+        "all_passed": all(reward >= 1.0 for reward in rewards.values()),
+        "rewards": rewards,
+        "failures": failures,
+    }
     checkpoint.parent.mkdir(parents=True, exist_ok=True)
     temporary = checkpoint.with_suffix(".tmp")
     temporary.write_text(json.dumps(payload, indent=2, sort_keys=True))
