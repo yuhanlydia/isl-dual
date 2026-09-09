@@ -21,4 +21,9 @@ class PilotConfig:
     mutation_probability: float = 0.3
     max_pool: int = 12
     utility_threshold: float = 0.05
+    # MCTS remains sequential *within* one tree because later UCT decisions
+    # depend on earlier rollout rewards.  Independent (graph, task) trees are
+    # scientifically independent and can run concurrently without changing
+    # K, rollout budget, seeds, or posterior math.
+    forward_workers: int = 3
     seed: int = 20260901
