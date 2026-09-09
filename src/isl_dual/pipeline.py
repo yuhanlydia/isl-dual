@@ -68,12 +68,13 @@ def _forward_loop(
     seed_offset: int,
     journal: EvidenceJournal | None = None,
 ) -> tuple[dict[str, float], dict[str, float], dict[tuple[str, str], MCTSResult]]:
-    """Evaluate independent graph-task MCTS trees concurrently.
+    """Evaluate independent graph MCTS trees concurrently within each task.
 
-    UCT remains strictly sequential *inside* each tree.  Parallelism is only
-    across independent (graph, task) pairs, so each tree keeps exactly the same
-    seed, rollout budget, action sequence dependency, and verifier semantics as
-    the serial implementation.
+    UCT remains strictly sequential inside each tree. Graphs for the same task
+    are independent and may run concurrently, while different tasks are kept in
+    separate waves. This preserves the original task-level dependency environment
+    even if two tasks declare incompatible Python packages. Seeds, rollout budget,
+    verifier semantics, and posterior math are unchanged.
     """
     if config.forward_workers < 1:
         raise ValueError("forward_workers must be >= 1")
@@ -104,27 +105,29 @@ def _forward_loop(
         )
         return graph.id, task.id, task_index, result
 
-    work = [
-        (graph_index, graph, task_index, task)
-        for graph_index, graph in enumerate(graphs)
-        for task_index, task in enumerate(tasks)
-    ]
-
-    if config.forward_workers == 1 or len(work) <= 1:
-        completed = [run_tree(*item) for item in work]
-    else:
-        completed = []
-        with ThreadPoolExecutor(
-            max_workers=min(config.forward_workers, len(work)),
-            thread_name_prefix=f"isl-dual-{phase}",
-        ) as pool:
-            futures = [pool.submit(run_tree, *item) for item in work]
-            for future in as_completed(futures):
-                completed.append(future.result())
-
-    for graph_id, task_id, task_index, result in completed:
+    def store(result_tuple: tuple[str, str, int, MCTSResult]) -> None:
+        graph_id, task_id, task_index, result = result_tuple
         evidence[(graph_id, task_id)] = result
         scores_by_graph[graph_id][task_index] = top2_mean(result.rewards)
+
+    if config.forward_workers == 1 or len(graphs) <= 1:
+        for task_index, task in enumerate(tasks):
+            for graph_index, graph in enumerate(graphs):
+                store(run_tree(graph_index, graph, task_index, task))
+    else:
+        with ThreadPoolExecutor(
+            max_workers=min(config.forward_workers, len(graphs)),
+            thread_name_prefix=f"isl-dual-{phase}",
+        ) as pool:
+            # Finish one task wave before the next so task-specific dependency
+            # environments can never race each other.
+            for task_index, task in enumerate(tasks):
+                futures = [
+                    pool.submit(run_tree, graph_index, graph, task_index, task)
+                    for graph_index, graph in enumerate(graphs)
+                ]
+                for future in as_completed(futures):
+                    store(future.result())
 
     forward: dict[str, float] = {}
     stability: dict[str, float] = {}
@@ -207,10 +210,6 @@ def train_inverse_skill(
 
     mutation_priors = _mutation_prior(q1, pool, config.mutation_probability)
 
-    # Round two evaluates only genuinely new graph structures. Re-running the
-    # unchanged parent DAGs burns the dominant rollout budget and double-counts
-    # the same acquisition evidence. Parents retain q1 as their prior; a mutant
-    # receives an incremental likelihood based on improvement over its parent.
     retained_mutants = [
         graph for graph in pool
         if str(graph.metadata.get("parent_id", graph.id)) != graph.id
