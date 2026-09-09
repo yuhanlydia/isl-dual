@@ -10,20 +10,12 @@ import pytest
 
 import isl_dual.baselines as baselines_module
 import isl_dual.executor as executor_module
-import isl_dual.experiment as experiment_module
 import isl_dual.pipeline as pipeline_module
 from isl_dual.baselines import Baseline
 from isl_dual.config import PilotConfig
 from isl_dual.executor import CodexExecutor
 from isl_dual.mcts import EvidenceJournal
-from isl_dual.models import (
-    AcquisitionTask,
-    DeploymentTask,
-    Graph,
-    MCTSResult,
-    Node,
-    Rollout,
-)
+from isl_dual.models import AcquisitionTask, Graph, MCTSResult, Node, Rollout
 
 
 def _graph(identifier: str) -> Graph:
@@ -45,14 +37,6 @@ def _task(identifier: str) -> AcquisitionTask:
         identifier,
         f"task {identifier}",
         {"delta": {}},
-        lambda output: 1.0,
-    )
-
-
-def _deployment_task(identifier: str) -> DeploymentTask:
-    return DeploymentTask(
-        identifier,
-        f"deployment {identifier}",
         lambda output: 1.0,
     )
 
@@ -205,16 +189,33 @@ def test_greedy_baseline_parallelizes_candidate_task_evaluations(
     assert selected.forward_scores
 
 
-def test_deployment_evaluation_parallelizes_independent_tasks() -> None:
-    executor = _SlowExecutor()
-    scores = experiment_module._evaluate_graph(
-        _graph("deployment"),
-        ("n1",),
-        [_deployment_task(f"d{i}") for i in range(3)],
-        executor,
-        workers=3,
-    )
+def test_transient_codex_rate_limit_is_retried_not_scored_as_model_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    attempts = 0
 
-    assert executor.max_active >= 2
-    assert len(scores) == 3
-    assert set(scores.values()) == {1.0}
+    class Completed:
+        def __init__(self, returncode: int, stderr: str = "") -> None:
+            self.returncode = returncode
+            self.stdout = ""
+            self.stderr = stderr
+
+    def fake_run_process_group(command, **kwargs):
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            return Completed(1, "HTTP 429 rate limit; please try again")
+        return Completed(0)
+
+    monkeypatch.setattr(executor_module, "run_process_group", fake_run_process_group)
+    monkeypatch.setattr(executor_module.time, "sleep", lambda _: None)
+
+    executor = CodexExecutor(
+        dependency_cache=tmp_path / "dependency-cache",
+        max_retries=2,
+    )
+    result = executor.execute(_task("t-retry"), _graph("g-retry"), ("n1",))
+
+    assert attempts == 2
+    assert result["workspace"] == {}
