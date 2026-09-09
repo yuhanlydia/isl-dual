@@ -4,6 +4,7 @@ import json
 import math
 import os
 import random
+import threading
 from dataclasses import dataclass, field
 
 from .models import AcquisitionTask, Executor, Graph, MCTSResult, Rollout
@@ -12,25 +13,33 @@ STOP = "__STOP__"
 
 
 class EvidenceJournal:
-    """Atomic, artifact-free checkpoint of rollout evidence by stable occurrence ID."""
+    """Atomic, artifact-free checkpoint of rollout evidence by stable occurrence ID.
+
+    Independent graph-task MCTS trees may finish concurrently.  The in-memory
+    record update and the atomic file replacement therefore have to be one
+    critical section; otherwise concurrent writers can race on the same .tmp
+    path and either lose evidence or raise FileNotFoundError.
+    """
 
     def __init__(self, path):
         self.path = path
+        self._lock = threading.RLock()
         try:
             self.records = json.loads(path.read_text()) if path.exists() else {}
         except (OSError, json.JSONDecodeError):
             self.records = {}
 
     def record(self, record_id: str, *, graph_id: str, task_id: str, phase: str, rollout_id: int, plan: tuple[str, ...], reward: float, failure: str | None) -> None:
-        self.records[record_id] = {
-            "graph_id": graph_id, "task_id": task_id, "phase": phase,
-            "rollout_id": rollout_id, "plan": list(plan), "reward": reward,
-            "failure": failure,
-        }
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = self.path.with_suffix(".tmp")
-        temporary.write_text(json.dumps(self.records, indent=2, sort_keys=True))
-        os.replace(temporary, self.path)
+        with self._lock:
+            self.records[record_id] = {
+                "graph_id": graph_id, "task_id": task_id, "phase": phase,
+                "rollout_id": rollout_id, "plan": list(plan), "reward": reward,
+                "failure": failure,
+            }
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            temporary = self.path.with_suffix(".tmp")
+            temporary.write_text(json.dumps(self.records, indent=2, sort_keys=True))
+            os.replace(temporary, self.path)
 
 
 @dataclass
