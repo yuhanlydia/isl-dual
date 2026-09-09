@@ -1,0 +1,14 @@
+{
+  "all_passed": true,
+  "artifact_digests": {
+    "E1-LS1-T1": "e8cc8776944d15db05172b3a154fcdeb448c38086e3c6906f55ba0f681c76eae",
+    "E1-LS1-T2": "75ba77c69d3e21bbb8c7a95a7c2e0ac26691ce81da30559582c5aaf76193ef5b",
+    "E1-LS1-T3": "ce8af7f86029b0378cbadb171d817460679aa234501e10a554a48e47fcfeddfd"
+  },
+  "failures": {},
+  "rewards": {
+    "E1-LS1-T1": 1.0,
+    "E1-LS1-T2": 1.0,
+    "E1-LS1-T3": 1.0
+  }
+}

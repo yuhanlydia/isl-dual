@@ -1,0 +1,5 @@
+{
+  "failure": "outcome_report.json:test_h7_identical_payload_consistent_result: self = <test_outcome.TestHiddenBoundary object at 0x7ff7f0533fd0>\nclient = <FlaskClient <Flask 'app'>>\n\n    def test_h7_identical_payload_consistent_result(self, client):\n        \"\"\"Two sequential identical requests must return the same data, second cached.\"\"\"\n        payload = _valid_payload(source=\"consistency_check\")\n        _, body1 = _post(client, payload)\n        _, body2 = _post(client, payload)\n>       assert body2[\"meta\"][\"cached\"] is True\nE       assert False is True\n\ntest/test_outcome",
+  "reward": 0.9625,
+  "task_id": "E1-LS1-T1"
+}

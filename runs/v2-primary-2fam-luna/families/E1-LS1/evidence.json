@@ -1,0 +1,1424 @@
+{
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:0": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:1": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:2": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:6": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T1:7": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:0": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:1": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.85,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:2": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.85,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:3": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.85,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:4": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.85,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:5": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.85,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:6": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T2:7": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.85,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-1-7ce8261b0f:E1-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "minimal-1-7ce8261b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:0": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:1": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:2": {
+    "failure": "outcome_report.json:test_h7_identical_payload_consistent_result: self = <test_outcome.TestHiddenBoundary object at 0x7ff7f0533fd0>\nclient = <FlaskClient <Flask 'app'>>\n\n    def test_h7_identical_payload_consistent_result(self, client):\n        \"\"\"Two sequential identical requests must return the same data, second cached.\"\"\"\n        payload = _valid_payload(source=\"consistency_check\")\n        _, body1 = _post(client, payload)\n        _, body2 = _post(client, payload)\n>       assert body2[\"meta\"][\"cached\"] is True\nE       assert False is True\n\ntest/test_outcome",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.9625,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:6": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T1:7": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:0": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:1": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:2": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:3": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:4": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:5": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:6": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:minimal-2-acbe1f6594:E1-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "minimal-2-acbe1f6594",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:0": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:1": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:6": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T1:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:0": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:1": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:2": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:3": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:5": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:6": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-1-be6e9402f8:E1-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-be6e9402f8",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T3"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:0": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n4",
+      "n3",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:1": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n4",
+      "n2",
+      "n3",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:2": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n4",
+      "n3",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n4",
+      "n3",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n4",
+      "n2",
+      "n3",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:6": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n4",
+      "n2",
+      "n3",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T1:7": {
+    "failure": null,
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T2:0": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n4",
+      "n2",
+      "n3",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 0,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T2:1": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n4",
+      "n3",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:verification_first-2-31f98ceb5a:E1-LS1-T2:2": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "verification_first-2-31f98ceb5a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n4",
+      "n2",
+      "n3",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T2"
+  }
+}

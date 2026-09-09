@@ -1,0 +1,401 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "verification_first-1-be6e9402f8",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+        "id": "n1",
+        "inputs": [
+          "User requirements",
+          "Existing API or CLI contract"
+        ],
+        "name": "Define acceptance oracle",
+        "outputs": [
+          "Verification matrix",
+          "Preserved-behavior invariants",
+          "Regression boundaries"
+        ],
+        "preconditions": [
+          "The task description specifies observable behavior and constraints"
+        ],
+        "required": true,
+        "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+      },
+      {
+        "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+        "id": "n2",
+        "inputs": [
+          "Relevant entrypoints",
+          "Supporting modules",
+          "Configuration",
+          "Logs or diagnostics",
+          "Available tests"
+        ],
+        "name": "Inspect implementation evidence",
+        "outputs": [
+          "Control-flow map",
+          "State and error-handling inventory",
+          "Candidate fault locations"
+        ],
+        "preconditions": [
+          "The target workspace is readable"
+        ],
+        "required": true,
+        "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+      },
+      {
+        "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+        "id": "n3",
+        "inputs": [
+          "Control-flow map",
+          "Verification matrix"
+        ],
+        "name": "Reproduce the defect",
+        "outputs": [
+          "Reproduction record",
+          "Observed-vs-expected discrepancies"
+        ],
+        "preconditions": [
+          "A runnable service, job, or focused test path exists"
+        ],
+        "required": true,
+        "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+      },
+      {
+        "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+        "id": "n4",
+        "inputs": [
+          "Candidate fault locations",
+          "Reproduction record",
+          "Observed discrepancies"
+        ],
+        "name": "Localize the root cause",
+        "outputs": [
+          "Root-cause statement",
+          "Affected invariant",
+          "Patch strategy"
+        ],
+        "preconditions": [
+          "Evidence from inspection and reproduction is available"
+        ],
+        "required": true,
+        "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+      },
+      {
+        "action": "Edit the existing implementation at the responsible boundary, preserving public shapes and normal semantics while making shared state, validation, failure propagation, or timing behavior safe for the trigger.",
+        "id": "n5",
+        "inputs": [
+          "Patch strategy",
+          "Existing project structure",
+          "Preserved-behavior invariants"
+        ],
+        "name": "Implement the minimal invariant fix",
+        "outputs": [
+          "Targeted source edits",
+          "Updated internal handling"
+        ],
+        "preconditions": [
+          "A root cause and patch strategy have been established"
+        ],
+        "required": true,
+        "validator": "The change is confined to the requested workspace, does not replace the project with a stub, and does not hide errors or impose unnecessary serialization."
+      },
+      {
+        "action": "Run normal, invalid, repeated, concurrent, timeout, partial-failure, authorization, or equivalent stress cases selected by the matrix; inspect both returned artifacts and diagnostics.",
+        "id": "n6",
+        "inputs": [
+          "Verification matrix",
+          "Updated source",
+          "Reproduction record"
+        ],
+        "name": "Run adversarial verification",
+        "outputs": [
+          "Verification results",
+          "Residual failures",
+          "Performance observations"
+        ],
+        "preconditions": [
+          "The implementation has been edited"
+        ],
+        "required": true,
+        "validator": "All required contract checks pass, the original trigger no longer fails, failures remain explicit, and diagnostics contain no protected or misleading data."
+      },
+      {
+        "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+        "id": "n7",
+        "inputs": [
+          "Verification results",
+          "Repository diff",
+          "Original requirements"
+        ],
+        "name": "Check regression and diff integrity",
+        "outputs": [
+          "Regression assessment",
+          "Final changed-file set"
+        ],
+        "preconditions": [
+          "Adversarial verification has completed"
+        ],
+        "required": true,
+        "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+      },
+      {
+        "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+        "id": "n8",
+        "inputs": [
+          "Final changed-file set",
+          "Verification results"
+        ],
+        "name": "Finalize evidence-backed handoff",
+        "outputs": [
+          "Concise completion summary",
+          "Verification evidence"
+        ],
+        "preconditions": [
+          "Regression assessment is clean or residual risks are documented"
+        ],
+        "required": true,
+        "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n1",
+        "n3"
+      ],
+      [
+        "n1",
+        "n4"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n5"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n4",
+        "n6"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n5",
+        "n7"
+      ],
+      [
+        "n1",
+        "n7"
+      ],
+      [
+        "n6",
+        "n8"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "verification_first-2-31f98ceb5a",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Extract preserved behavior, failure behavior, artifact constraints, and adversarial conditions; define concrete probes for success, rejection, partial failure, and load or edge-case behavior before editing.",
+        "id": "n1",
+        "inputs": [
+          "Task requirements",
+          "Existing project structure"
+        ],
+        "name": "define_contract_and_probes",
+        "outputs": [
+          "Behavioral contract",
+          "Verification probe matrix"
+        ],
+        "preconditions": [
+          "The task specification and workspace are available."
+        ],
+        "required": true,
+        "validator": "The contract names required outputs, statuses, error handling, and non-functional constraints without relying on case-specific constants."
+      },
+      {
+        "action": "Run or simulate representative normal and failing probes, recording response shape, status, logs, timing, and persistence behavior as a baseline.",
+        "id": "n2",
+        "inputs": [
+          "Verification probe matrix",
+          "Current implementation"
+        ],
+        "name": "capture_baseline",
+        "outputs": [
+          "Baseline observations",
+          "Reproducible failing probe"
+        ],
+        "preconditions": [
+          "The verification probe matrix exists.",
+          "The existing artifact can be executed or inspected."
+        ],
+        "required": true,
+        "validator": "At least one relevant failure or risk is reproduced or its causal evidence is localized."
+      },
+      {
+        "action": "Trace the failing path across validation, state transitions, asynchronous boundaries, and output construction; identify the smallest broken invariant and distinguish it from symptoms.",
+        "id": "n3",
+        "inputs": [
+          "Current implementation",
+          "Logs or diagnostics",
+          "Baseline observations"
+        ],
+        "name": "trace_invariant_break",
+        "outputs": [
+          "Root-cause hypothesis",
+          "Affected code path",
+          "Preserved invariants"
+        ],
+        "preconditions": [
+          "The task files and baseline evidence are available."
+        ],
+        "required": true,
+        "validator": "The hypothesis explains both the observed failure and why ordinary requests may still pass."
+      },
+      {
+        "action": "Specify focused regression cases around the identified boundary, including valid behavior, malformed or rejected inputs, partial failures, repeated requests, and the task's concurrency or timing dimension when applicable.",
+        "id": "n4",
+        "inputs": [
+          "Behavioral contract",
+          "Root-cause hypothesis"
+        ],
+        "name": "design_regression_boundary",
+        "outputs": [
+          "Focused regression suite or probe set"
+        ],
+        "preconditions": [
+          "The behavioral contract exists.",
+          "A root-cause hypothesis is available or the relevant boundary is identifiable."
+        ],
+        "required": true,
+        "validator": "Cases cover the broken invariant, neighboring valid behavior, and at least one adversarial condition."
+      },
+      {
+        "action": "Edit the existing project in place with the narrowest root-cause correction; preserve public shapes and normal behavior, and retain explicit diagnostics rather than masking failures.",
+        "id": "n5",
+        "inputs": [
+          "Affected code path",
+          "Preserved invariants",
+          "Focused regression suite or probe set"
+        ],
+        "name": "apply_minimal_root_fix",
+        "outputs": [
+          "Updated implementation"
+        ],
+        "preconditions": [
+          "The root-cause hypothesis is supported by evidence.",
+          "The affected files are known."
+        ],
+        "required": true,
+        "validator": "The change is localized, does not replace the project with a stub, and directly enforces the identified invariant."
+      },
+      {
+        "action": "Execute targeted checks for the repaired path and nearby contract cases, comparing results with the baseline and checking that failures remain observable and correctly classified.",
+        "id": "n6",
+        "inputs": [
+          "Updated implementation",
+          "Focused regression suite or probe set"
+        ],
+        "name": "run_focused_regressions",
+        "outputs": [
+          "Focused verification results"
+        ],
+        "preconditions": [
+          "The updated implementation exists.",
+          "Focused regression cases are available."
+        ],
+        "required": true,
+        "validator": "The original failure is resolved, valid behavior remains compatible, and no exception is merely swallowed."
+      },
+      {
+        "action": "Run burst, overlap, malformed-input, timeout, authorization, or other workload-specific probes as applicable; inspect status codes, output completeness, diagnostics, and reasonable latency or parallelism.",
+        "id": "n7",
+        "inputs": [
+          "Updated implementation",
+          "Behavioral contract",
+          "Verification probe matrix"
+        ],
+        "name": "exercise_stress_and_boundaries",
+        "outputs": [
+          "Adversarial verification results"
+        ],
+        "preconditions": [
+          "The updated implementation exists.",
+          "The behavioral contract includes relevant edge or non-functional constraints."
+        ],
+        "required": true,
+        "validator": "The implementation satisfies the relevant stress and boundary conditions without excessive serialization or false-success output."
+      },
+      {
+        "action": "Inspect the final diff and edited paths, rerun a compact contract smoke test, and confirm all required artifacts are saved in place with no unrelated destructive changes.",
+        "id": "n8",
+        "inputs": [
+          "Updated implementation",
+          "Verification results",
+          "Task artifact constraints"
+        ],
+        "name": "audit_artifacts_and_finalize",
+        "outputs": [
+          "Validated final artifacts",
+          "Completion evidence"
+        ],
+        "preconditions": [
+          "Focused and adversarial verification results are available."
+        ],
+        "required": true,
+        "validator": "Required files exist, the final smoke test passes, the diff is explainable, and deliverables match the requested artifact location."
+      }
+    ],
+    "or_groups": []
+  }
+]

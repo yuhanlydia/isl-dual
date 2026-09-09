@@ -1,0 +1,313 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n1",
+        "n3"
+      ],
+      [
+        "n2",
+        "n4"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ]
+    ],
+    "id": "minimal-1-7ce8261b0f",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Inspect the supplied evidence and map the relevant request, job, authentication, or processing path without replacing the project structure.",
+        "id": "n1",
+        "inputs": [
+          "Task requirements",
+          "Existing source tree",
+          "Provided logs, entrypoints, and related modules"
+        ],
+        "name": "Orient to the existing service",
+        "outputs": [
+          "Relevant files and execution boundaries",
+          "Initial list of observed symptoms and constraints"
+        ],
+        "preconditions": [
+          "The task workspace and existing project are accessible"
+        ],
+        "required": true,
+        "validator": "Relevant entrypoints, dependencies, and diagnostic evidence are identified."
+      },
+      {
+        "action": "Write down the required success, failure, validation, status, logging, persistence, and concurrency semantics that must remain externally observable.",
+        "id": "n2",
+        "inputs": [
+          "Task requirements",
+          "Existing route, CLI, or middleware behavior",
+          "Declared types and response schemas"
+        ],
+        "name": "Extract the observable contract",
+        "outputs": [
+          "Behavioral contract",
+          "Preservation invariants",
+          "Adversarial input matrix"
+        ],
+        "preconditions": [
+          "Initial project orientation is complete"
+        ],
+        "required": true,
+        "validator": "The contract covers both normal behavior and explicitly required failure behavior."
+      },
+      {
+        "action": "Follow the failing value, exception, token, promise, cache entry, or shared state from input through transformation and output, locating the first incorrect interpretation or unsafe boundary.",
+        "id": "n3",
+        "inputs": [
+          "Source modules",
+          "Diagnostic evidence",
+          "Behavioral contract"
+        ],
+        "name": "Trace the failure lifecycle",
+        "outputs": [
+          "Root-cause hypothesis",
+          "Affected state transitions",
+          "Candidate repair locations"
+        ],
+        "preconditions": [
+          "Relevant execution boundaries are identified"
+        ],
+        "required": true,
+        "validator": "The hypothesis explains the observed failure and is tied to specific existing code paths."
+      },
+      {
+        "action": "Choose the smallest targeted change that restores correct semantics, preserves valid behavior, and explicitly handles malformed, failed, repeated, or concurrent execution where applicable.",
+        "id": "n4",
+        "inputs": [
+          "Preservation invariants",
+          "Root-cause hypothesis",
+          "Candidate repair locations"
+        ],
+        "name": "Design a minimal invariant-preserving repair",
+        "outputs": [
+          "Patch design",
+          "Error and state-handling rules",
+          "Validation plan"
+        ],
+        "preconditions": [
+          "Behavioral contract is defined",
+          "Root-cause hypothesis is supported by the code path"
+        ],
+        "required": true,
+        "validator": "The design does not rely on hiding failures, broad serialization, weakening validation, or replacing the existing application."
+      },
+      {
+        "action": "Edit the existing implementation in place, keeping public interfaces and unrelated behavior stable while adding the required synchronization, validation, failure propagation, or response handling.",
+        "id": "n5",
+        "inputs": [
+          "Patch design",
+          "Existing project files"
+        ],
+        "name": "Apply the targeted implementation change",
+        "outputs": [
+          "Updated source artifacts"
+        ],
+        "preconditions": [
+          "A supported repair design exists"
+        ],
+        "required": true,
+        "validator": "The edits are confined to the task workspace and compile or parse according to the project language."
+      },
+      {
+        "action": "Run focused checks for normal requests or jobs, malformed inputs, upstream failures, repeated or overlapping work, status and response shape, diagnostic behavior, and output persistence as relevant to the task.",
+        "id": "n6",
+        "inputs": [
+          "Validation plan",
+          "Behavioral contract",
+          "Updated implementation"
+        ],
+        "name": "Validate normal and adversarial execution",
+        "outputs": [
+          "Observed validation results",
+          "Remaining defects, if any"
+        ],
+        "preconditions": [
+          "Updated source artifacts are available"
+        ],
+        "required": true,
+        "validator": "Valid cases preserve the contract and invalid, failed, or concurrent cases produce explicit safe outcomes without accidental success."
+      },
+      {
+        "action": "Inspect the final diff and required artifact locations, remove accidental debugging or unrelated edits, and confirm the deliverable is usable by the existing verifier and runtime.",
+        "id": "n7",
+        "inputs": [
+          "Updated source artifacts",
+          "Validation results",
+          "Task deliverable requirements"
+        ],
+        "name": "Review the final artifact boundary",
+        "outputs": [
+          "Final corrected project artifacts",
+          "Completion assessment"
+        ],
+        "preconditions": [
+          "Focused validation has completed"
+        ],
+        "required": true,
+        "validator": "Required files remain in place, the implementation is not a stub, and all stated acceptance conditions are addressed."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ]
+    ],
+    "id": "minimal-2-acbe1f6594",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Read the supplied evidence and trace the affected request or job from its entry point through validation, processing, error handling, and output assembly.",
+        "id": "n1",
+        "inputs": [
+          "Failure logs or symptoms",
+          "Relevant entry-point and helper modules"
+        ],
+        "name": "Inspect evidence and entry points",
+        "outputs": [
+          "A compact control-flow map",
+          "Candidate failure boundaries"
+        ],
+        "preconditions": [
+          "The target project and observed failure evidence are accessible."
+        ],
+        "required": true,
+        "validator": "The affected execution path and its externally visible contract are identified without relying on inferred execution history."
+      },
+      {
+        "action": "State the invariants that must hold for valid, invalid, concurrent, timed-out, or unauthorized inputs, then compare them with the existing state transitions and shared-data assumptions.",
+        "id": "n2",
+        "inputs": [
+          "Control-flow map",
+          "Documented success and failure behavior"
+        ],
+        "name": "Extract invariants and failure conditions",
+        "outputs": [
+          "Root-cause hypotheses tied to violated invariants",
+          "Required compatibility constraints"
+        ],
+        "preconditions": [
+          "The affected control flow is mapped."
+        ],
+        "required": true,
+        "validator": "Each hypothesis explains the observed symptom and distinguishes a real failure from an acceptable degraded result."
+      },
+      {
+        "action": "Run targeted checks that exercise the suspected boundary, including relevant malformed-input, repeated-input, failure, or parallel cases, and reject hypotheses that do not reproduce the defect.",
+        "id": "n3",
+        "inputs": [
+          "Candidate root causes",
+          "Existing tests, logs, or small reproducible probes"
+        ],
+        "name": "Confirm the root cause with focused checks",
+        "outputs": [
+          "Confirmed root cause",
+          "Minimal regression scenarios"
+        ],
+        "preconditions": [
+          "At least one invariant violation or unsafe transition is hypothesized."
+        ],
+        "required": true,
+        "validator": "The selected cause is supported by an observable failing check or direct code-level proof."
+      },
+      {
+        "action": "Edit the existing implementation at the narrowest responsible boundary so state ownership, validation, error classification, and output metadata remain explicit while normal behavior and public shapes are preserved.",
+        "id": "n4",
+        "inputs": [
+          "Confirmed root cause",
+          "Minimal regression scenarios",
+          "Existing project structure"
+        ],
+        "name": "Implement a focused invariant-preserving fix",
+        "outputs": [
+          "Updated project files",
+          "A fix that handles the failing path without masking errors or imposing unnecessary global serialization"
+        ],
+        "preconditions": [
+          "The root cause and compatibility constraints are confirmed."
+        ],
+        "required": true,
+        "validator": "The patch changes existing code in place, preserves normal-path contracts, and does not merely catch, coerce, or hide the underlying failure."
+      },
+      {
+        "action": "Test successful requests or jobs, invalid inputs, repeated or overlapping executions, and the relevant degraded path; inspect status codes, structured outputs, diagnostics, and persistence or concurrency behavior.",
+        "id": "n5",
+        "inputs": [
+          "Updated project files",
+          "Minimal regression scenarios"
+        ],
+        "name": "Exercise regression and adversarial cases",
+        "outputs": [
+          "Regression results",
+          "Evidence that failures are represented honestly and valid results remain usable"
+        ],
+        "preconditions": [
+          "The focused fix is implemented."
+        ],
+        "required": true,
+        "validator": "All required response or report fields remain present, invalid cases fail safely, and the previously failing scenario no longer produces the bad artifact."
+      },
+      {
+        "action": "Review the final diff and run the project\u2019s available verification commands, confirming edits stay within scope and required artifacts are written in the expected format and location.",
+        "id": "n6",
+        "inputs": [
+          "Updated project files",
+          "Regression results",
+          "Task-defined artifact location"
+        ],
+        "name": "Verify deliverables and scope",
+        "outputs": [
+          "Verified final artifact set",
+          "Concise handoff summary"
+        ],
+        "preconditions": [
+          "Regression checks pass or any remaining issue is understood."
+        ],
+        "required": true,
+        "validator": "The verifier-facing artifacts exist, compile or execute successfully, and no unrelated replacement or relocation of the project occurred."
+      }
+    ],
+    "or_groups": []
+  }
+]

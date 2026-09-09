@@ -1,0 +1,359 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n5",
+        "n7"
+      ],
+      [
+        "n6",
+        "n8"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "transfer_first-1-a3bba1f17b",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Inspect the named entrypoints and adjacent modules, record externally visible behavior, enumerate invariants, and identify restrictions on acceptable changes.",
+        "id": "n1",
+        "inputs": [
+          "Existing source files",
+          "Logs or diagnostics",
+          "Documented API, CLI, or data-shape requirements"
+        ],
+        "name": "establish_scope_and_contract",
+        "outputs": [
+          "Contract checklist",
+          "Relevant execution paths",
+          "Candidate files for investigation"
+        ],
+        "preconditions": [
+          "The target project and task description are available"
+        ],
+        "required": true,
+        "validator": "The checklist covers success, validation, failure, observability, and performance expectations without copying case-specific values."
+      },
+      {
+        "action": "Run focused probes that exercise both the reported failure condition and a normal successful path; capture status, payload shape, logs, timing, and state changes.",
+        "id": "n2",
+        "inputs": [
+          "Candidate files",
+          "Representative valid inputs",
+          "Malformed, concurrent, expired, rejected, or timeout-prone probes as applicable"
+        ],
+        "name": "reproduce_observed_failure",
+        "outputs": [
+          "Minimal reproducer",
+          "Baseline behavior",
+          "Failure observations"
+        ],
+        "preconditions": [
+          "A contract checklist exists",
+          "The existing project can be executed or tested"
+        ],
+        "required": true,
+        "validator": "The reproducer distinguishes the faulty path from normal behavior and records evidence rather than relying on an inferred exception alone."
+      },
+      {
+        "action": "Trace the failing data and control flow to its first incorrect state transition, then express the required invariant that would prevent the symptom while preserving legitimate behavior.",
+        "id": "n3",
+        "inputs": [
+          "Execution traces",
+          "Shared-state or lifecycle transitions",
+          "Error and settlement handling",
+          "Authorization or response construction flow"
+        ],
+        "name": "trace_root_cause_and_invariant",
+        "outputs": [
+          "Root-cause statement",
+          "Invariant to enforce",
+          "Compatibility boundaries"
+        ],
+        "preconditions": [
+          "A minimal reproducer and baseline observations exist"
+        ],
+        "required": true,
+        "validator": "The proposed invariant explains the observed failure and identifies why superficial exception catching, fallback values, or broad serialization would be insufficient."
+      },
+      {
+        "action": "Choose the smallest maintainable repair point, including explicit state or error representation, safe ownership of shared state, and separation of validation from business processing where relevant.",
+        "id": "n4",
+        "inputs": [
+          "Existing module boundaries",
+          "Language and framework conventions",
+          "Contract checklist",
+          "Performance and security constraints"
+        ],
+        "name": "design_localized_repair",
+        "outputs": [
+          "Patch design",
+          "Regression scenarios",
+          "Expected observable effects"
+        ],
+        "preconditions": [
+          "The root cause and invariant are documented"
+        ],
+        "required": true,
+        "validator": "The design preserves public shapes and normal success semantics, makes failure states explicit, and limits synchronization or policy changes to the necessary scope."
+      },
+      {
+        "action": "Apply the repair in place using the project's existing architecture; retain useful diagnostics, avoid stubs and hidden fallbacks, and update shared types or helpers when needed to represent the invariant correctly.",
+        "id": "n5",
+        "inputs": [
+          "Patch design",
+          "Existing implementation",
+          "Regression scenarios"
+        ],
+        "name": "implement_existing_project_fix",
+        "outputs": [
+          "Edited project files",
+          "Implemented failure handling",
+          "Updated internal representations"
+        ],
+        "preconditions": [
+          "A localized repair design exists",
+          "The target files are writable"
+        ],
+        "required": true,
+        "validator": "The diff is localized, compiles or parses, and contains a real root-cause fix rather than merely changing output text or suppressing errors."
+      },
+      {
+        "action": "Run focused and available automated tests across successful requests or jobs, malformed inputs, authorization boundaries, partial failures, and output persistence; verify exact status and schema requirements.",
+        "id": "n6",
+        "inputs": [
+          "Edited project",
+          "Contract checklist",
+          "Minimal reproducer",
+          "Normal and invalid test cases"
+        ],
+        "name": "validate_normal_and_failure_contracts",
+        "outputs": [
+          "Contract test results",
+          "Compatibility evidence",
+          "Remaining defects if any"
+        ],
+        "preconditions": [
+          "The patch is implemented"
+        ],
+        "required": true,
+        "validator": "Normal valid flows remain successful, invalid or failed flows are non-misleading and appropriately rejected or marked, and required artifacts are produced in the expected location."
+      },
+      {
+        "action": "Exercise race-prone, adversarial, and partial-failure scenarios; confirm no data leakage or silent success, diagnostics remain useful, and throughput is not degraded by unnecessary global serialization.",
+        "id": "n7",
+        "inputs": [
+          "Concurrent or repeated invocations",
+          "Boundary encodings and claims",
+          "Timeout and rejection simulations",
+          "Latency and logging observations"
+        ],
+        "name": "stress_adversarial_and_performance_paths",
+        "outputs": [
+          "Stress results",
+          "Security and observability evidence",
+          "Performance comparison"
+        ],
+        "preconditions": [
+          "The patch passes focused contract checks"
+        ],
+        "required": true,
+        "validator": "Repeated runs are stable, rejected inputs cannot reach protected data, failures remain visible, and concurrency or latency behavior stays within the stated constraints."
+      },
+      {
+        "action": "Review the final changes for accidental scope expansion, verify the existing entrypoints and output artifacts are intact, perform a final smoke check, and summarize the completed repair.",
+        "id": "n8",
+        "inputs": [
+          "Final diff",
+          "Test and stress results",
+          "Artifact-location requirements"
+        ],
+        "name": "review_diff_and_deliver",
+        "outputs": [
+          "Verified final artifacts",
+          "Validation summary",
+          "Concise handoff"
+        ],
+        "preconditions": [
+          "Contract validation and stress validation have completed"
+        ],
+        "required": true,
+        "validator": "All edits remain under the requested project, no unrelated destructive changes or generated stubs were introduced, and the handoff identifies what was fixed and how it was verified."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n1",
+        "n3"
+      ],
+      [
+        "n2",
+        "n4"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ]
+    ],
+    "id": "transfer_first-2-2101334119",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Extract externally observable success criteria, protected invariants, failure conditions, and permitted edit scope.",
+        "id": "n1",
+        "inputs": [
+          "Task requirements",
+          "Declared artifact boundaries"
+        ],
+        "name": "Define contract and scope",
+        "outputs": [
+          "Behavioral contract",
+          "Scope constraints"
+        ],
+        "preconditions": [
+          "A failing software task and its existing project are available"
+        ],
+        "required": true,
+        "validator": "All required behaviors and non-goals are stated without prescribing implementation details."
+      },
+      {
+        "action": "Trace the affected execution path and compare implementation assumptions with direct failure evidence.",
+        "id": "n2",
+        "inputs": [
+          "Relevant source files",
+          "Logs, traces, tests, or diagnostics"
+        ],
+        "name": "Inspect implementation and evidence",
+        "outputs": [
+          "Candidate fault locations",
+          "Observed invariants and state transitions"
+        ],
+        "preconditions": [
+          "Behavioral contract is available",
+          "Project artifacts are readable"
+        ],
+        "required": true,
+        "validator": "Each candidate is linked to concrete code and evidence."
+      },
+      {
+        "action": "Reproduce the failure and probe nearby boundary conditions while recording status, payload, logging, and side effects.",
+        "id": "n3",
+        "inputs": [
+          "Representative valid inputs",
+          "Malformed, concurrent, delayed, or adversarial variants as applicable"
+        ],
+        "name": "Exercise the failure mode",
+        "outputs": [
+          "Reproduction result",
+          "Failure characteristics",
+          "Regression probes"
+        ],
+        "preconditions": [
+          "Behavioral contract is available",
+          "A runnable test or execution path exists"
+        ],
+        "required": true,
+        "validator": "The observed failure distinguishes the real defect from unrelated symptoms."
+      },
+      {
+        "action": "Choose the smallest causal change that restores the violated invariant while preserving normal behavior, interface shape, and appropriate failure visibility.",
+        "id": "n4",
+        "inputs": [
+          "Implementation trace",
+          "Reproduction result",
+          "Behavioral contract"
+        ],
+        "name": "Select root cause and repair invariant",
+        "outputs": [
+          "Root-cause hypothesis",
+          "Minimal repair design"
+        ],
+        "preconditions": [
+          "Candidate fault locations are identified",
+          "Failure characteristics are available"
+        ],
+        "required": true,
+        "validator": "The repair design explains the failure and does not rely on hiding errors or removing required behavior."
+      },
+      {
+        "action": "Modify the existing implementation in place, retaining compatible interfaces and adding only narrowly scoped state, validation, error, or synchronization handling required by the invariant.",
+        "id": "n5",
+        "inputs": [
+          "Root-cause hypothesis",
+          "Minimal repair design",
+          "Existing project files"
+        ],
+        "name": "Apply focused implementation change",
+        "outputs": [
+          "Patched project artifacts"
+        ],
+        "preconditions": [
+          "A validated repair design is available",
+          "Edit scope is known"
+        ],
+        "required": true,
+        "validator": "The patch is localized, syntactically valid, and preserves the declared public contract."
+      },
+      {
+        "action": "Run focused tests and adversarial checks, confirm observable outputs and diagnostics, and verify that the fix generalizes across equivalent inputs and related execution paths.",
+        "id": "n6",
+        "inputs": [
+          "Patched project",
+          "Normal requests",
+          "Failure and boundary probes",
+          "Concurrency or timing probes when relevant"
+        ],
+        "name": "Verify transfer and regressions",
+        "outputs": [
+          "Verification evidence",
+          "Residual-risk assessment"
+        ],
+        "preconditions": [
+          "Patched project artifacts exist",
+          "Regression probes are available"
+        ],
+        "required": true,
+        "validator": "Normal behavior passes, the original failure is corrected, required failures remain visible, and no prohibited workaround is used."
+      }
+    ],
+    "or_groups": []
+  }
+]

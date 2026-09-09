@@ -1,0 +1,394 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n2",
+        "n4"
+      ],
+      [
+        "n3",
+        "n5"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "failure_aware-1-65560af4ff",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Inventory the relevant entrypoints, dependencies, mutable state, outputs, and explicit invariants without replacing or relocating the existing project.",
+        "id": "n1",
+        "inputs": [
+          "Task requirements",
+          "Existing project tree",
+          "Declared API, CLI, or artifact contract"
+        ],
+        "name": "Establish scope and baseline",
+        "outputs": [
+          "Scoped component map",
+          "Baseline behavioral contract",
+          "Candidate stateful or failure-sensitive boundaries"
+        ],
+        "preconditions": [
+          "The target service or job and its existing verification surface are available"
+        ],
+        "required": true,
+        "validator": "The map identifies the execution entrypoint, affected downstream artifacts, and normal-versus-failure behavior that must remain distinguishable."
+      },
+      {
+        "action": "Read the supplied diagnostics and trace the affected control flow, data transformations, error handling, and shared-state access paths.",
+        "id": "n2",
+        "inputs": [
+          "Logs or diagnostics",
+          "Relevant source files",
+          "Available tests and configuration"
+        ],
+        "name": "Collect failure evidence",
+        "outputs": [
+          "Evidence-backed failure hypotheses",
+          "Relevant code paths",
+          "Potential invariant violation"
+        ],
+        "preconditions": [
+          "A scoped component map exists"
+        ],
+        "required": true,
+        "validator": "Each hypothesis is tied to observable evidence or a specific control-flow/state transition."
+      },
+      {
+        "action": "Exercise the smallest reproducer, then vary timing and inputs to distinguish deterministic bugs from race, validation, timeout, authorization, or fallback behavior.",
+        "id": "n3",
+        "inputs": [
+          "Representative valid and invalid inputs",
+          "Concurrent, malformed, timeout, or adversarial cases suggested by the task"
+        ],
+        "name": "Reproduce under stress",
+        "outputs": [
+          "Reproduction observations",
+          "Failure trigger conditions",
+          "Normal-path comparison"
+        ],
+        "preconditions": [
+          "The affected entrypoint can be invoked safely"
+        ],
+        "required": true,
+        "validator": "The observed result demonstrates the reported failure or narrows it to a falsifiable trigger while confirming at least one unaffected baseline."
+      },
+      {
+        "action": "Inspect alternate control-flow paths and boundary conditions to identify where invalid, stale, partial, or concurrently accessed data can be mistaken for valid output.",
+        "id": "n4",
+        "inputs": [
+          "Entrypoints",
+          "Call graph",
+          "Types or schemas",
+          "State mutation and exception paths"
+        ],
+        "name": "Analyze statically when runtime evidence is incomplete",
+        "outputs": [
+          "Static root-cause candidate",
+          "Required invariant or synchronization boundary",
+          "Minimal change location"
+        ],
+        "preconditions": [
+          "Relevant source and configuration are readable"
+        ],
+        "required": true,
+        "validator": "The candidate explains the observed artifact and predicts a concrete regression check."
+      },
+      {
+        "action": "Select the explanation that accounts for the failure, then define the invariant that must hold; preserve valid behavior and ensure failures remain observable rather than being converted into misleading success data.",
+        "id": "n5",
+        "inputs": [
+          "Reproduction or static analysis findings",
+          "Public behavior requirements",
+          "Existing design conventions"
+        ],
+        "name": "Confirm root cause and repair invariant",
+        "outputs": [
+          "Confirmed root cause",
+          "Explicit repair invariant",
+          "Constrained patch strategy"
+        ],
+        "preconditions": [
+          "At least one evidence path from n3 or n4 is available"
+        ],
+        "required": true,
+        "validator": "The invariant covers the failing boundary, does not rely on hiding exceptions, and does not impose unnecessary serialization or broaden access."
+      },
+      {
+        "action": "Edit the existing implementation at the narrowest responsible boundary, using safe state coordination, strict validation, explicit failure metadata, or correct authorization/error propagation as appropriate.",
+        "id": "n6",
+        "inputs": [
+          "Constrained patch strategy",
+          "Existing module interfaces",
+          "Concurrency and error-handling requirements"
+        ],
+        "name": "Implement the minimal compatible fix",
+        "outputs": [
+          "Updated project files",
+          "Preserved public interfaces",
+          "Observable failure handling"
+        ],
+        "preconditions": [
+          "A confirmed root cause and repair invariant exist"
+        ],
+        "required": true,
+        "validator": "The patch leaves normal outputs compatible, handles the failing case explicitly, and avoids catch-and-ignore behavior or excessive global locking."
+      },
+      {
+        "action": "Run focused checks covering successful behavior, invalid inputs, failure reporting, security boundaries, repeated requests, and output persistence; inspect status codes, fields, logs, and process results.",
+        "id": "n7",
+        "inputs": [
+          "Updated project",
+          "Baseline cases",
+          "Malformed and failure cases",
+          "Expected response, report, or artifact schema"
+        ],
+        "name": "Validate contracts and regressions",
+        "outputs": [
+          "Contract validation results",
+          "Regression evidence",
+          "Remaining risks"
+        ],
+        "preconditions": [
+          "The implementation has been updated"
+        ],
+        "required": true,
+        "validator": "Success cases retain required fields and values; failure cases have non-success status or explicit non-healthy status, diagnostics, and no leaked or fabricated data."
+      },
+      {
+        "action": "Repeat the relevant workload under contention and adverse timing, compare latency and duplication behavior with the baseline, and review the final diff for scope, portability, and accidental artifacts.",
+        "id": "n8",
+        "inputs": [
+          "Concurrent or burst workloads",
+          "Timeout and rejection scenarios",
+          "Performance observations",
+          "Changed-file diff"
+        ],
+        "name": "Stress-test and finalize",
+        "outputs": [
+          "Stress-test evidence",
+          "Performance and safety assessment",
+          "Final edited artifacts"
+        ],
+        "preconditions": [
+          "Focused contract checks pass"
+        ],
+        "required": true,
+        "validator": "Concurrent requests or parallel sources complete without races or false success; valid work remains reasonably responsive; only in-scope existing project files are changed."
+      }
+    ],
+    "or_groups": [
+      {
+        "id": "evidence-path",
+        "members": [
+          "n3",
+          "n4"
+        ],
+        "required": true
+      }
+    ]
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n1",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ],
+      [
+        "n1",
+        "n7"
+      ]
+    ],
+    "id": "failure_aware-2-523d40bc4a",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Extract normal-path invariants, failure-path expectations, safety constraints, and explicitly prohibited shortcuts into a verification checklist.",
+        "id": "n1",
+        "inputs": [
+          "Task requirements",
+          "Declared API, CLI, or output contract"
+        ],
+        "name": "Define_contract_and_failure_surface",
+        "outputs": [
+          "Behavior checklist",
+          "Failure-mode matrix",
+          "Scope boundary"
+        ],
+        "preconditions": [
+          "The task identifies an existing service or job and expected behavior."
+        ],
+        "required": false,
+        "validator": "Checklist covers successful behavior, representative invalid or failed inputs, relevant concurrency or timing conditions, and required artifact location."
+      },
+      {
+        "action": "Trace the relevant execution paths and shared state, inspect error conversion and fallback logic, and identify suspicious assumptions without changing files.",
+        "id": "n2",
+        "inputs": [
+          "Logs or diagnostics",
+          "Named source files",
+          "Adjacent types, configuration, and call sites"
+        ],
+        "name": "Inspect_targeted_evidence",
+        "outputs": [
+          "Execution map",
+          "Candidate invariants",
+          "Ranked root-cause hypotheses"
+        ],
+        "preconditions": [
+          "n1 has produced a scope and failure checklist."
+        ],
+        "required": false,
+        "validator": "Each hypothesis is tied to a concrete code path or observed diagnostic and distinguishes symptoms from possible causes."
+      },
+      {
+        "action": "Run focused reproductions across normal, boundary, and failure conditions; capture status, output shape, logs, timing, and state transitions.",
+        "id": "n3",
+        "inputs": [
+          "Existing test harness or CLI",
+          "Representative valid and invalid inputs",
+          "Stress, timeout, malformed, or authorization variants as applicable"
+        ],
+        "name": "Reproduce_under_representative_conditions",
+        "outputs": [
+          "Minimal reproducer",
+          "Observed failure signatures",
+          "Baseline behavior"
+        ],
+        "preconditions": [
+          "n2 has identified executable paths or test entry points."
+        ],
+        "required": false,
+        "validator": "The reproducer demonstrates the reported defect or a deterministic equivalent, while the baseline confirms unaffected behavior that must remain stable."
+      },
+      {
+        "action": "Locate the earliest violated invariant, choose the smallest existing-code change that restores it, and define explicit handling for rejected, timed-out, malformed, or competing operations instead of masking errors.",
+        "id": "n4",
+        "inputs": [
+          "Execution map",
+          "Failure signatures",
+          "Behavior checklist"
+        ],
+        "name": "Select_invariant_preserving_fix",
+        "outputs": [
+          "Fix design",
+          "Regression risks",
+          "Validation cases"
+        ],
+        "preconditions": [
+          "n3 provides an observed failure signature.",
+          "n2 provides at least one code-level hypothesis."
+        ],
+        "required": false,
+        "validator": "The design explains why the failure occurs, preserves the public contract, and does not rely on swallowing exceptions, unsafe fallback values, or excessive serialization."
+      },
+      {
+        "action": "Edit the existing implementation in place, keeping interfaces and successful results compatible while making shared-state transitions, validation, error propagation, and diagnostics explicit and safe.",
+        "id": "n5",
+        "inputs": [
+          "Fix design",
+          "Existing project structure"
+        ],
+        "name": "Implement_scoped_patch",
+        "outputs": [
+          "Patched source files",
+          "Implementation notes"
+        ],
+        "preconditions": [
+          "n4 has selected a fix boundary and validation cases."
+        ],
+        "required": false,
+        "validator": "Only in-scope existing files are changed; the patch addresses the identified invariant and leaves no placeholder, stub, or unconditional success path."
+      },
+      {
+        "action": "Validate successful behavior and failure semantics separately, including repeated or overlapping operations, malformed inputs, partial upstream failures, authorization boundaries, output persistence, and diagnostic visibility as applicable.",
+        "id": "n6",
+        "inputs": [
+          "Patched service or job",
+          "Normal-path cases",
+          "Failure and boundary cases",
+          "Concurrency or timing cases when relevant"
+        ],
+        "name": "Exercise_failure_aware_validation",
+        "outputs": [
+          "Validation results",
+          "Remaining defects or regressions",
+          "Evidence of safe failure behavior"
+        ],
+        "preconditions": [
+          "n5 produced a patch.",
+          "n1 checklist is available."
+        ],
+        "required": false,
+        "validator": "Valid cases retain required status, fields, and values; invalid or failed cases return explicit non-success states with no misleading data leakage or false healthy defaults; concurrent execution remains correct."
+      },
+      {
+        "action": "Review the patch for hidden exception suppression, accidental contract changes, race-prone state, over-broad access, misleading fallback values, unnecessary bottlenecks, and edits outside the requested workspace.",
+        "id": "n7",
+        "inputs": [
+          "Validation results",
+          "Changed-file diff",
+          "Original task contract"
+        ],
+        "name": "Review_regression_and_scope",
+        "outputs": [
+          "Final acceptance decision",
+          "Residual risk summary"
+        ],
+        "preconditions": [
+          "n6 has completed the validation matrix."
+        ],
+        "required": false,
+        "validator": "All required checks pass, the diff is narrowly scoped, and any unresolved limitation is explicit rather than represented as success."
+      }
+    ],
+    "or_groups": []
+  }
+]
