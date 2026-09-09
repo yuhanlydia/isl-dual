@@ -8,12 +8,22 @@ from pathlib import Path
 
 import pytest
 
+import isl_dual.baselines as baselines_module
 import isl_dual.executor as executor_module
+import isl_dual.experiment as experiment_module
 import isl_dual.pipeline as pipeline_module
+from isl_dual.baselines import Baseline
 from isl_dual.config import PilotConfig
 from isl_dual.executor import CodexExecutor
 from isl_dual.mcts import EvidenceJournal
-from isl_dual.models import AcquisitionTask, Graph, MCTSResult, Node, Rollout
+from isl_dual.models import (
+    AcquisitionTask,
+    DeploymentTask,
+    Graph,
+    MCTSResult,
+    Node,
+    Rollout,
+)
 
 
 def _graph(identifier: str) -> Graph:
@@ -37,6 +47,30 @@ def _task(identifier: str) -> AcquisitionTask:
         {"delta": {}},
         lambda output: 1.0,
     )
+
+
+def _deployment_task(identifier: str) -> DeploymentTask:
+    return DeploymentTask(
+        identifier,
+        f"deployment {identifier}",
+        lambda output: 1.0,
+    )
+
+
+class _SlowExecutor:
+    def __init__(self) -> None:
+        self.active = 0
+        self.max_active = 0
+        self.lock = threading.Lock()
+
+    def execute(self, task, graph, plan):
+        with self.lock:
+            self.active += 1
+            self.max_active = max(self.max_active, self.active)
+        time.sleep(0.03)
+        with self.lock:
+            self.active -= 1
+        return {"ok": True}
 
 
 def test_forward_loop_parallelizes_independent_graph_task_trees(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -138,3 +172,49 @@ def test_dependency_setup_reuses_python_install_and_shared_npm_cache(
     assert "--prefer-offline" in npm_calls[0][0]
     assert "--no-audit" in npm_calls[0][0]
     assert "--no-fund" in npm_calls[0][0]
+
+
+def test_greedy_baseline_parallelizes_candidate_task_evaluations(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    graphs = [_graph(f"g{i}") for i in range(4)]
+    tasks = [_task(f"t{i}") for i in range(3)]
+    executor = _SlowExecutor()
+
+    monkeypatch.setattr(
+        baselines_module,
+        "_candidate_graphs",
+        lambda tasks, proposer, config: graphs,
+    )
+    monkeypatch.setattr(
+        baselines_module,
+        "_static",
+        lambda graphs, tasks, critic, config: {graph.id: 0.0 for graph in graphs},
+    )
+
+    selected = baselines_module.select_dag_baseline(
+        Baseline.GREEDY_FORWARD,
+        tasks,
+        object(),
+        object(),
+        executor,
+        PilotConfig(candidate_graphs=4, forward_workers=3),
+    )
+
+    assert executor.max_active >= 2
+    assert selected.forward_scores
+
+
+def test_deployment_evaluation_parallelizes_independent_tasks() -> None:
+    executor = _SlowExecutor()
+    scores = experiment_module._evaluate_graph(
+        _graph("deployment"),
+        ("n1",),
+        [_deployment_task(f"d{i}") for i in range(3)],
+        executor,
+        workers=3,
+    )
+
+    assert executor.max_active >= 2
+    assert len(scores) == 3
+    assert set(scores.values()) == {1.0}
