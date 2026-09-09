@@ -21,7 +21,11 @@ class CodexExecutionError(RuntimeError):
     pass
 
 
-class _TransientCodexError(RuntimeError):
+class CodexInfrastructureError(CodexExecutionError):
+    """Remote/service failure that must not be interpreted as task reward 0."""
+
+
+class _TransientCodexError(CodexInfrastructureError):
     pass
 
 
@@ -84,8 +88,10 @@ class CodexExecutor:
 
         Every retry recreates the temporary workspace from the original task source,
         so a partially failed attempt can never leak filesystem state into the next
-        attempt.  Scientific/model failures returned by the native verifier are not
-        retried here.
+        attempt. Scientific/model failures returned by the native verifier are not
+        retried here. If all retries are exhausted, raise CodexInfrastructureError so
+        MCTS/campaign orchestration can checkpoint and stop rather than writing a
+        scientifically false zero reward.
         """
         last_error: Exception | None = None
         for attempt in range(self.max_retries + 1):
@@ -96,7 +102,7 @@ class CodexExecutor:
                 if attempt >= self.max_retries:
                     break
                 time.sleep(min(8.0, 2.0 * (2 ** attempt)))
-        raise CodexExecutionError(
+        raise CodexInfrastructureError(
             f"transient Codex execution failed after {self.max_retries + 1} attempts: "
             f"{last_error}"
         ) from last_error
@@ -223,7 +229,7 @@ class CodexExecutor:
             digest = hashlib.sha256(requirements.read_bytes()).hexdigest()
             # pip installs into the process environment, so installing an
             # identical requirements set more than once per runner process is
-            # pure repeated work.  Serialize the first install to avoid three
+            # pure repeated work. Serialize the first install to avoid three
             # concurrent trees racing the same environment.
             with self._python_install_lock:
                 if digest not in self._installed_python_requirements:
@@ -245,7 +251,7 @@ class CodexExecutor:
                     self._installed_python_requirements.add(digest)
 
         if (workspace / "package-lock.json").exists():
-            # node_modules remains rollout-local.  Only npm's content-addressed
+            # node_modules remains rollout-local. Only npm's content-addressed
             # download cache is shared, preserving filesystem isolation while
             # avoiding repeated network/package fetches.
             env = os.environ.copy()
