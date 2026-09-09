@@ -241,6 +241,64 @@
     "rollout_id": 1,
     "task_id": "E1-LS1-T1"
   },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T1:2": {
+    "failure": null,
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [
+      "n1"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T1:6": {
+    "failure": null,
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T1"
+  },
   "round1:minimal-1-7ce8261b0f:E1-LS1-T1:0": {
     "failure": null,
     "graph_id": "minimal-1-7ce8261b0f",
@@ -1069,6 +1127,78 @@
     "rollout_id": 1,
     "task_id": "E1-LS1-T1"
   },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T1:2": {
+    "failure": null,
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T1"
+  },
   "round1:transfer_first-2-2101334119:E1-LS1-T1:0": {
     "failure": null,
     "graph_id": "transfer_first-2-2101334119",
@@ -1099,6 +1229,70 @@
     ],
     "reward": 1.0,
     "rollout_id": 1,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T1:2": {
+    "failure": null,
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T1:3": {
+    "failure": null,
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T1:4": {
+    "failure": null,
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T1"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T1:5": {
+    "failure": null,
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
     "task_id": "E1-LS1-T1"
   },
   "round1:verification_first-1-be6e9402f8:E1-LS1-T1:0": {
