@@ -1,0 +1,5 @@
+{
+  "failure": "process_report.json:test_p1_utils_py_modified: self = <test_process.TestProcessP1P2ModificationTarget object at 0x78be4d70f690>\n\n    def test_p1_utils_py_modified(self):\n        \"\"\"The root-cause file (utils.py) should be changed.\"\"\"\n        utils_src = _read(\"utils.py\")\n        modified = (\n            _ORIGINAL_LOOKUP not in utils_src\n            or _ORIGINAL_DEL not in utils_src\n        )\n>       assert modified, (\n            \"utils.py still contains the original racy _release_slot \u2014 \"\n            \"the root cause was not addressed\"\n     ",
+  "reward": 0.85,
+  "task_id": "E1-LS1-T1"
+}
