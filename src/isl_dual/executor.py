@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-import json
 import base64
+import hashlib
+import json
+import os
 import shutil
 import subprocess
 import tempfile
-import os
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -19,11 +21,37 @@ class CodexExecutionError(RuntimeError):
 
 
 class CodexExecutor:
-    """Execute every plan in an isolated directory and ephemeral Codex session."""
+    """Execute every plan in an isolated directory and ephemeral Codex session.
 
-    def __init__(self, timeout_seconds: int = 900, model: str | None = None):
+    Workspace state remains isolated per rollout.  Only package-download state and
+    the fact that an identical Python requirements set has already been installed
+    are shared, which removes repeated dependency setup without sharing task files
+    or agent-produced artifacts.
+    """
+
+    _python_install_lock = threading.RLock()
+    _installed_python_requirements: set[str] = set()
+
+    def __init__(
+        self,
+        timeout_seconds: int = 900,
+        model: str | None = None,
+        dependency_cache: Path | None = None,
+    ):
         self.timeout_seconds = timeout_seconds
         self.model = model
+        self.dependency_cache = Path(
+            dependency_cache
+            or os.environ.get(
+                "ISL_DUAL_DEPENDENCY_CACHE",
+                str(Path(tempfile.gettempdir()) / "isl-dual-dependency-cache"),
+            )
+        )
+        self.dependency_cache.mkdir(parents=True, exist_ok=True)
+        self._pip_cache = self.dependency_cache / "pip"
+        self._npm_cache = self.dependency_cache / "npm"
+        self._pip_cache.mkdir(parents=True, exist_ok=True)
+        self._npm_cache.mkdir(parents=True, exist_ok=True)
 
     def execute(
         self,
@@ -58,9 +86,15 @@ class CodexExecutor:
         )
         with tempfile.TemporaryDirectory(prefix="isl-dual-rollout-") as temp:
             workspace = Path(temp) / "workspace"
-            tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
+            tool_bin = Path(temp) / "bin"
+            tool_bin.mkdir()
+            (tool_bin / "python").symlink_to("/usr/bin/python3")
             if task.workspace_source:
-                shutil.copytree(task.workspace_source, workspace, ignore=shutil.ignore_patterns("Dockerfile"))
+                shutil.copytree(
+                    task.workspace_source,
+                    workspace,
+                    ignore=shutil.ignore_patterns("Dockerfile"),
+                )
             else:
                 workspace.mkdir()
             self._prepare_dependencies(workspace)
@@ -76,18 +110,44 @@ class CodexExecutor:
             process_env = os.environ.copy()
             process_env["PATH"] = str(tool_bin) + os.pathsep + process_env.get("PATH", "")
             process_env["PIP_NO_CACHE_DIR"] = "1"
-            process_env["npm_config_cache"] = str(workspace / ".npm-cache")
+            process_env["npm_config_cache"] = str(self._npm_cache)
             try:
-                completed = run_process_group(command, timeout=self.timeout_seconds, env=process_env, input_text=prompt)
+                completed = run_process_group(
+                    command,
+                    timeout=self.timeout_seconds,
+                    env=process_env,
+                    input_text=prompt,
+                )
             except subprocess.TimeoutExpired as error:
-                raise CodexExecutionError(f"ephemeral Codex execution timed out after {self.timeout_seconds}s") from error
+                raise CodexExecutionError(
+                    f"ephemeral Codex execution timed out after {self.timeout_seconds}s"
+                ) from error
             if completed.returncode != 0:
                 raise CodexExecutionError(completed.stderr[-4000:])
-            files = [p for p in workspace.rglob("*") if p.is_file() and not any(part in {"node_modules", ".npm-cache", ".poetry_env", ".venv", ".git", ".pytest_cache", "__pycache__"} for part in p.relative_to(workspace).parts)]
+            files = [
+                p
+                for p in workspace.rglob("*")
+                if p.is_file()
+                and not any(
+                    part in {
+                        "node_modules", ".npm-cache", ".poetry_env", ".venv",
+                        ".git", ".pytest_cache", "__pycache__",
+                    }
+                    for part in p.relative_to(workspace).parts
+                )
+            ]
             return {
-                "workspace": {str(p.relative_to(workspace)): self._read_artifact(p) for p in files},
-                "modes": {str(p.relative_to(workspace)): p.stat().st_mode & 0o777 for p in files},
-                "message": output_file.read_text(errors="replace") if output_file.exists() else "",
+                "workspace": {
+                    str(p.relative_to(workspace)): self._read_artifact(p)
+                    for p in files
+                },
+                "modes": {
+                    str(p.relative_to(workspace)): p.stat().st_mode & 0o777
+                    for p in files
+                },
+                "message": output_file.read_text(errors="replace")
+                if output_file.exists()
+                else "",
             }
 
     @staticmethod
@@ -96,24 +156,49 @@ class CodexExecutor:
         try:
             return raw.decode("utf-8")
         except UnicodeDecodeError:
-            return {"encoding": "base64", "data": base64.b64encode(raw).decode("ascii")}
+            return {
+                "encoding": "base64",
+                "data": base64.b64encode(raw).decode("ascii"),
+            }
 
     def _prepare_dependencies(self, workspace: Path) -> None:
         requirements = workspace / "requirements.txt"
         if requirements.exists():
-            subprocess.run(
-                ["python3", "-m", "pip", "install", "--no-cache-dir", "-r", str(requirements)],
-                cwd=workspace,
-                text=True,
-                capture_output=True,
-                timeout=self.timeout_seconds,
-                check=True,
-            )
+            digest = hashlib.sha256(requirements.read_bytes()).hexdigest()
+            # pip installs into the process environment, so installing an
+            # identical requirements set more than once per runner process is
+            # pure repeated work.  Serialize the first install to avoid three
+            # concurrent trees racing the same environment.
+            with self._python_install_lock:
+                if digest not in self._installed_python_requirements:
+                    env = os.environ.copy()
+                    env["PIP_CACHE_DIR"] = str(self._pip_cache)
+                    env["PIP_DISABLE_PIP_VERSION_CHECK"] = "1"
+                    subprocess.run(
+                        [
+                            "python3", "-m", "pip", "install",
+                            "-r", str(requirements),
+                        ],
+                        cwd=workspace,
+                        env=env,
+                        text=True,
+                        capture_output=True,
+                        timeout=self.timeout_seconds,
+                        check=True,
+                    )
+                    self._installed_python_requirements.add(digest)
+
         if (workspace / "package-lock.json").exists():
+            # node_modules remains rollout-local.  Only npm's content-addressed
+            # download cache is shared, preserving filesystem isolation while
+            # avoiding repeated network/package fetches.
             env = os.environ.copy()
-            env["npm_config_cache"] = str(workspace / ".npm-cache")
+            env["npm_config_cache"] = str(self._npm_cache)
             subprocess.run(
-                ["npm", "ci", "--ignore-scripts"],
+                [
+                    "npm", "ci", "--ignore-scripts", "--prefer-offline",
+                    "--no-audit", "--no-fund",
+                ],
                 cwd=workspace,
                 env=env,
                 text=True,
