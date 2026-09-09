@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import threading
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Mapping
@@ -12,20 +13,28 @@ from .models import AcquisitionTask, CriticScore, Graph, MCTSResult, Utility
 
 
 class JSONCache:
-    def __init__(self, root: Path): self.root = root
+    def __init__(self, root: Path):
+        self.root = root
+        self._lock = threading.RLock()
 
     def key(self, namespace: str, payload: Any) -> Path:
-        digest = hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
+        digest = hashlib.sha256(
+            json.dumps(payload, sort_keys=True, default=str).encode()
+        ).hexdigest()
         return self.root / namespace / f"{digest}.json"
 
     def get(self, path: Path) -> Any | None:
-        return json.loads(path.read_text()) if path.exists() else None
+        with self._lock:
+            return json.loads(path.read_text()) if path.exists() else None
 
     def put(self, path: Path, value: Any) -> None:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = path.with_suffix(".tmp")
-        temporary.write_text(json.dumps(value, indent=2, sort_keys=True, default=str))
-        os.replace(temporary, path)
+        with self._lock:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            temporary = path.with_suffix(".tmp")
+            temporary.write_text(
+                json.dumps(value, indent=2, sort_keys=True, default=str)
+            )
+            os.replace(temporary, path)
 
 
 class CachedJSONClient:
@@ -53,11 +62,17 @@ class CachedVerifier:
         self.task_id, self.inner, self.cache = task_id, inner, cache
 
     def _path(self, output: Any) -> Path:
-        output_digest = hashlib.sha256(json.dumps(output, sort_keys=True, default=str).encode()).hexdigest()
+        output_digest = hashlib.sha256(
+            json.dumps(output, sort_keys=True, default=str).encode()
+        ).hexdigest()
         tests_value = getattr(self.inner, "tests_dir", None)
         tests_dir = Path(tests_value) if tests_value is not None else None
         test_script = tests_dir / "test.sh" if tests_dir is not None else None
-        script_digest = hashlib.sha256(test_script.read_bytes()).hexdigest() if test_script is not None and test_script.is_file() else None
+        script_digest = (
+            hashlib.sha256(test_script.read_bytes()).hexdigest()
+            if test_script is not None and test_script.is_file()
+            else None
+        )
         return self.cache.key("verifier", {
             "task_id": self.task_id,
             "verifier_class": f"{type(self.inner).__module__}.{type(self.inner).__qualname__}",
@@ -100,24 +115,49 @@ def _identity(component: Any) -> dict[str, Any]:
 
 
 class CachedProposer:
-    def __init__(self, inner: Any, cache: JSONCache): self.inner, self.cache = inner, cache
+    def __init__(self, inner: Any, cache: JSONCache):
+        self.inner, self.cache = inner, cache
+
     def propose(self, tasks: list[AcquisitionTask], mode: str, count: int) -> list[Graph]:
-        path = self.cache.key("proposer", {"component": _identity(self.inner), "tasks": _task_digest(tasks), "mode": mode, "count": count})
+        path = self.cache.key(
+            "proposer",
+            {
+                "component": _identity(self.inner),
+                "tasks": _task_digest(tasks),
+                "mode": mode,
+                "count": count,
+            },
+        )
         value = self.cache.get(path)
         if value is None:
             graphs = self.inner.propose(tasks, mode, count)
-            value = [graph_to_dict(g) for g in graphs]; self.cache.put(path, value)
+            value = [graph_to_dict(g) for g in graphs]
+            self.cache.put(path, value)
         return [graph_from_dict(item) for item in value]
 
 
 class CachedCritic:
-    def __init__(self, inner: Any, cache: JSONCache): self.inner, self.cache = inner, cache
+    def __init__(self, inner: Any, cache: JSONCache):
+        self.inner, self.cache = inner, cache
+
     def score(self, graph: Graph, tasks: list[AcquisitionTask]) -> CriticScore:
-        path = self.cache.key("critic", {"component": _identity(self.inner), "graph": graph_to_dict(graph), "tasks": _task_digest(tasks)})
+        path = self.cache.key(
+            "critic",
+            {
+                "component": _identity(self.inner),
+                "graph": graph_to_dict(graph),
+                "tasks": _task_digest(tasks),
+            },
+        )
         value = self.cache.get(path)
         if value is None:
             score = self.inner.score(graph, tasks)
-            value = {"sufficiency": score.sufficiency, "transfer": score.transfer, "consistency": score.consistency}; self.cache.put(path, value)
+            value = {
+                "sufficiency": score.sufficiency,
+                "transfer": score.transfer,
+                "consistency": score.consistency,
+            }
+            self.cache.put(path, value)
         return CriticScore(**value)
 
 
@@ -125,26 +165,74 @@ class CachedExecutor:
     def __init__(self, inner: Any, cache: JSONCache):
         self.inner, self.cache = inner, cache
         self._occurrences: dict[tuple[str, str, tuple[str, ...]], int] = defaultdict(int)
+        self._occurrence_lock = threading.Lock()
+
     def execute(self, task: Any, graph: Graph, plan: tuple[str, ...]) -> Any:
         identity = (task.id, graph.id, plan)
-        occurrence = self._occurrences[identity]
-        self._occurrences[identity] += 1
-        path = self.cache.key("executor", {"component": _identity(self.inner), "task_id": task.id, "x": task.x, "graph": graph_to_dict(graph), "plan": plan, "occurrence": occurrence})
+        with self._occurrence_lock:
+            occurrence = self._occurrences[identity]
+            self._occurrences[identity] += 1
+        path = self.cache.key(
+            "executor",
+            {
+                "component": _identity(self.inner),
+                "task_id": task.id,
+                "x": task.x,
+                "graph": graph_to_dict(graph),
+                "plan": plan,
+                "occurrence": occurrence,
+            },
+        )
         value = self.cache.get(path)
         if value is None:
-            value = self.inner.execute(task, graph, plan); self.cache.put(path, value)
+            value = self.inner.execute(task, graph, plan)
+            self.cache.put(path, value)
         return value
 
 
 class CachedMutator:
-    def __init__(self, inner: Any, cache: JSONCache): self.inner, self.cache = inner, cache
-    def mutate(self, graph: Graph, evidence: Mapping[tuple[str, str], MCTSResult], node_utilities: Mapping[tuple[str, str], Utility], edge_utilities: Mapping[tuple[str, tuple[str, str]], Utility], count: int) -> list[Graph]:
-        evidence_digest = [{"key": key, "plans": [(r.plan, r.reward) for r in result.rollouts]} for key, result in evidence.items() if key[0] == graph.id]
-        utility_digest = {str(key): (value.delta, value.n_with, value.n_without) for key, value in node_utilities.items() if key[0] == graph.id}
-        edge_digest = {str(key): (value.delta, value.n_with, value.n_without) for key, value in edge_utilities.items() if key[0] == graph.id}
-        path = self.cache.key("mutator", {"component": _identity(self.inner), "graph": graph_to_dict(graph), "evidence": evidence_digest, "node_utilities": utility_digest, "edge_utilities": edge_digest, "count": count})
+    def __init__(self, inner: Any, cache: JSONCache):
+        self.inner, self.cache = inner, cache
+
+    def mutate(
+        self,
+        graph: Graph,
+        evidence: Mapping[tuple[str, str], MCTSResult],
+        node_utilities: Mapping[tuple[str, str], Utility],
+        edge_utilities: Mapping[tuple[str, tuple[str, str]], Utility],
+        count: int,
+    ) -> list[Graph]:
+        evidence_digest = [
+            {"key": key, "plans": [(r.plan, r.reward) for r in result.rollouts]}
+            for key, result in evidence.items()
+            if key[0] == graph.id
+        ]
+        utility_digest = {
+            str(key): (value.delta, value.n_with, value.n_without)
+            for key, value in node_utilities.items()
+            if key[0] == graph.id
+        }
+        edge_digest = {
+            str(key): (value.delta, value.n_with, value.n_without)
+            for key, value in edge_utilities.items()
+            if key[0] == graph.id
+        }
+        path = self.cache.key(
+            "mutator",
+            {
+                "component": _identity(self.inner),
+                "graph": graph_to_dict(graph),
+                "evidence": evidence_digest,
+                "node_utilities": utility_digest,
+                "edge_utilities": edge_digest,
+                "count": count,
+            },
+        )
         value = self.cache.get(path)
         if value is None:
-            graphs = self.inner.mutate(graph, evidence, node_utilities, edge_utilities, count)
-            value = [graph_to_dict(g) for g in graphs]; self.cache.put(path, value)
+            graphs = self.inner.mutate(
+                graph, evidence, node_utilities, edge_utilities, count
+            )
+            value = [graph_to_dict(g) for g in graphs]
+            self.cache.put(path, value)
         return [graph_from_dict(item) for item in value]
