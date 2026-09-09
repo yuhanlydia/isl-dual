@@ -74,9 +74,12 @@ def test_failed_expert_artifact_preflight_is_checkpointed_with_diagnostics(tmp_p
     assert payload["failures"]["t1"] == "reference artifact failed hidden check"
 
 
-def test_executor_dependency_installs_use_ephemeral_caches(tmp_path, monkeypatch):
-    (tmp_path / "requirements.txt").write_text("example-package==1.0\n")
-    (tmp_path / "package-lock.json").write_text("{}")
+def test_executor_dependency_installs_use_isolated_shared_cache(tmp_path, monkeypatch):
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    (workspace / "requirements.txt").write_text("example-package==1.0\n")
+    (workspace / "package-lock.json").write_text("{}")
+    dependency_cache = tmp_path / "dependency-cache"
     calls = []
 
     class Completed: returncode = 0
@@ -85,12 +88,14 @@ def test_executor_dependency_installs_use_ephemeral_caches(tmp_path, monkeypatch
         return Completed()
 
     monkeypatch.setattr("isl_dual.executor.subprocess.run", fake_run)
-    CodexExecutor()._prepare_dependencies(tmp_path)
-    pip_command, _ = calls[0]
+    CodexExecutor(dependency_cache=dependency_cache)._prepare_dependencies(workspace)
+    pip_command, pip_kwargs = calls[0]
     npm_command, npm_kwargs = calls[1]
-    assert "--no-cache-dir" in pip_command
+    assert pip_command[:4] == ["python3", "-m", "pip", "install"]
+    assert "--no-cache-dir" not in pip_command
+    assert pip_kwargs["env"]["PIP_CACHE_DIR"].startswith(str(dependency_cache))
     assert npm_command[:2] == ["npm", "ci"]
-    assert npm_kwargs["env"]["npm_config_cache"].startswith(str(tmp_path))
+    assert npm_kwargs["env"]["npm_config_cache"].startswith(str(dependency_cache))
 
 
 def test_mechanism_pilot_defaults_to_primary_only(tmp_path, monkeypatch):
