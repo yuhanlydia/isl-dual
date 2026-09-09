@@ -1,0 +1,619 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n5",
+        "n9"
+      ],
+      [
+        "n9",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "verification_first-1-be6e9402f8-m1",
+    "metadata": {
+      "mutation": "ADD_NODE",
+      "parent_id": "verification_first-1-be6e9402f8"
+    },
+    "nodes": [
+      {
+        "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+        "id": "n1",
+        "inputs": [
+          "User requirements",
+          "Existing API or CLI contract"
+        ],
+        "name": "Define acceptance oracle",
+        "outputs": [
+          "Verification matrix",
+          "Preserved-behavior invariants",
+          "Regression boundaries"
+        ],
+        "preconditions": [
+          "The task description specifies observable behavior and constraints"
+        ],
+        "required": true,
+        "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+      },
+      {
+        "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+        "id": "n2",
+        "inputs": [
+          "Relevant entrypoints",
+          "Supporting modules",
+          "Configuration",
+          "Logs or diagnostics",
+          "Available tests"
+        ],
+        "name": "Inspect implementation evidence",
+        "outputs": [
+          "Control-flow map",
+          "State and error-handling inventory",
+          "Candidate fault locations"
+        ],
+        "preconditions": [
+          "The target workspace is readable"
+        ],
+        "required": true,
+        "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+      },
+      {
+        "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+        "id": "n3",
+        "inputs": [
+          "Control-flow map",
+          "Verification matrix"
+        ],
+        "name": "Reproduce the defect",
+        "outputs": [
+          "Reproduction record",
+          "Observed-vs-expected discrepancies"
+        ],
+        "preconditions": [
+          "A runnable service, job, or focused test path exists"
+        ],
+        "required": true,
+        "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+      },
+      {
+        "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+        "id": "n4",
+        "inputs": [
+          "Candidate fault locations",
+          "Reproduction record",
+          "Observed discrepancies"
+        ],
+        "name": "Localize the root cause",
+        "outputs": [
+          "Root-cause statement",
+          "Affected invariant",
+          "Patch strategy"
+        ],
+        "preconditions": [
+          "Evidence from inspection and reproduction is available"
+        ],
+        "required": true,
+        "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+      },
+      {
+        "action": "Edit the existing implementation at the responsible boundary, preserving public shapes and normal semantics while making shared state, validation, failure propagation, or timing behavior safe for the trigger.",
+        "id": "n5",
+        "inputs": [
+          "Patch strategy",
+          "Existing project structure",
+          "Preserved-behavior invariants"
+        ],
+        "name": "Implement the minimal invariant fix",
+        "outputs": [
+          "Targeted source edits",
+          "Updated internal handling"
+        ],
+        "preconditions": [
+          "A root cause and patch strategy have been established"
+        ],
+        "required": true,
+        "validator": "The change is confined to the requested workspace, does not replace the project with a stub, and does not hide errors or impose unnecessary serialization."
+      },
+      {
+        "action": "Run normal, invalid, repeated, concurrent, timeout, partial-failure, authorization, or equivalent stress cases selected by the matrix; inspect both returned artifacts and diagnostics.",
+        "id": "n6",
+        "inputs": [
+          "Verification matrix",
+          "Updated source",
+          "Reproduction record"
+        ],
+        "name": "Run adversarial verification",
+        "outputs": [
+          "Verification results",
+          "Residual failures",
+          "Performance observations"
+        ],
+        "preconditions": [
+          "The implementation has been edited"
+        ],
+        "required": true,
+        "validator": "All required contract checks pass, the original trigger no longer fails, failures remain explicit, and diagnostics contain no protected or misleading data."
+      },
+      {
+        "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+        "id": "n7",
+        "inputs": [
+          "Verification results",
+          "Repository diff",
+          "Original requirements"
+        ],
+        "name": "Check regression and diff integrity",
+        "outputs": [
+          "Regression assessment",
+          "Final changed-file set"
+        ],
+        "preconditions": [
+          "Adversarial verification has completed"
+        ],
+        "required": true,
+        "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+      },
+      {
+        "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+        "id": "n8",
+        "inputs": [
+          "Final changed-file set",
+          "Verification results"
+        ],
+        "name": "Finalize evidence-backed handoff",
+        "outputs": [
+          "Concise completion summary",
+          "Verification evidence"
+        ],
+        "preconditions": [
+          "Regression assessment is clean or residual risks are documented"
+        ],
+        "required": true,
+        "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+      },
+      {
+        "action": "Inspect and exercise error-handling paths to ensure caught failures retain their intended explicit response semantics, status signaling, and termination behavior without falling through or being silently transformed.",
+        "id": "n9",
+        "inputs": [
+          "Updated source",
+          "Reproduction record",
+          "Preserved-behavior invariants"
+        ],
+        "name": "Preserve explicit failure responses",
+        "outputs": [
+          "Failure-response preservation check",
+          "Error-path observations"
+        ],
+        "preconditions": [
+          "The implementation has been edited"
+        ],
+        "required": true,
+        "validator": "Relevant failure paths produce explicit, stable rejection behavior and do not continue into unrelated success or fallthrough handling."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n9"
+      ],
+      [
+        "n9",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "verification_first-1-be6e9402f8-m2",
+    "metadata": {
+      "mutation": "SPLIT_NODE",
+      "parent_id": "verification_first-1-be6e9402f8"
+    },
+    "nodes": [
+      {
+        "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+        "id": "n1",
+        "inputs": [
+          "User requirements",
+          "Existing API or CLI contract"
+        ],
+        "name": "Define acceptance oracle",
+        "outputs": [
+          "Verification matrix",
+          "Preserved-behavior invariants",
+          "Regression boundaries"
+        ],
+        "preconditions": [
+          "The task description specifies observable behavior and constraints"
+        ],
+        "required": true,
+        "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+      },
+      {
+        "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+        "id": "n2",
+        "inputs": [
+          "Relevant entrypoints",
+          "Supporting modules",
+          "Configuration",
+          "Logs or diagnostics",
+          "Available tests"
+        ],
+        "name": "Inspect implementation evidence",
+        "outputs": [
+          "Control-flow map",
+          "State and error-handling inventory",
+          "Candidate fault locations"
+        ],
+        "preconditions": [
+          "The target workspace is readable"
+        ],
+        "required": true,
+        "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+      },
+      {
+        "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+        "id": "n3",
+        "inputs": [
+          "Control-flow map",
+          "Verification matrix"
+        ],
+        "name": "Reproduce the defect",
+        "outputs": [
+          "Reproduction record",
+          "Observed-vs-expected discrepancies"
+        ],
+        "preconditions": [
+          "A runnable service, job, or focused test path exists"
+        ],
+        "required": true,
+        "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+      },
+      {
+        "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+        "id": "n4",
+        "inputs": [
+          "Candidate fault locations",
+          "Reproduction record",
+          "Observed discrepancies"
+        ],
+        "name": "Localize the root cause",
+        "outputs": [
+          "Root-cause statement",
+          "Affected invariant",
+          "Patch strategy"
+        ],
+        "preconditions": [
+          "Evidence from inspection and reproduction is available"
+        ],
+        "required": true,
+        "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+      },
+      {
+        "action": "Edit the existing implementation at the responsible boundary, preserving public shapes and normal semantics while making shared state, validation, failure propagation, or timing behavior safe for the trigger.",
+        "id": "n5",
+        "inputs": [
+          "Patch strategy",
+          "Existing project structure",
+          "Preserved-behavior invariants"
+        ],
+        "name": "Implement the minimal invariant fix",
+        "outputs": [
+          "Targeted source edits",
+          "Updated internal handling"
+        ],
+        "preconditions": [
+          "A root cause and patch strategy have been established"
+        ],
+        "required": true,
+        "validator": "The change is confined to the requested workspace, does not replace the project with a stub, and does not hide errors or impose unnecessary serialization."
+      },
+      {
+        "action": "Ensure handled failures retain their explicit response status and terminate the handled path without fallthrough, while leaving unrelated success and error behavior unchanged.",
+        "id": "n9",
+        "inputs": [
+          "Updated internal handling",
+          "Failure-path requirements",
+          "Observed-vs-expected discrepancies"
+        ],
+        "name": "Preserve explicit failure response semantics",
+        "outputs": [
+          "Status-preserving failure handling",
+          "Terminated failure-path control flow"
+        ],
+        "preconditions": [
+          "The targeted implementation change has been made"
+        ],
+        "required": true,
+        "validator": "Handled failure paths emit their intended status and do not continue into an alternate or success path; unaffected paths retain their prior behavior."
+      },
+      {
+        "action": "Run normal, invalid, repeated, concurrent, timeout, partial-failure, authorization, or equivalent stress cases selected by the matrix; inspect both returned artifacts and diagnostics.",
+        "id": "n6",
+        "inputs": [
+          "Verification matrix",
+          "Updated source",
+          "Reproduction record"
+        ],
+        "name": "Run adversarial verification",
+        "outputs": [
+          "Verification results",
+          "Residual failures",
+          "Performance observations"
+        ],
+        "preconditions": [
+          "The implementation has been edited and failure response semantics have been checked"
+        ],
+        "required": true,
+        "validator": "All required contract checks pass, the original trigger no longer fails, failures remain explicit, and diagnostics contain no protected or misleading data."
+      },
+      {
+        "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+        "id": "n7",
+        "inputs": [
+          "Verification results",
+          "Repository diff",
+          "Original requirements"
+        ],
+        "name": "Check regression and diff integrity",
+        "outputs": [
+          "Regression assessment",
+          "Final changed-file set"
+        ],
+        "preconditions": [
+          "Adversarial verification has completed"
+        ],
+        "required": true,
+        "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+      },
+      {
+        "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+        "id": "n8",
+        "inputs": [
+          "Final changed-file set",
+          "Verification results"
+        ],
+        "name": "Finalize evidence-backed handoff",
+        "outputs": [
+          "Concise completion summary",
+          "Verification evidence"
+        ],
+        "preconditions": [
+          "Regression assessment is clean or residual risks are documented"
+        ],
+        "required": true,
+        "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5_n6"
+      ],
+      [
+        "n5_n6",
+        "n7"
+      ],
+      [
+        "n7",
+        "n8"
+      ]
+    ],
+    "id": "verification_first-1-be6e9402f8-m3",
+    "metadata": {
+      "mutation": "MERGE_NODES",
+      "parent_id": "verification_first-1-be6e9402f8"
+    },
+    "nodes": [
+      {
+        "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+        "id": "n1",
+        "inputs": [
+          "User requirements",
+          "Existing API or CLI contract"
+        ],
+        "name": "Define acceptance oracle",
+        "outputs": [
+          "Verification matrix",
+          "Preserved-behavior invariants",
+          "Regression boundaries"
+        ],
+        "preconditions": [
+          "The task description specifies observable behavior and constraints"
+        ],
+        "required": true,
+        "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+      },
+      {
+        "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+        "id": "n2",
+        "inputs": [
+          "Relevant entrypoints",
+          "Supporting modules",
+          "Configuration",
+          "Logs or diagnostics",
+          "Available tests"
+        ],
+        "name": "Inspect implementation evidence",
+        "outputs": [
+          "Control-flow map",
+          "State and error-handling inventory",
+          "Candidate fault locations"
+        ],
+        "preconditions": [
+          "The target workspace is readable"
+        ],
+        "required": true,
+        "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+      },
+      {
+        "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+        "id": "n3",
+        "inputs": [
+          "Control-flow map",
+          "Verification matrix"
+        ],
+        "name": "Reproduce the defect",
+        "outputs": [
+          "Reproduction record",
+          "Observed-vs-expected discrepancies"
+        ],
+        "preconditions": [
+          "A runnable service, job, or focused test path exists"
+        ],
+        "required": true,
+        "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+      },
+      {
+        "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+        "id": "n4",
+        "inputs": [
+          "Candidate fault locations",
+          "Reproduction record",
+          "Observed discrepancies"
+        ],
+        "name": "Localize the root cause",
+        "outputs": [
+          "Root-cause statement",
+          "Affected invariant",
+          "Patch strategy"
+        ],
+        "preconditions": [
+          "Evidence from inspection and reproduction is available"
+        ],
+        "required": true,
+        "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+      },
+      {
+        "action": "Edit the responsible boundary to preserve public shapes and normal semantics while making validation, authorization or other failure propagation explicit; then run focused normal, invalid, repeated, concurrent, timeout, and partial-failure checks selected by the matrix, inspecting returned artifacts and diagnostics.",
+        "id": "n5_n6",
+        "inputs": [
+          "Patch strategy",
+          "Existing project structure",
+          "Preserved-behavior invariants",
+          "Verification matrix",
+          "Reproduction record"
+        ],
+        "name": "Implement and verify explicit failure propagation",
+        "outputs": [
+          "Targeted source edits",
+          "Updated internal handling",
+          "Verification results",
+          "Residual failures",
+          "Performance observations"
+        ],
+        "preconditions": [
+          "A root cause and patch strategy have been established",
+          "The implementation can be edited and exercised"
+        ],
+        "required": true,
+        "validator": "The change is confined to the requested workspace, restores the affected invariant, preserves normal behavior, makes relevant failures explicit without fallthrough or misleading success, passes the original trigger and required contract checks, and avoids unnecessary serialization, leakage, or latency."
+      },
+      {
+        "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+        "id": "n7",
+        "inputs": [
+          "Verification results",
+          "Repository diff",
+          "Original requirements"
+        ],
+        "name": "Check regression and diff integrity",
+        "outputs": [
+          "Regression assessment",
+          "Final changed-file set"
+        ],
+        "preconditions": [
+          "Adversarial verification has completed"
+        ],
+        "required": true,
+        "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+      },
+      {
+        "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+        "id": "n8",
+        "inputs": [
+          "Final changed-file set",
+          "Verification results"
+        ],
+        "name": "Finalize evidence-backed handoff",
+        "outputs": [
+          "Concise completion summary",
+          "Verification evidence"
+        ],
+        "preconditions": [
+          "Regression assessment is clean or residual risks are documented"
+        ],
+        "required": true,
+        "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+      }
+    ],
+    "or_groups": []
+  }
+]

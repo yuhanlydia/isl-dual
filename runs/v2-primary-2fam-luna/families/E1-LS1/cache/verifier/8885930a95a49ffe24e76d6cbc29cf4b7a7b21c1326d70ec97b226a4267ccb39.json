@@ -1,0 +1,5 @@
+{
+  "failure": "process_report.json:test_p1_report_generator_modified: self = <test_process.TestProcessP1P2ReportGenerator object at 0x71863521a850>\n\n    def test_p1_report_generator_modified(self):\n        \"\"\"The root-cause file must be changed.\"\"\"\n        rg = _read('src/reportGenerator.ts')\n>       assert _BUGGY_BASELINE not in rg, (\n            'reportGenerator.ts still creates baseline candidates without '\n            'failure metadata \u2014 rejected settlements are silently discarded'\n        )\nE       AssertionError: reportGenerator.ts still creates baseline can",
+  "reward": 0.8,
+  "task_id": "E1-LS1-T3"
+}
