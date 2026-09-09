@@ -1,0 +1,145 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n3",
+        "n5"
+      ],
+      [
+        "n4",
+        "n6"
+      ],
+      [
+        "n5",
+        "n6"
+      ]
+    ],
+    "id": "minimal-1-2a51ee4149",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Read the documented input, validation, API, and output contracts; identify existing helpers and side effects.",
+        "id": "n1",
+        "inputs": [
+          "project documentation",
+          "client implementation",
+          "input records"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "validation rules",
+          "dispatch interface",
+          "result schema"
+        ],
+        "preconditions": [
+          "Target project and input batch are available"
+        ],
+        "required": true,
+        "validator": "Required rules and interfaces are explicitly identified before editing."
+      },
+      {
+        "action": "Parse the batch and derive normalized field values, preserving each original record and its zero-based index.",
+        "id": "n2",
+        "inputs": [
+          "input records",
+          "normalization policy"
+        ],
+        "name": "Normalize each record",
+        "outputs": [
+          "indexed normalized records"
+        ],
+        "preconditions": [
+          "Validation rules are identified"
+        ],
+        "required": true,
+        "validator": "Every input record has exactly one preserved index and normalization result."
+      },
+      {
+        "action": "Evaluate all applicable field and cross-field rules for each record, collecting every failure into the required structured error shape without short-circuiting.",
+        "id": "n3",
+        "inputs": [
+          "indexed normalized records",
+          "validation rules"
+        ],
+        "name": "Collect validation failures",
+        "outputs": [
+          "accepted records",
+          "rejected records with complete errors"
+        ],
+        "preconditions": [
+          "Indexed normalized records exist"
+        ],
+        "required": true,
+        "validator": "Rejected records contain original data, index, and all discovered errors; accepted records have no validation failures."
+      },
+      {
+        "action": "Send only accepted records through the existing outbound operation, preserving input order and recording the outbound trace or results.",
+        "id": "n4",
+        "inputs": [
+          "accepted records",
+          "dispatch interface"
+        ],
+        "name": "Dispatch accepted records",
+        "outputs": [
+          "successful results",
+          "dispatch trace"
+        ],
+        "preconditions": [
+          "Accepted records are available"
+        ],
+        "required": true,
+        "validator": "No rejected record appears in the outbound trace, and accepted records are processed in order."
+      },
+      {
+        "action": "Construct the structured invalid-record report using the documented per-record and per-error fields.",
+        "id": "n5",
+        "inputs": [
+          "rejected records"
+        ],
+        "name": "Build rejection report",
+        "outputs": [
+          "failure report"
+        ],
+        "preconditions": [
+          "Rejected records with complete errors are available"
+        ],
+        "required": true,
+        "validator": "Each failure has its original index and errors use one consistent schema with useful values and expectations."
+      },
+      {
+        "action": "Return the documented aggregate result and verify totals, ordering, and the invariant that invalid records were never dispatched.",
+        "id": "n6",
+        "inputs": [
+          "successful results",
+          "failure report",
+          "dispatch trace",
+          "input batch"
+        ],
+        "name": "Assemble and verify batch result",
+        "outputs": [
+          "final batch result"
+        ],
+        "preconditions": [
+          "Successful results",
+          "failure report",
+          "dispatch trace are available"
+        ],
+        "required": true,
+        "validator": "The result matches the public contract; success plus failure counts equal input count and trace contents match accepted records."
+      }
+    ],
+    "or_groups": []
+  }
+]

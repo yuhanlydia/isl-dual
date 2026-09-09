@@ -1,0 +1,310 @@
+[
+  {
+    "edges": [
+      [
+        "inspect_contract",
+        "define_projection"
+      ],
+      [
+        "define_projection",
+        "screen_row"
+      ],
+      [
+        "screen_row",
+        "process_batch"
+      ],
+      [
+        "process_batch",
+        "record_audit"
+      ],
+      [
+        "record_audit",
+        "verify_side_effects"
+      ]
+    ],
+    "id": "transfer_first-1-984a8834da",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Read the existing implementation and project documentation to identify input shape, required output shape, validation rules, side-effect boundaries, and existing audit or mock interfaces.",
+        "id": "inspect_contract",
+        "inputs": [
+          "README",
+          "client or importer module",
+          "input batch",
+          "API/reference docs"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "Explicit validation contract",
+          "Preserved integration points"
+        ],
+        "preconditions": [
+          "Target project and task documentation are available"
+        ],
+        "required": true,
+        "validator": "Required fields, optional fields, normalization rules, error schema, and return schema are identified before editing."
+      },
+      {
+        "action": "Create or reuse a small projection/normalization layer that preserves the original row while exposing normalized values needed for validation and downstream dispatch.",
+        "id": "define_projection",
+        "inputs": [
+          "Raw batch row",
+          "Validation contract"
+        ],
+        "name": "Define normalized row projection",
+        "outputs": [
+          "Normalized candidate",
+          "Original row and index retained"
+        ],
+        "preconditions": [
+          "Validation contract is known"
+        ],
+        "required": true,
+        "validator": "Normalization is deterministic, makes default policies explicit, and does not silently discard source values."
+      },
+      {
+        "action": "Evaluate every applicable rule before any external call, collecting all failures for the row rather than stopping at the first failure.",
+        "id": "screen_row",
+        "inputs": [
+          "Normalized candidate",
+          "Validation rules",
+          "Previously accepted state when uniqueness matters"
+        ],
+        "name": "Screen each row locally",
+        "outputs": [
+          "Complete per-row error list",
+          "Dispatchable valid candidate or rejected row"
+        ],
+        "preconditions": [
+          "Normalized candidate exists"
+        ],
+        "required": true,
+        "validator": "Errors identify the relevant field or parameter, reason, observed value when useful, and expected constraint; invalid rows have no outbound side effect."
+      },
+      {
+        "action": "Iterate through the complete batch in source order, preserve zero-based indices, continue after rejected rows, and dispatch only candidates with no validation errors.",
+        "id": "process_batch",
+        "inputs": [
+          "Input batch",
+          "Row screening result"
+        ],
+        "name": "Process batch in order",
+        "outputs": [
+          "Ordered successes",
+          "Indexed failures"
+        ],
+        "preconditions": [
+          "Rows can be iterated",
+          "Row screening is available"
+        ],
+        "required": true,
+        "validator": "Every input row is represented exactly once as either a success or failure, and valid rows are not blocked by invalid rows."
+      },
+      {
+        "action": "Construct the project\u2019s required structured result, retaining original rejected payloads, detailed errors, side-effect trace, and aggregate counts without changing the public contract.",
+        "id": "record_audit",
+        "inputs": [
+          "Successes",
+          "Failures",
+          "Original rows",
+          "Outbound trace if available"
+        ],
+        "name": "Build structured audit result",
+        "outputs": [
+          "Contract-compatible result",
+          "Summary and audit trace"
+        ],
+        "preconditions": [
+          "Batch processing has completed"
+        ],
+        "required": true,
+        "validator": "Return keys and nested error fields match the documented contract; counts reconcile with total input rows."
+      },
+      {
+        "action": "Run focused checks that valid rows were dispatched, invalid rows were not dispatched, all row-level failures were accumulated, and normalization/default policies are visible where required.",
+        "id": "verify_side_effects",
+        "inputs": [
+          "Result",
+          "Mock/API trace",
+          "Input batch"
+        ],
+        "name": "Verify dispatch boundary",
+        "outputs": [
+          "Verified implementation",
+          "Detected regressions"
+        ],
+        "preconditions": [
+          "Structured result exists"
+        ],
+        "required": true,
+        "validator": "Outbound-call trace contains no rejected row, accepted/rejected partition is complete, and representative multi-error cases retain every applicable failure."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ]
+    ],
+    "id": "transfer_first-2-61162e12e0",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Extract the input shape, required fields, optional fields, normalization rules, outbound-call contract, and required result schema before editing.",
+        "id": "n1",
+        "inputs": [
+          "README",
+          "client implementation",
+          "API/reference documentation",
+          "input data"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "Reusable validation and processing contract"
+        ],
+        "preconditions": [
+          "Target project and input batch are available"
+        ],
+        "required": true,
+        "validator": "Required fields, optionality, and output keys are explicitly identified."
+      },
+      {
+        "action": "Centralize deterministic local checks, including type, presence, emptiness, format, range, uniqueness, ordering, and timezone normalization rules as applicable.",
+        "id": "n2",
+        "inputs": [
+          "Field rules",
+          "range or enum rules",
+          "format rules",
+          "normalization policy"
+        ],
+        "name": "Define local validation policy",
+        "outputs": [
+          "Validation policy",
+          "Consistent structured error schema"
+        ],
+        "preconditions": [
+          "Reusable validation and processing contract exists"
+        ],
+        "required": true,
+        "validator": "Every rejected condition maps to a structured error containing the relevant field or parameter and observed value or comparison context."
+      },
+      {
+        "action": "Parse each raw item and derive the comparison or API-ready representation without mutating the original payload.",
+        "id": "n3",
+        "inputs": [
+          "Raw batch item",
+          "normalization policy"
+        ],
+        "name": "Normalize and project input",
+        "outputs": [
+          "Original item",
+          "Normalized candidate"
+        ],
+        "preconditions": [
+          "Validation policy exists"
+        ],
+        "required": true,
+        "validator": "Naive or encoded values are normalized according to the documented policy, while the original item remains available for reporting."
+      },
+      {
+        "action": "Run all applicable validations for the item and accumulate every failure before deciding whether to dispatch it.",
+        "id": "n4",
+        "inputs": [
+          "Original item",
+          "Normalized candidate",
+          "validation policy"
+        ],
+        "name": "Collect all item errors",
+        "outputs": [
+          "Complete error list or validated candidate"
+        ],
+        "preconditions": [
+          "Normalized candidate exists"
+        ],
+        "required": true,
+        "validator": "An item with multiple independent defects reports multiple errors and does not stop at the first failure."
+      },
+      {
+        "action": "Dispatch only candidates with no validation errors; otherwise record a failure entry containing the original index, original item, and structured errors.",
+        "id": "n5",
+        "inputs": [
+          "Validation result",
+          "validated candidate"
+        ],
+        "name": "Gate outbound operation",
+        "outputs": [
+          "Successful result or failure record",
+          "Outbound trace"
+        ],
+        "preconditions": [
+          "Complete error list or validated candidate exists"
+        ],
+        "required": true,
+        "validator": "No invalid item reaches the external or mock API, and valid items preserve input order."
+      },
+      {
+        "action": "Build the required return object with successes, failures, trace or audit information, and total/succeeded/failed summary counts.",
+        "id": "n6",
+        "inputs": [
+          "Successes",
+          "failures",
+          "outbound trace",
+          "batch metadata"
+        ],
+        "name": "Aggregate batch outcome",
+        "outputs": [
+          "Contract-compliant batch result"
+        ],
+        "preconditions": [
+          "Successful results and failure records exist"
+        ],
+        "required": true,
+        "validator": "Counts reconcile with input length and every failure retains its zero-based index."
+      },
+      {
+        "action": "Run focused checks covering valid dispatch, local rejection, multiple simultaneous errors, optional fields, normalization edge cases, duplicate or ordering rules, and summary consistency.",
+        "id": "n7",
+        "inputs": [
+          "Updated implementation",
+          "representative valid and invalid cases",
+          "batch result"
+        ],
+        "name": "Verify behavior",
+        "outputs": [
+          "Verified implementation",
+          "Evidence of no bad requests"
+        ],
+        "preconditions": [
+          "Contract-compliant batch result exists"
+        ],
+        "required": true,
+        "validator": "Checks confirm invalid inputs are rejected before dispatch and valid inputs continue processing independently."
+      }
+    ],
+    "or_groups": []
+  }
+]

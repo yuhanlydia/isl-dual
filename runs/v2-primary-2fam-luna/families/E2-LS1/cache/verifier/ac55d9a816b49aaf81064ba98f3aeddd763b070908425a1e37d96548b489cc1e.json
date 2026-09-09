@@ -1,0 +1,5 @@
+{
+  "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+  "reward": 0.75,
+  "task_id": "E2-LS1-T2"
+}

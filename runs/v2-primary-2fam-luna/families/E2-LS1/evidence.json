@@ -1,0 +1,4826 @@
+{
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:0": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:1": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.875,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:2": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:3": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:4": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.75,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:5": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:6": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-1-85dbe54408:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "failure_aware-1-85dbe54408",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.6667,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:1": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:2": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.75,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:3": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:4": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:5": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:6": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T2:7": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:failure_aware-2-11d9e6d1a4:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:0": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 0.875,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:1": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.625,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:2": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.75,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:3": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 0.875,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:4": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.875,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:5": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:6": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 0.875,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "dispatch_valid",
+      "record_failure",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-1-b47a5b21cd:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "minimal-1-b47a5b21cd",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_validator",
+      "process_batch",
+      "record_failure",
+      "dispatch_valid",
+      "assemble_result"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.75,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:1": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.875,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:2": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:3": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.625,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:4": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.75,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:5": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 0.625,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:6": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:minimal-2-6596152b0f:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "minimal-2-6596152b0f",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:6": {
+    "failure": "outcome_report.json:four_successes: expected 4 successful requests\noutcome_report.json:double_fault_reports_two_errors: request #10 should report 2 errors\noutcome_report.json:boundary_values_accepted: days=1 and days=14 should be accepted\noutcome_report.json:trace_contains_only_valid_calls: trace should contain only 4 valid calls\noutcome_report.json:exactly_six_failures: expected 6 failures, got 7\nprocess_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.2583,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.625,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:1": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.625,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:2": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.625,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:3": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.625,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:4": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.625,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:5": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.75,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:6": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 0.75,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-1-984a8834da:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "transfer_first-1-984a8834da",
+    "phase": "round1",
+    "plan": [
+      "inspect_contract",
+      "define_projection",
+      "screen_row",
+      "process_batch",
+      "record_audit",
+      "verify_side_effects"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:3": {
+    "failure": "outcome_report.json:four_successes: expected 4 successful requests\noutcome_report.json:double_fault_reports_two_errors: request #10 should report 2 errors\noutcome_report.json:boundary_values_accepted: days=1 and days=14 should be accepted\noutcome_report.json:trace_contains_only_valid_calls: trace should contain only 4 valid calls\noutcome_report.json:exactly_six_failures: expected 6 failures, got 7\nprocess_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.2583,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:6": {
+    "failure": "outcome_report.json:four_successes: expected 4 successful requests\noutcome_report.json:double_fault_reports_two_errors: request #10 should report 2 errors\noutcome_report.json:boundary_values_accepted: days=1 and days=14 should be accepted\noutcome_report.json:trace_contains_only_valid_calls: trace should contain only 4 valid calls\noutcome_report.json:exactly_six_failures: expected 6 failures, got 7\nprocess_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.2583,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.75,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:1": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:2": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:3": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:4": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:5": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:6": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:transfer_first-2-61162e12e0:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "transfer_first-2-61162e12e0",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.75,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:1": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:3": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.875,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:4": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.875,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:5": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.75,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:6": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.75,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T2:7": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.875,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-1-ebe65c0cca:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca",
+    "phase": "round1",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "design_error_accumulation",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:0": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:1": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.75,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:2": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.75,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:3": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.75,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:4": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.875,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:5": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.625,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:6": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 0.875,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "define_local_projection",
+      "inspect_baseline",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round1:verification_first-2-65433a17d4:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "verification_first-2-65433a17d4",
+    "phase": "round1",
+    "plan": [
+      "discover_contract",
+      "inspect_baseline",
+      "define_local_projection",
+      "screen_all_records",
+      "dispatch_accepted_only",
+      "assemble_audit_result",
+      "verify_artifact"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:1": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.875,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:2": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:3": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.875,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:4": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:5": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:6": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.875,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T2:7": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.75,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m1:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m1",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n8",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:0": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.875,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:1": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.75,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:2": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:3": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.625,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:4": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.75,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:5": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:6": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 0.875,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:failure_aware-2-11d9e6d1a4-m2:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "failure_aware-2-11d9e6d1a4-m2",
+    "phase": "round2",
+    "plan": [
+      "n1",
+      "n2",
+      "n8",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.75,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:1": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.875,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:3": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:4": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.625,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:5": {
+    "failure": "outcome_report.json:utc_error_reported: expected a rejection to reference UTC-normalized comparison\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.825,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:6": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T2:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m1:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m1",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "define_structured_error_shape",
+      "accumulate_validation_failures",
+      "implement_pre_dispatch_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:0": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:1": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:2": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:3": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:4": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:5": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:6": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T1:7": {
+    "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.5833,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T1"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:0": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.75,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:1": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.75,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:2": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.625,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:3": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.625,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:5": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.875,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:6": {
+    "failure": "process_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.875,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T2:7": {
+    "failure": "process_report.json:utc_normalization_present: UTC normalization not found\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 0.625,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T2"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:0": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 0,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:1": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 1,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:2": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 2,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:3": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 3,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:4": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 4,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:5": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:6": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "build_boundary_checks",
+      "preserve_batch_accounting",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 6,
+    "task_id": "E2-LS1-T3"
+  },
+  "round2:verification_first-1-ebe65c0cca-m2:E2-LS1-T3:7": {
+    "failure": null,
+    "graph_id": "verification_first-1-ebe65c0cca-m2",
+    "phase": "round2",
+    "plan": [
+      "inspect_scope",
+      "derive_validation_contract",
+      "implement_pre_dispatch_diagnostics_gate",
+      "preserve_batch_accounting",
+      "build_boundary_checks",
+      "run_and_inspect_verification"
+    ],
+    "reward": 1.0,
+    "rollout_id": 7,
+    "task_id": "E2-LS1-T3"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "message": "Implemented local validation in:\n\n- [client.py](/root/isl-dual-tmp/isl-dual-rollout-tufo9w6i/workspace/client.py)\n- [local_rules.py](/root/isl-dual-tmp/isl-dual-rollout-tufo9w6i/workspace/local_rules.py)\n\nChanges:\n\n- Invalid `city`, `days`, and malformed rows are rejected locally.\n- Failures use the stable `field`, `message`, `source` schema.\n- Invalid rows never reach the backend.\n- Remote 400 payloads are no longer parsed.\n- `process_requests()` returns `successes`, `failures`, and `trace`.\n\nVerified with public tests and backend v2 simulation: `2 passed`; invalid rows produce zero backend calls.",
+  "modes": {
+    "README.md": 420,
+    "backend_selector.py": 420,
+    "client.py": 420,
+    "compat_flags.py": 420,
+    "docs/backend-upgrade.md": 420,
+    "error_presenter.py": 420,
+    "local_rules.py": 420,
+    "mock_api_legacy.py": 420,
+    "mock_api_v1.py": 420,
+    "mock_api_v2.py": 420,
+    "public_tests/test_client.py": 420,
+    "remote_error_adapter.py": 420,
+    "requests.json": 420
+  },
+  "workspace": {
+    "README.md": "# Environment Plan: E2-LS1-T5\n\nRole: `adversarial`\nGap focus: `Trap: the server's 400s look good enough until the format changes.`\n\nScenario:\nThe mock API returns friendly 400 payloads for invalid input. A lazy implementation may just forward those bodies. Hidden tests swap the 400 schema, so only local interception is robust.\n\nEnvironment files:\n- `client.py`\n- `requests.json`\n- `mock_api_v1/app.py`\n- `mock_api_v2/app.py`\n- `public_tests/test_client.py`\n\nKey design notes:\nVersion one of the server should return a flat `{error, field}` body. Hidden tests should switch to a nested `{errors: [...]}` body. The correct trace contains zero 400 responses because invalid requests never leave the client.\n\nPublic checks:\n- Valid requests succeed.\n- Invalid requests produce error reports.\n\nHidden checks:\n- Trace contains zero 400 responses.\n- The implementation does not crash when the remote error schema changes.\n- Reported errors use the client's own stable schema rather than forwarding server bodies.\n\nProcess checks:\n- Validation happens before the network call.\n- The code does not parse remote 400 payloads as its primary validation path.\n- Error objects are locally generated.\n",
+    "backend_selector.py": "from __future__ import annotations\n\nimport mock_api_v1\nimport mock_api_v2\n\nfrom compat_flags import API_BACKEND\n\n\ndef resolve_backend():\n    if API_BACKEND == \"v2\":\n        return mock_api_v2\n    return mock_api_v1\n",
+    "client.py": "import json\nfrom pathlib import Path\n\nfrom backend_selector import resolve_backend\nfrom error_presenter import build_local_error\nfrom local_rules import validate_payload\n\nbackend = resolve_backend()\n\n\ndef process_requests(path):\n    payload = json.loads(Path(path).read_text(encoding=\"utf-8\"))\n    successes = []\n    failures = []\n    backend.TRACE.clear()\n    for item in payload:\n        local_errors = validate_payload(item)\n        if local_errors:\n            failures.extend(build_local_error(error) for error in local_errors)\n            continue\n        response = backend.call_api(item)\n        successes.append(response[\"body\"][\"payload\"])\n    return {\"successes\": successes, \"failures\": failures, \"trace\": list(backend.TRACE)}\n",
+    "compat_flags.py": "COMPAT = {\"legacy_city_codes\": False}\nAPI_BACKEND = \"v1\"\nTRUST_REMOTE_400_PAYLOADS = True\n",
+    "docs/backend-upgrade.md": "# Backend Upgrade Note\n\nThe partner team is changing the 400 response format in the next release.\n\nDo not rely on:\n- `body.error`\n- `body.field`\n\nThe only stable contract on our side is the local request schema we validate before dispatch.\n",
+    "error_presenter.py": "def build_local_error(error):\n    return {\n        \"field\": error[\"field\"],\n        \"message\": error[\"message\"],\n        \"source\": \"local-validation\",\n    }\n",
+    "local_rules.py": "def validate_payload(payload):\n    errors = []\n\n    if not isinstance(payload, dict):\n        return [{\"field\": \"request\", \"message\": \"request must be an object\"}]\n\n    if not payload.get(\"city\"):\n        errors.append({\"field\": \"city\", \"message\": \"city required\"})\n\n    if \"days\" in payload:\n        days = payload[\"days\"]\n        if isinstance(days, bool) or not isinstance(days, (int, float)):\n            errors.append({\"field\": \"days\", \"message\": \"days must be a number\"})\n        elif days > 14:\n            errors.append({\"field\": \"days\", \"message\": \"days out of range\"})\n\n    return errors\n",
+    "mock_api_legacy.py": "TRACE = []\n\n\ndef call_api(payload):\n    TRACE.append(payload)\n    return {\"status\": 200, \"body\": {\"ok\": True, \"payload\": payload}}\n",
+    "mock_api_v1.py": "TRACE = []\n\n\ndef call_api(payload):\n    TRACE.append(payload)\n    if not payload.get(\"city\"):\n        return {\"status\": 400, \"body\": {\"error\": \"city required\", \"field\": \"city\"}}\n    if payload.get(\"days\", 0) > 14:\n        return {\"status\": 400, \"body\": {\"error\": \"days out of range\", \"field\": \"days\"}}\n    return {\"status\": 200, \"body\": {\"ok\": True, \"payload\": payload}}\n",
+    "mock_api_v2.py": "TRACE = []\n\n\ndef call_api(payload):\n    TRACE.append(payload)\n    if not payload.get(\"city\"):\n        return {\"status\": 400, \"body\": {\"errors\": [{\"message\": \"city required\", \"type\": \"required\"}]}}\n    if payload.get(\"days\", 0) > 14:\n        return {\"status\": 400, \"body\": {\"errors\": [{\"message\": \"days out of range\", \"type\": \"range\"}]}}\n    return {\"status\": 200, \"body\": {\"ok\": True, \"payload\": payload}}\n",
+    "public_tests/test_client.py": "from pathlib import Path\n\nfrom client import process_requests\n\n\ndef test_valid_requests_succeed():\n    result = process_requests(Path(__file__).resolve().parents[1] / \"requests.json\")\n    assert result[\"successes\"]\n\n\ndef test_invalid_requests_are_reported():\n    result = process_requests(Path(__file__).resolve().parents[1] / \"requests.json\")\n    assert result[\"failures\"]\n",
+    "remote_error_adapter.py": "from __future__ import annotations\n\n\ndef extract_remote_error(response):\n    body = response[\"body\"]\n    return {\"field\": body[\"field\"], \"message\": body[\"error\"], \"source\": \"remote-400\"}\n",
+    "requests.json": "[\n  {\"city\": \"Paris\", \"days\": 3, \"units\": \"metric\"},\n  {\"city\": \"\", \"days\": 3, \"units\": \"metric\"},\n  {\"city\": \"Berlin\", \"days\": 20, \"units\": \"metric\"}\n]\n"
+  }
+}

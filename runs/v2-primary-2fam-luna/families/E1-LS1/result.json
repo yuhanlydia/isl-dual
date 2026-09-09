@@ -1,0 +1,3519 @@
+{
+  "artifact_rewards": {
+    "E1-LS1-T1": 1.0,
+    "E1-LS1-T2": 1.0,
+    "E1-LS1-T3": 1.0
+  },
+  "artifact_scores": {
+    "failure_aware-1-65560af4ff": 0.958,
+    "failure_aware-2-523d40bc4a": 0.964,
+    "minimal-1-7ce8261b0f": 0.974,
+    "minimal-2-acbe1f6594": 0.958,
+    "transfer_first-1-a3bba1f17b": 0.978,
+    "transfer_first-2-2101334119": 0.986,
+    "verification_first-1-be6e9402f8": 0.986,
+    "verification_first-2-31f98ceb5a": 0.968
+  },
+  "baseline_rewards": {
+    "B0_no_skill": 0.6666666666666666,
+    "B1_direct_text_skill": 0.6666666666666666,
+    "B2_one_shot_dag": 0.7000000000000001,
+    "B3_static_critic": 0.6666666666666666,
+    "B4_greedy_forward": 0.6666666666666666,
+    "B5_mcts_forward": 0.6666666666666666,
+    "B6_isl_dual": 0.6666666666666666,
+    "B7_oracle_solution_procedure": 0.6666666666666666,
+    "B8_curated_skill": 0.6666666666666666
+  },
+  "baseline_task_scores": {
+    "B0_no_skill": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B1_direct_text_skill": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B2_one_shot_dag": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 1.0,
+      "E1-LS1-T6": 0.75
+    },
+    "B3_static_critic": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B4_greedy_forward": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B5_mcts_forward": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B6_isl_dual": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B7_oracle_solution_procedure": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    },
+    "B8_curated_skill": {
+      "E1-LS1-T4": 0.35,
+      "E1-LS1-T5": 0.9,
+      "E1-LS1-T6": 0.75
+    }
+  },
+  "benchmark_commit": "9e3daa339987c3cfa624121e1be442593a53d43c",
+  "candidate_deployment_scores": {
+    "failure_aware-1-65560af4ff": 0.6556666666666667,
+    "failure_aware-2-523d40bc4a": 0.6666666666666666,
+    "minimal-1-7ce8261b0f": 0.6666666666666666,
+    "minimal-2-acbe1f6594": 0.7000000000000001,
+    "transfer_first-1-a3bba1f17b": 0.6666666666666666,
+    "transfer_first-2-2101334119": 0.6666666666666666,
+    "verification_first-1-be6e9402f8": 0.6556666666666667,
+    "verification_first-2-31f98ceb5a": 0.6666666666666666
+  },
+  "candidate_graphs": {
+    "failure_aware-1-65560af4ff": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n2",
+          "n4"
+        ],
+        [
+          "n3",
+          "n5"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ],
+        [
+          "n7",
+          "n8"
+        ]
+      ],
+      "id": "failure_aware-1-65560af4ff",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Inventory the relevant entrypoints, dependencies, mutable state, outputs, and explicit invariants without replacing or relocating the existing project.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Existing project tree",
+            "Declared API, CLI, or artifact contract"
+          ],
+          "name": "Establish scope and baseline",
+          "outputs": [
+            "Scoped component map",
+            "Baseline behavioral contract",
+            "Candidate stateful or failure-sensitive boundaries"
+          ],
+          "preconditions": [
+            "The target service or job and its existing verification surface are available"
+          ],
+          "required": true,
+          "validator": "The map identifies the execution entrypoint, affected downstream artifacts, and normal-versus-failure behavior that must remain distinguishable."
+        },
+        {
+          "action": "Read the supplied diagnostics and trace the affected control flow, data transformations, error handling, and shared-state access paths.",
+          "id": "n2",
+          "inputs": [
+            "Logs or diagnostics",
+            "Relevant source files",
+            "Available tests and configuration"
+          ],
+          "name": "Collect failure evidence",
+          "outputs": [
+            "Evidence-backed failure hypotheses",
+            "Relevant code paths",
+            "Potential invariant violation"
+          ],
+          "preconditions": [
+            "A scoped component map exists"
+          ],
+          "required": true,
+          "validator": "Each hypothesis is tied to observable evidence or a specific control-flow/state transition."
+        },
+        {
+          "action": "Exercise the smallest reproducer, then vary timing and inputs to distinguish deterministic bugs from race, validation, timeout, authorization, or fallback behavior.",
+          "id": "n3",
+          "inputs": [
+            "Representative valid and invalid inputs",
+            "Concurrent, malformed, timeout, or adversarial cases suggested by the task"
+          ],
+          "name": "Reproduce under stress",
+          "outputs": [
+            "Reproduction observations",
+            "Failure trigger conditions",
+            "Normal-path comparison"
+          ],
+          "preconditions": [
+            "The affected entrypoint can be invoked safely"
+          ],
+          "required": true,
+          "validator": "The observed result demonstrates the reported failure or narrows it to a falsifiable trigger while confirming at least one unaffected baseline."
+        },
+        {
+          "action": "Inspect alternate control-flow paths and boundary conditions to identify where invalid, stale, partial, or concurrently accessed data can be mistaken for valid output.",
+          "id": "n4",
+          "inputs": [
+            "Entrypoints",
+            "Call graph",
+            "Types or schemas",
+            "State mutation and exception paths"
+          ],
+          "name": "Analyze statically when runtime evidence is incomplete",
+          "outputs": [
+            "Static root-cause candidate",
+            "Required invariant or synchronization boundary",
+            "Minimal change location"
+          ],
+          "preconditions": [
+            "Relevant source and configuration are readable"
+          ],
+          "required": true,
+          "validator": "The candidate explains the observed artifact and predicts a concrete regression check."
+        },
+        {
+          "action": "Select the explanation that accounts for the failure, then define the invariant that must hold; preserve valid behavior and ensure failures remain observable rather than being converted into misleading success data.",
+          "id": "n5",
+          "inputs": [
+            "Reproduction or static analysis findings",
+            "Public behavior requirements",
+            "Existing design conventions"
+          ],
+          "name": "Confirm root cause and repair invariant",
+          "outputs": [
+            "Confirmed root cause",
+            "Explicit repair invariant",
+            "Constrained patch strategy"
+          ],
+          "preconditions": [
+            "At least one evidence path from n3 or n4 is available"
+          ],
+          "required": true,
+          "validator": "The invariant covers the failing boundary, does not rely on hiding exceptions, and does not impose unnecessary serialization or broaden access."
+        },
+        {
+          "action": "Edit the existing implementation at the narrowest responsible boundary, using safe state coordination, strict validation, explicit failure metadata, or correct authorization/error propagation as appropriate.",
+          "id": "n6",
+          "inputs": [
+            "Constrained patch strategy",
+            "Existing module interfaces",
+            "Concurrency and error-handling requirements"
+          ],
+          "name": "Implement the minimal compatible fix",
+          "outputs": [
+            "Updated project files",
+            "Preserved public interfaces",
+            "Observable failure handling"
+          ],
+          "preconditions": [
+            "A confirmed root cause and repair invariant exist"
+          ],
+          "required": true,
+          "validator": "The patch leaves normal outputs compatible, handles the failing case explicitly, and avoids catch-and-ignore behavior or excessive global locking."
+        },
+        {
+          "action": "Run focused checks covering successful behavior, invalid inputs, failure reporting, security boundaries, repeated requests, and output persistence; inspect status codes, fields, logs, and process results.",
+          "id": "n7",
+          "inputs": [
+            "Updated project",
+            "Baseline cases",
+            "Malformed and failure cases",
+            "Expected response, report, or artifact schema"
+          ],
+          "name": "Validate contracts and regressions",
+          "outputs": [
+            "Contract validation results",
+            "Regression evidence",
+            "Remaining risks"
+          ],
+          "preconditions": [
+            "The implementation has been updated"
+          ],
+          "required": true,
+          "validator": "Success cases retain required fields and values; failure cases have non-success status or explicit non-healthy status, diagnostics, and no leaked or fabricated data."
+        },
+        {
+          "action": "Repeat the relevant workload under contention and adverse timing, compare latency and duplication behavior with the baseline, and review the final diff for scope, portability, and accidental artifacts.",
+          "id": "n8",
+          "inputs": [
+            "Concurrent or burst workloads",
+            "Timeout and rejection scenarios",
+            "Performance observations",
+            "Changed-file diff"
+          ],
+          "name": "Stress-test and finalize",
+          "outputs": [
+            "Stress-test evidence",
+            "Performance and safety assessment",
+            "Final edited artifacts"
+          ],
+          "preconditions": [
+            "Focused contract checks pass"
+          ],
+          "required": true,
+          "validator": "Concurrent requests or parallel sources complete without races or false success; valid work remains reasonably responsive; only in-scope existing project files are changed."
+        }
+      ],
+      "or_groups": [
+        {
+          "id": "evidence-path",
+          "members": [
+            "n3",
+            "n4"
+          ],
+          "required": true
+        }
+      ]
+    },
+    "failure_aware-2-523d40bc4a": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n1",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ],
+        [
+          "n1",
+          "n7"
+        ]
+      ],
+      "id": "failure_aware-2-523d40bc4a",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Extract normal-path invariants, failure-path expectations, safety constraints, and explicitly prohibited shortcuts into a verification checklist.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Declared API, CLI, or output contract"
+          ],
+          "name": "Define_contract_and_failure_surface",
+          "outputs": [
+            "Behavior checklist",
+            "Failure-mode matrix",
+            "Scope boundary"
+          ],
+          "preconditions": [
+            "The task identifies an existing service or job and expected behavior."
+          ],
+          "required": false,
+          "validator": "Checklist covers successful behavior, representative invalid or failed inputs, relevant concurrency or timing conditions, and required artifact location."
+        },
+        {
+          "action": "Trace the relevant execution paths and shared state, inspect error conversion and fallback logic, and identify suspicious assumptions without changing files.",
+          "id": "n2",
+          "inputs": [
+            "Logs or diagnostics",
+            "Named source files",
+            "Adjacent types, configuration, and call sites"
+          ],
+          "name": "Inspect_targeted_evidence",
+          "outputs": [
+            "Execution map",
+            "Candidate invariants",
+            "Ranked root-cause hypotheses"
+          ],
+          "preconditions": [
+            "n1 has produced a scope and failure checklist."
+          ],
+          "required": false,
+          "validator": "Each hypothesis is tied to a concrete code path or observed diagnostic and distinguishes symptoms from possible causes."
+        },
+        {
+          "action": "Run focused reproductions across normal, boundary, and failure conditions; capture status, output shape, logs, timing, and state transitions.",
+          "id": "n3",
+          "inputs": [
+            "Existing test harness or CLI",
+            "Representative valid and invalid inputs",
+            "Stress, timeout, malformed, or authorization variants as applicable"
+          ],
+          "name": "Reproduce_under_representative_conditions",
+          "outputs": [
+            "Minimal reproducer",
+            "Observed failure signatures",
+            "Baseline behavior"
+          ],
+          "preconditions": [
+            "n2 has identified executable paths or test entry points."
+          ],
+          "required": false,
+          "validator": "The reproducer demonstrates the reported defect or a deterministic equivalent, while the baseline confirms unaffected behavior that must remain stable."
+        },
+        {
+          "action": "Locate the earliest violated invariant, choose the smallest existing-code change that restores it, and define explicit handling for rejected, timed-out, malformed, or competing operations instead of masking errors.",
+          "id": "n4",
+          "inputs": [
+            "Execution map",
+            "Failure signatures",
+            "Behavior checklist"
+          ],
+          "name": "Select_invariant_preserving_fix",
+          "outputs": [
+            "Fix design",
+            "Regression risks",
+            "Validation cases"
+          ],
+          "preconditions": [
+            "n3 provides an observed failure signature.",
+            "n2 provides at least one code-level hypothesis."
+          ],
+          "required": false,
+          "validator": "The design explains why the failure occurs, preserves the public contract, and does not rely on swallowing exceptions, unsafe fallback values, or excessive serialization."
+        },
+        {
+          "action": "Edit the existing implementation in place, keeping interfaces and successful results compatible while making shared-state transitions, validation, error propagation, and diagnostics explicit and safe.",
+          "id": "n5",
+          "inputs": [
+            "Fix design",
+            "Existing project structure"
+          ],
+          "name": "Implement_scoped_patch",
+          "outputs": [
+            "Patched source files",
+            "Implementation notes"
+          ],
+          "preconditions": [
+            "n4 has selected a fix boundary and validation cases."
+          ],
+          "required": false,
+          "validator": "Only in-scope existing files are changed; the patch addresses the identified invariant and leaves no placeholder, stub, or unconditional success path."
+        },
+        {
+          "action": "Validate successful behavior and failure semantics separately, including repeated or overlapping operations, malformed inputs, partial upstream failures, authorization boundaries, output persistence, and diagnostic visibility as applicable.",
+          "id": "n6",
+          "inputs": [
+            "Patched service or job",
+            "Normal-path cases",
+            "Failure and boundary cases",
+            "Concurrency or timing cases when relevant"
+          ],
+          "name": "Exercise_failure_aware_validation",
+          "outputs": [
+            "Validation results",
+            "Remaining defects or regressions",
+            "Evidence of safe failure behavior"
+          ],
+          "preconditions": [
+            "n5 produced a patch.",
+            "n1 checklist is available."
+          ],
+          "required": false,
+          "validator": "Valid cases retain required status, fields, and values; invalid or failed cases return explicit non-success states with no misleading data leakage or false healthy defaults; concurrent execution remains correct."
+        },
+        {
+          "action": "Review the patch for hidden exception suppression, accidental contract changes, race-prone state, over-broad access, misleading fallback values, unnecessary bottlenecks, and edits outside the requested workspace.",
+          "id": "n7",
+          "inputs": [
+            "Validation results",
+            "Changed-file diff",
+            "Original task contract"
+          ],
+          "name": "Review_regression_and_scope",
+          "outputs": [
+            "Final acceptance decision",
+            "Residual risk summary"
+          ],
+          "preconditions": [
+            "n6 has completed the validation matrix."
+          ],
+          "required": false,
+          "validator": "All required checks pass, the diff is narrowly scoped, and any unresolved limitation is explicit rather than represented as success."
+        }
+      ],
+      "or_groups": []
+    },
+    "minimal-1-7ce8261b0f": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n1",
+          "n3"
+        ],
+        [
+          "n2",
+          "n4"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ]
+      ],
+      "id": "minimal-1-7ce8261b0f",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Inspect the supplied evidence and map the relevant request, job, authentication, or processing path without replacing the project structure.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Existing source tree",
+            "Provided logs, entrypoints, and related modules"
+          ],
+          "name": "Orient to the existing service",
+          "outputs": [
+            "Relevant files and execution boundaries",
+            "Initial list of observed symptoms and constraints"
+          ],
+          "preconditions": [
+            "The task workspace and existing project are accessible"
+          ],
+          "required": true,
+          "validator": "Relevant entrypoints, dependencies, and diagnostic evidence are identified."
+        },
+        {
+          "action": "Write down the required success, failure, validation, status, logging, persistence, and concurrency semantics that must remain externally observable.",
+          "id": "n2",
+          "inputs": [
+            "Task requirements",
+            "Existing route, CLI, or middleware behavior",
+            "Declared types and response schemas"
+          ],
+          "name": "Extract the observable contract",
+          "outputs": [
+            "Behavioral contract",
+            "Preservation invariants",
+            "Adversarial input matrix"
+          ],
+          "preconditions": [
+            "Initial project orientation is complete"
+          ],
+          "required": true,
+          "validator": "The contract covers both normal behavior and explicitly required failure behavior."
+        },
+        {
+          "action": "Follow the failing value, exception, token, promise, cache entry, or shared state from input through transformation and output, locating the first incorrect interpretation or unsafe boundary.",
+          "id": "n3",
+          "inputs": [
+            "Source modules",
+            "Diagnostic evidence",
+            "Behavioral contract"
+          ],
+          "name": "Trace the failure lifecycle",
+          "outputs": [
+            "Root-cause hypothesis",
+            "Affected state transitions",
+            "Candidate repair locations"
+          ],
+          "preconditions": [
+            "Relevant execution boundaries are identified"
+          ],
+          "required": true,
+          "validator": "The hypothesis explains the observed failure and is tied to specific existing code paths."
+        },
+        {
+          "action": "Choose the smallest targeted change that restores correct semantics, preserves valid behavior, and explicitly handles malformed, failed, repeated, or concurrent execution where applicable.",
+          "id": "n4",
+          "inputs": [
+            "Preservation invariants",
+            "Root-cause hypothesis",
+            "Candidate repair locations"
+          ],
+          "name": "Design a minimal invariant-preserving repair",
+          "outputs": [
+            "Patch design",
+            "Error and state-handling rules",
+            "Validation plan"
+          ],
+          "preconditions": [
+            "Behavioral contract is defined",
+            "Root-cause hypothesis is supported by the code path"
+          ],
+          "required": true,
+          "validator": "The design does not rely on hiding failures, broad serialization, weakening validation, or replacing the existing application."
+        },
+        {
+          "action": "Edit the existing implementation in place, keeping public interfaces and unrelated behavior stable while adding the required synchronization, validation, failure propagation, or response handling.",
+          "id": "n5",
+          "inputs": [
+            "Patch design",
+            "Existing project files"
+          ],
+          "name": "Apply the targeted implementation change",
+          "outputs": [
+            "Updated source artifacts"
+          ],
+          "preconditions": [
+            "A supported repair design exists"
+          ],
+          "required": true,
+          "validator": "The edits are confined to the task workspace and compile or parse according to the project language."
+        },
+        {
+          "action": "Run focused checks for normal requests or jobs, malformed inputs, upstream failures, repeated or overlapping work, status and response shape, diagnostic behavior, and output persistence as relevant to the task.",
+          "id": "n6",
+          "inputs": [
+            "Validation plan",
+            "Behavioral contract",
+            "Updated implementation"
+          ],
+          "name": "Validate normal and adversarial execution",
+          "outputs": [
+            "Observed validation results",
+            "Remaining defects, if any"
+          ],
+          "preconditions": [
+            "Updated source artifacts are available"
+          ],
+          "required": true,
+          "validator": "Valid cases preserve the contract and invalid, failed, or concurrent cases produce explicit safe outcomes without accidental success."
+        },
+        {
+          "action": "Inspect the final diff and required artifact locations, remove accidental debugging or unrelated edits, and confirm the deliverable is usable by the existing verifier and runtime.",
+          "id": "n7",
+          "inputs": [
+            "Updated source artifacts",
+            "Validation results",
+            "Task deliverable requirements"
+          ],
+          "name": "Review the final artifact boundary",
+          "outputs": [
+            "Final corrected project artifacts",
+            "Completion assessment"
+          ],
+          "preconditions": [
+            "Focused validation has completed"
+          ],
+          "required": true,
+          "validator": "Required files remain in place, the implementation is not a stub, and all stated acceptance conditions are addressed."
+        }
+      ],
+      "or_groups": []
+    },
+    "minimal-2-acbe1f6594": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ]
+      ],
+      "id": "minimal-2-acbe1f6594",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the supplied evidence and trace the affected request or job from its entry point through validation, processing, error handling, and output assembly.",
+          "id": "n1",
+          "inputs": [
+            "Failure logs or symptoms",
+            "Relevant entry-point and helper modules"
+          ],
+          "name": "Inspect evidence and entry points",
+          "outputs": [
+            "A compact control-flow map",
+            "Candidate failure boundaries"
+          ],
+          "preconditions": [
+            "The target project and observed failure evidence are accessible."
+          ],
+          "required": true,
+          "validator": "The affected execution path and its externally visible contract are identified without relying on inferred execution history."
+        },
+        {
+          "action": "State the invariants that must hold for valid, invalid, concurrent, timed-out, or unauthorized inputs, then compare them with the existing state transitions and shared-data assumptions.",
+          "id": "n2",
+          "inputs": [
+            "Control-flow map",
+            "Documented success and failure behavior"
+          ],
+          "name": "Extract invariants and failure conditions",
+          "outputs": [
+            "Root-cause hypotheses tied to violated invariants",
+            "Required compatibility constraints"
+          ],
+          "preconditions": [
+            "The affected control flow is mapped."
+          ],
+          "required": true,
+          "validator": "Each hypothesis explains the observed symptom and distinguishes a real failure from an acceptable degraded result."
+        },
+        {
+          "action": "Run targeted checks that exercise the suspected boundary, including relevant malformed-input, repeated-input, failure, or parallel cases, and reject hypotheses that do not reproduce the defect.",
+          "id": "n3",
+          "inputs": [
+            "Candidate root causes",
+            "Existing tests, logs, or small reproducible probes"
+          ],
+          "name": "Confirm the root cause with focused checks",
+          "outputs": [
+            "Confirmed root cause",
+            "Minimal regression scenarios"
+          ],
+          "preconditions": [
+            "At least one invariant violation or unsafe transition is hypothesized."
+          ],
+          "required": true,
+          "validator": "The selected cause is supported by an observable failing check or direct code-level proof."
+        },
+        {
+          "action": "Edit the existing implementation at the narrowest responsible boundary so state ownership, validation, error classification, and output metadata remain explicit while normal behavior and public shapes are preserved.",
+          "id": "n4",
+          "inputs": [
+            "Confirmed root cause",
+            "Minimal regression scenarios",
+            "Existing project structure"
+          ],
+          "name": "Implement a focused invariant-preserving fix",
+          "outputs": [
+            "Updated project files",
+            "A fix that handles the failing path without masking errors or imposing unnecessary global serialization"
+          ],
+          "preconditions": [
+            "The root cause and compatibility constraints are confirmed."
+          ],
+          "required": true,
+          "validator": "The patch changes existing code in place, preserves normal-path contracts, and does not merely catch, coerce, or hide the underlying failure."
+        },
+        {
+          "action": "Test successful requests or jobs, invalid inputs, repeated or overlapping executions, and the relevant degraded path; inspect status codes, structured outputs, diagnostics, and persistence or concurrency behavior.",
+          "id": "n5",
+          "inputs": [
+            "Updated project files",
+            "Minimal regression scenarios"
+          ],
+          "name": "Exercise regression and adversarial cases",
+          "outputs": [
+            "Regression results",
+            "Evidence that failures are represented honestly and valid results remain usable"
+          ],
+          "preconditions": [
+            "The focused fix is implemented."
+          ],
+          "required": true,
+          "validator": "All required response or report fields remain present, invalid cases fail safely, and the previously failing scenario no longer produces the bad artifact."
+        },
+        {
+          "action": "Review the final diff and run the project\u2019s available verification commands, confirming edits stay within scope and required artifacts are written in the expected format and location.",
+          "id": "n6",
+          "inputs": [
+            "Updated project files",
+            "Regression results",
+            "Task-defined artifact location"
+          ],
+          "name": "Verify deliverables and scope",
+          "outputs": [
+            "Verified final artifact set",
+            "Concise handoff summary"
+          ],
+          "preconditions": [
+            "Regression checks pass or any remaining issue is understood."
+          ],
+          "required": true,
+          "validator": "The verifier-facing artifacts exist, compile or execute successfully, and no unrelated replacement or relocation of the project occurred."
+        }
+      ],
+      "or_groups": []
+    },
+    "transfer_first-1-a3bba1f17b": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n5",
+          "n7"
+        ],
+        [
+          "n6",
+          "n8"
+        ],
+        [
+          "n7",
+          "n8"
+        ]
+      ],
+      "id": "transfer_first-1-a3bba1f17b",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Inspect the named entrypoints and adjacent modules, record externally visible behavior, enumerate invariants, and identify restrictions on acceptable changes.",
+          "id": "n1",
+          "inputs": [
+            "Existing source files",
+            "Logs or diagnostics",
+            "Documented API, CLI, or data-shape requirements"
+          ],
+          "name": "establish_scope_and_contract",
+          "outputs": [
+            "Contract checklist",
+            "Relevant execution paths",
+            "Candidate files for investigation"
+          ],
+          "preconditions": [
+            "The target project and task description are available"
+          ],
+          "required": true,
+          "validator": "The checklist covers success, validation, failure, observability, and performance expectations without copying case-specific values."
+        },
+        {
+          "action": "Run focused probes that exercise both the reported failure condition and a normal successful path; capture status, payload shape, logs, timing, and state changes.",
+          "id": "n2",
+          "inputs": [
+            "Candidate files",
+            "Representative valid inputs",
+            "Malformed, concurrent, expired, rejected, or timeout-prone probes as applicable"
+          ],
+          "name": "reproduce_observed_failure",
+          "outputs": [
+            "Minimal reproducer",
+            "Baseline behavior",
+            "Failure observations"
+          ],
+          "preconditions": [
+            "A contract checklist exists",
+            "The existing project can be executed or tested"
+          ],
+          "required": true,
+          "validator": "The reproducer distinguishes the faulty path from normal behavior and records evidence rather than relying on an inferred exception alone."
+        },
+        {
+          "action": "Trace the failing data and control flow to its first incorrect state transition, then express the required invariant that would prevent the symptom while preserving legitimate behavior.",
+          "id": "n3",
+          "inputs": [
+            "Execution traces",
+            "Shared-state or lifecycle transitions",
+            "Error and settlement handling",
+            "Authorization or response construction flow"
+          ],
+          "name": "trace_root_cause_and_invariant",
+          "outputs": [
+            "Root-cause statement",
+            "Invariant to enforce",
+            "Compatibility boundaries"
+          ],
+          "preconditions": [
+            "A minimal reproducer and baseline observations exist"
+          ],
+          "required": true,
+          "validator": "The proposed invariant explains the observed failure and identifies why superficial exception catching, fallback values, or broad serialization would be insufficient."
+        },
+        {
+          "action": "Choose the smallest maintainable repair point, including explicit state or error representation, safe ownership of shared state, and separation of validation from business processing where relevant.",
+          "id": "n4",
+          "inputs": [
+            "Existing module boundaries",
+            "Language and framework conventions",
+            "Contract checklist",
+            "Performance and security constraints"
+          ],
+          "name": "design_localized_repair",
+          "outputs": [
+            "Patch design",
+            "Regression scenarios",
+            "Expected observable effects"
+          ],
+          "preconditions": [
+            "The root cause and invariant are documented"
+          ],
+          "required": true,
+          "validator": "The design preserves public shapes and normal success semantics, makes failure states explicit, and limits synchronization or policy changes to the necessary scope."
+        },
+        {
+          "action": "Apply the repair in place using the project's existing architecture; retain useful diagnostics, avoid stubs and hidden fallbacks, and update shared types or helpers when needed to represent the invariant correctly.",
+          "id": "n5",
+          "inputs": [
+            "Patch design",
+            "Existing implementation",
+            "Regression scenarios"
+          ],
+          "name": "implement_existing_project_fix",
+          "outputs": [
+            "Edited project files",
+            "Implemented failure handling",
+            "Updated internal representations"
+          ],
+          "preconditions": [
+            "A localized repair design exists",
+            "The target files are writable"
+          ],
+          "required": true,
+          "validator": "The diff is localized, compiles or parses, and contains a real root-cause fix rather than merely changing output text or suppressing errors."
+        },
+        {
+          "action": "Run focused and available automated tests across successful requests or jobs, malformed inputs, authorization boundaries, partial failures, and output persistence; verify exact status and schema requirements.",
+          "id": "n6",
+          "inputs": [
+            "Edited project",
+            "Contract checklist",
+            "Minimal reproducer",
+            "Normal and invalid test cases"
+          ],
+          "name": "validate_normal_and_failure_contracts",
+          "outputs": [
+            "Contract test results",
+            "Compatibility evidence",
+            "Remaining defects if any"
+          ],
+          "preconditions": [
+            "The patch is implemented"
+          ],
+          "required": true,
+          "validator": "Normal valid flows remain successful, invalid or failed flows are non-misleading and appropriately rejected or marked, and required artifacts are produced in the expected location."
+        },
+        {
+          "action": "Exercise race-prone, adversarial, and partial-failure scenarios; confirm no data leakage or silent success, diagnostics remain useful, and throughput is not degraded by unnecessary global serialization.",
+          "id": "n7",
+          "inputs": [
+            "Concurrent or repeated invocations",
+            "Boundary encodings and claims",
+            "Timeout and rejection simulations",
+            "Latency and logging observations"
+          ],
+          "name": "stress_adversarial_and_performance_paths",
+          "outputs": [
+            "Stress results",
+            "Security and observability evidence",
+            "Performance comparison"
+          ],
+          "preconditions": [
+            "The patch passes focused contract checks"
+          ],
+          "required": true,
+          "validator": "Repeated runs are stable, rejected inputs cannot reach protected data, failures remain visible, and concurrency or latency behavior stays within the stated constraints."
+        },
+        {
+          "action": "Review the final changes for accidental scope expansion, verify the existing entrypoints and output artifacts are intact, perform a final smoke check, and summarize the completed repair.",
+          "id": "n8",
+          "inputs": [
+            "Final diff",
+            "Test and stress results",
+            "Artifact-location requirements"
+          ],
+          "name": "review_diff_and_deliver",
+          "outputs": [
+            "Verified final artifacts",
+            "Validation summary",
+            "Concise handoff"
+          ],
+          "preconditions": [
+            "Contract validation and stress validation have completed"
+          ],
+          "required": true,
+          "validator": "All edits remain under the requested project, no unrelated destructive changes or generated stubs were introduced, and the handoff identifies what was fixed and how it was verified."
+        }
+      ],
+      "or_groups": []
+    },
+    "transfer_first-2-2101334119": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n1",
+          "n3"
+        ],
+        [
+          "n2",
+          "n4"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ]
+      ],
+      "id": "transfer_first-2-2101334119",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Extract externally observable success criteria, protected invariants, failure conditions, and permitted edit scope.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Declared artifact boundaries"
+          ],
+          "name": "Define contract and scope",
+          "outputs": [
+            "Behavioral contract",
+            "Scope constraints"
+          ],
+          "preconditions": [
+            "A failing software task and its existing project are available"
+          ],
+          "required": true,
+          "validator": "All required behaviors and non-goals are stated without prescribing implementation details."
+        },
+        {
+          "action": "Trace the affected execution path and compare implementation assumptions with direct failure evidence.",
+          "id": "n2",
+          "inputs": [
+            "Relevant source files",
+            "Logs, traces, tests, or diagnostics"
+          ],
+          "name": "Inspect implementation and evidence",
+          "outputs": [
+            "Candidate fault locations",
+            "Observed invariants and state transitions"
+          ],
+          "preconditions": [
+            "Behavioral contract is available",
+            "Project artifacts are readable"
+          ],
+          "required": true,
+          "validator": "Each candidate is linked to concrete code and evidence."
+        },
+        {
+          "action": "Reproduce the failure and probe nearby boundary conditions while recording status, payload, logging, and side effects.",
+          "id": "n3",
+          "inputs": [
+            "Representative valid inputs",
+            "Malformed, concurrent, delayed, or adversarial variants as applicable"
+          ],
+          "name": "Exercise the failure mode",
+          "outputs": [
+            "Reproduction result",
+            "Failure characteristics",
+            "Regression probes"
+          ],
+          "preconditions": [
+            "Behavioral contract is available",
+            "A runnable test or execution path exists"
+          ],
+          "required": true,
+          "validator": "The observed failure distinguishes the real defect from unrelated symptoms."
+        },
+        {
+          "action": "Choose the smallest causal change that restores the violated invariant while preserving normal behavior, interface shape, and appropriate failure visibility.",
+          "id": "n4",
+          "inputs": [
+            "Implementation trace",
+            "Reproduction result",
+            "Behavioral contract"
+          ],
+          "name": "Select root cause and repair invariant",
+          "outputs": [
+            "Root-cause hypothesis",
+            "Minimal repair design"
+          ],
+          "preconditions": [
+            "Candidate fault locations are identified",
+            "Failure characteristics are available"
+          ],
+          "required": true,
+          "validator": "The repair design explains the failure and does not rely on hiding errors or removing required behavior."
+        },
+        {
+          "action": "Modify the existing implementation in place, retaining compatible interfaces and adding only narrowly scoped state, validation, error, or synchronization handling required by the invariant.",
+          "id": "n5",
+          "inputs": [
+            "Root-cause hypothesis",
+            "Minimal repair design",
+            "Existing project files"
+          ],
+          "name": "Apply focused implementation change",
+          "outputs": [
+            "Patched project artifacts"
+          ],
+          "preconditions": [
+            "A validated repair design is available",
+            "Edit scope is known"
+          ],
+          "required": true,
+          "validator": "The patch is localized, syntactically valid, and preserves the declared public contract."
+        },
+        {
+          "action": "Run focused tests and adversarial checks, confirm observable outputs and diagnostics, and verify that the fix generalizes across equivalent inputs and related execution paths.",
+          "id": "n6",
+          "inputs": [
+            "Patched project",
+            "Normal requests",
+            "Failure and boundary probes",
+            "Concurrency or timing probes when relevant"
+          ],
+          "name": "Verify transfer and regressions",
+          "outputs": [
+            "Verification evidence",
+            "Residual-risk assessment"
+          ],
+          "preconditions": [
+            "Patched project artifacts exist",
+            "Regression probes are available"
+          ],
+          "required": true,
+          "validator": "Normal behavior passes, the original failure is corrected, required failures remain visible, and no prohibited workaround is used."
+        }
+      ],
+      "or_groups": []
+    },
+    "transfer_first-2-2101334119-m1": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n1",
+          "n3"
+        ],
+        [
+          "n2",
+          "n4"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5a"
+        ],
+        [
+          "n5a",
+          "n5b"
+        ],
+        [
+          "n5b",
+          "n6"
+        ]
+      ],
+      "id": "transfer_first-2-2101334119-m1",
+      "metadata": {
+        "mutation": "SPLIT_NODE",
+        "parent_id": "transfer_first-2-2101334119"
+      },
+      "nodes": [
+        {
+          "action": "Extract externally observable success criteria, protected invariants, failure conditions, and permitted edit scope.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Declared artifact boundaries"
+          ],
+          "name": "Define contract and scope",
+          "outputs": [
+            "Behavioral contract",
+            "Scope constraints"
+          ],
+          "preconditions": [
+            "A failing software task and its existing project are available"
+          ],
+          "required": true,
+          "validator": "All required behaviors and non-goals are stated without prescribing implementation details."
+        },
+        {
+          "action": "Trace the affected execution path and compare implementation assumptions with direct failure evidence.",
+          "id": "n2",
+          "inputs": [
+            "Relevant source files",
+            "Logs, traces, tests, or diagnostics"
+          ],
+          "name": "Inspect implementation and evidence",
+          "outputs": [
+            "Candidate fault locations",
+            "Observed invariants and state transitions"
+          ],
+          "preconditions": [
+            "Behavioral contract is available",
+            "Project artifacts are readable"
+          ],
+          "required": true,
+          "validator": "Each candidate is linked to concrete code and evidence."
+        },
+        {
+          "action": "Reproduce the failure and probe nearby boundary conditions while recording status, payload, logging, and side effects.",
+          "id": "n3",
+          "inputs": [
+            "Representative valid inputs",
+            "Malformed, concurrent, delayed, or adversarial variants as applicable"
+          ],
+          "name": "Exercise the failure mode",
+          "outputs": [
+            "Reproduction result",
+            "Failure characteristics",
+            "Regression probes"
+          ],
+          "preconditions": [
+            "Behavioral contract is available",
+            "A runnable test or execution path exists"
+          ],
+          "required": true,
+          "validator": "The observed failure distinguishes the real defect from unrelated symptoms."
+        },
+        {
+          "action": "Choose the smallest causal change that restores the violated invariant while preserving normal behavior, interface shape, and appropriate failure visibility.",
+          "id": "n4",
+          "inputs": [
+            "Implementation trace",
+            "Reproduction result",
+            "Behavioral contract"
+          ],
+          "name": "Select root cause and repair invariant",
+          "outputs": [
+            "Root-cause hypothesis",
+            "Minimal repair design"
+          ],
+          "preconditions": [
+            "Candidate fault locations are identified",
+            "Failure characteristics are available"
+          ],
+          "required": true,
+          "validator": "The repair design explains the failure and does not rely on hiding errors or removing required behavior."
+        },
+        {
+          "action": "Modify the existing implementation in place, retaining compatible interfaces and adding only narrowly scoped state, validation, error, or synchronization handling required by the invariant.",
+          "id": "n5a",
+          "inputs": [
+            "Root-cause hypothesis",
+            "Minimal repair design",
+            "Existing project files"
+          ],
+          "name": "Apply focused implementation change",
+          "outputs": [
+            "Patched project artifacts"
+          ],
+          "preconditions": [
+            "A validated repair design is available",
+            "Edit scope is known"
+          ],
+          "required": true,
+          "validator": "The patch is localized, syntactically valid, and preserves the declared public contract."
+        },
+        {
+          "action": "Check that repaired paths retain required rejection, status, diagnostic, and control-flow signaling, and correct any accidental swallowing or fallthrough introduced by the change.",
+          "id": "n5b",
+          "inputs": [
+            "Patched project artifacts",
+            "Failure characteristics",
+            "Behavioral contract"
+          ],
+          "name": "Preserve required failure signaling",
+          "outputs": [
+            "Failure-signaling review",
+            "Adjusted patched artifacts"
+          ],
+          "preconditions": [
+            "Patched project artifacts exist",
+            "The repair design identifies required failure visibility"
+          ],
+          "required": true,
+          "validator": "Required failures remain observable with appropriate status and diagnostics, without adding task-specific answer content."
+        },
+        {
+          "action": "Run focused tests and adversarial checks, confirm observable outputs and diagnostics, and verify that the fix generalizes across equivalent inputs and related execution paths.",
+          "id": "n6",
+          "inputs": [
+            "Patched project",
+            "Normal requests",
+            "Failure and boundary probes",
+            "Concurrency or timing probes when relevant"
+          ],
+          "name": "Verify transfer and regressions",
+          "outputs": [
+            "Verification evidence",
+            "Residual-risk assessment"
+          ],
+          "preconditions": [
+            "Adjusted patched artifacts exist",
+            "Regression probes are available"
+          ],
+          "required": true,
+          "validator": "Normal behavior passes, the original failure is corrected, required failures remain visible, and no prohibited workaround is used."
+        }
+      ],
+      "or_groups": []
+    },
+    "transfer_first-2-2101334119-m2": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n1",
+          "n3"
+        ],
+        [
+          "n2",
+          "n4"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n6"
+        ]
+      ],
+      "id": "transfer_first-2-2101334119-m2",
+      "metadata": {
+        "mutation": "MERGE_NODES",
+        "parent_id": "transfer_first-2-2101334119"
+      },
+      "nodes": [
+        {
+          "action": "Extract externally observable success criteria, protected invariants, failure conditions, and permitted edit scope.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Declared artifact boundaries"
+          ],
+          "name": "Define contract and scope",
+          "outputs": [
+            "Behavioral contract",
+            "Scope constraints"
+          ],
+          "preconditions": [
+            "A failing software task and its existing project are available"
+          ],
+          "required": true,
+          "validator": "All required behaviors and non-goals are stated without prescribing implementation details."
+        },
+        {
+          "action": "Trace the affected execution path and compare implementation assumptions with direct failure evidence.",
+          "id": "n2",
+          "inputs": [
+            "Relevant source files",
+            "Logs, traces, tests, or diagnostics"
+          ],
+          "name": "Inspect implementation and evidence",
+          "outputs": [
+            "Candidate fault locations",
+            "Observed invariants and state transitions"
+          ],
+          "preconditions": [
+            "Behavioral contract is available",
+            "Project artifacts are readable"
+          ],
+          "required": true,
+          "validator": "Each candidate is linked to concrete code and evidence."
+        },
+        {
+          "action": "Reproduce the failure and probe nearby boundary conditions while recording status, payload, logging, and side effects.",
+          "id": "n3",
+          "inputs": [
+            "Representative valid inputs",
+            "Malformed, concurrent, delayed, or adversarial variants as applicable"
+          ],
+          "name": "Exercise the failure mode",
+          "outputs": [
+            "Reproduction result",
+            "Failure characteristics",
+            "Regression probes"
+          ],
+          "preconditions": [
+            "Behavioral contract is available",
+            "A runnable test or execution path exists"
+          ],
+          "required": true,
+          "validator": "The observed failure distinguishes the real defect from unrelated symptoms."
+        },
+        {
+          "action": "Choose and implement the smallest causal change that restores the violated invariant while preserving normal behavior, interface shape, required rejection or error visibility, and appropriate fallthrough semantics.",
+          "id": "n4",
+          "inputs": [
+            "Implementation trace",
+            "Reproduction result",
+            "Behavioral contract",
+            "Existing project files"
+          ],
+          "name": "Select and apply invariant repair",
+          "outputs": [
+            "Root-cause hypothesis",
+            "Minimal repair design",
+            "Patched project artifacts"
+          ],
+          "preconditions": [
+            "Candidate fault locations are identified",
+            "Failure characteristics are available",
+            "Edit scope is known"
+          ],
+          "required": true,
+          "validator": "The repair explains the failure, changes the root-cause implementation, preserves required failure responses and diagnostics, is localized and syntactically valid, and does not hide errors or remove required behavior."
+        },
+        {
+          "action": "Run focused tests and adversarial checks, confirm observable outputs and diagnostics, and verify that the fix generalizes across equivalent inputs and related execution paths.",
+          "id": "n6",
+          "inputs": [
+            "Patched project",
+            "Normal requests",
+            "Failure and boundary probes",
+            "Concurrency or timing probes when relevant"
+          ],
+          "name": "Verify transfer and regressions",
+          "outputs": [
+            "Verification evidence",
+            "Residual-risk assessment"
+          ],
+          "preconditions": [
+            "Patched project artifacts exist",
+            "Regression probes are available"
+          ],
+          "required": true,
+          "validator": "Normal behavior passes, the original failure is corrected, required failures remain visible, and no prohibited workaround is used."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-1-be6e9402f8": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ],
+        [
+          "n7",
+          "n8"
+        ]
+      ],
+      "id": "verification_first-1-be6e9402f8",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+          "id": "n1",
+          "inputs": [
+            "User requirements",
+            "Existing API or CLI contract"
+          ],
+          "name": "Define acceptance oracle",
+          "outputs": [
+            "Verification matrix",
+            "Preserved-behavior invariants",
+            "Regression boundaries"
+          ],
+          "preconditions": [
+            "The task description specifies observable behavior and constraints"
+          ],
+          "required": true,
+          "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+        },
+        {
+          "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+          "id": "n2",
+          "inputs": [
+            "Relevant entrypoints",
+            "Supporting modules",
+            "Configuration",
+            "Logs or diagnostics",
+            "Available tests"
+          ],
+          "name": "Inspect implementation evidence",
+          "outputs": [
+            "Control-flow map",
+            "State and error-handling inventory",
+            "Candidate fault locations"
+          ],
+          "preconditions": [
+            "The target workspace is readable"
+          ],
+          "required": true,
+          "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+        },
+        {
+          "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+          "id": "n3",
+          "inputs": [
+            "Control-flow map",
+            "Verification matrix"
+          ],
+          "name": "Reproduce the defect",
+          "outputs": [
+            "Reproduction record",
+            "Observed-vs-expected discrepancies"
+          ],
+          "preconditions": [
+            "A runnable service, job, or focused test path exists"
+          ],
+          "required": true,
+          "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+        },
+        {
+          "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+          "id": "n4",
+          "inputs": [
+            "Candidate fault locations",
+            "Reproduction record",
+            "Observed discrepancies"
+          ],
+          "name": "Localize the root cause",
+          "outputs": [
+            "Root-cause statement",
+            "Affected invariant",
+            "Patch strategy"
+          ],
+          "preconditions": [
+            "Evidence from inspection and reproduction is available"
+          ],
+          "required": true,
+          "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+        },
+        {
+          "action": "Edit the existing implementation at the responsible boundary, preserving public shapes and normal semantics while making shared state, validation, failure propagation, or timing behavior safe for the trigger.",
+          "id": "n5",
+          "inputs": [
+            "Patch strategy",
+            "Existing project structure",
+            "Preserved-behavior invariants"
+          ],
+          "name": "Implement the minimal invariant fix",
+          "outputs": [
+            "Targeted source edits",
+            "Updated internal handling"
+          ],
+          "preconditions": [
+            "A root cause and patch strategy have been established"
+          ],
+          "required": true,
+          "validator": "The change is confined to the requested workspace, does not replace the project with a stub, and does not hide errors or impose unnecessary serialization."
+        },
+        {
+          "action": "Run normal, invalid, repeated, concurrent, timeout, partial-failure, authorization, or equivalent stress cases selected by the matrix; inspect both returned artifacts and diagnostics.",
+          "id": "n6",
+          "inputs": [
+            "Verification matrix",
+            "Updated source",
+            "Reproduction record"
+          ],
+          "name": "Run adversarial verification",
+          "outputs": [
+            "Verification results",
+            "Residual failures",
+            "Performance observations"
+          ],
+          "preconditions": [
+            "The implementation has been edited"
+          ],
+          "required": true,
+          "validator": "All required contract checks pass, the original trigger no longer fails, failures remain explicit, and diagnostics contain no protected or misleading data."
+        },
+        {
+          "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+          "id": "n7",
+          "inputs": [
+            "Verification results",
+            "Repository diff",
+            "Original requirements"
+          ],
+          "name": "Check regression and diff integrity",
+          "outputs": [
+            "Regression assessment",
+            "Final changed-file set"
+          ],
+          "preconditions": [
+            "Adversarial verification has completed"
+          ],
+          "required": true,
+          "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+        },
+        {
+          "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+          "id": "n8",
+          "inputs": [
+            "Final changed-file set",
+            "Verification results"
+          ],
+          "name": "Finalize evidence-backed handoff",
+          "outputs": [
+            "Concise completion summary",
+            "Verification evidence"
+          ],
+          "preconditions": [
+            "Regression assessment is clean or residual risks are documented"
+          ],
+          "required": true,
+          "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-1-be6e9402f8-m1": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n5",
+          "n9"
+        ],
+        [
+          "n9",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ],
+        [
+          "n7",
+          "n8"
+        ]
+      ],
+      "id": "verification_first-1-be6e9402f8-m1",
+      "metadata": {
+        "mutation": "ADD_NODE",
+        "parent_id": "verification_first-1-be6e9402f8"
+      },
+      "nodes": [
+        {
+          "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+          "id": "n1",
+          "inputs": [
+            "User requirements",
+            "Existing API or CLI contract"
+          ],
+          "name": "Define acceptance oracle",
+          "outputs": [
+            "Verification matrix",
+            "Preserved-behavior invariants",
+            "Regression boundaries"
+          ],
+          "preconditions": [
+            "The task description specifies observable behavior and constraints"
+          ],
+          "required": true,
+          "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+        },
+        {
+          "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+          "id": "n2",
+          "inputs": [
+            "Relevant entrypoints",
+            "Supporting modules",
+            "Configuration",
+            "Logs or diagnostics",
+            "Available tests"
+          ],
+          "name": "Inspect implementation evidence",
+          "outputs": [
+            "Control-flow map",
+            "State and error-handling inventory",
+            "Candidate fault locations"
+          ],
+          "preconditions": [
+            "The target workspace is readable"
+          ],
+          "required": true,
+          "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+        },
+        {
+          "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+          "id": "n3",
+          "inputs": [
+            "Control-flow map",
+            "Verification matrix"
+          ],
+          "name": "Reproduce the defect",
+          "outputs": [
+            "Reproduction record",
+            "Observed-vs-expected discrepancies"
+          ],
+          "preconditions": [
+            "A runnable service, job, or focused test path exists"
+          ],
+          "required": true,
+          "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+        },
+        {
+          "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+          "id": "n4",
+          "inputs": [
+            "Candidate fault locations",
+            "Reproduction record",
+            "Observed discrepancies"
+          ],
+          "name": "Localize the root cause",
+          "outputs": [
+            "Root-cause statement",
+            "Affected invariant",
+            "Patch strategy"
+          ],
+          "preconditions": [
+            "Evidence from inspection and reproduction is available"
+          ],
+          "required": true,
+          "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+        },
+        {
+          "action": "Edit the existing implementation at the responsible boundary, preserving public shapes and normal semantics while making shared state, validation, failure propagation, or timing behavior safe for the trigger.",
+          "id": "n5",
+          "inputs": [
+            "Patch strategy",
+            "Existing project structure",
+            "Preserved-behavior invariants"
+          ],
+          "name": "Implement the minimal invariant fix",
+          "outputs": [
+            "Targeted source edits",
+            "Updated internal handling"
+          ],
+          "preconditions": [
+            "A root cause and patch strategy have been established"
+          ],
+          "required": true,
+          "validator": "The change is confined to the requested workspace, does not replace the project with a stub, and does not hide errors or impose unnecessary serialization."
+        },
+        {
+          "action": "Run normal, invalid, repeated, concurrent, timeout, partial-failure, authorization, or equivalent stress cases selected by the matrix; inspect both returned artifacts and diagnostics.",
+          "id": "n6",
+          "inputs": [
+            "Verification matrix",
+            "Updated source",
+            "Reproduction record"
+          ],
+          "name": "Run adversarial verification",
+          "outputs": [
+            "Verification results",
+            "Residual failures",
+            "Performance observations"
+          ],
+          "preconditions": [
+            "The implementation has been edited"
+          ],
+          "required": true,
+          "validator": "All required contract checks pass, the original trigger no longer fails, failures remain explicit, and diagnostics contain no protected or misleading data."
+        },
+        {
+          "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+          "id": "n7",
+          "inputs": [
+            "Verification results",
+            "Repository diff",
+            "Original requirements"
+          ],
+          "name": "Check regression and diff integrity",
+          "outputs": [
+            "Regression assessment",
+            "Final changed-file set"
+          ],
+          "preconditions": [
+            "Adversarial verification has completed"
+          ],
+          "required": true,
+          "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+        },
+        {
+          "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+          "id": "n8",
+          "inputs": [
+            "Final changed-file set",
+            "Verification results"
+          ],
+          "name": "Finalize evidence-backed handoff",
+          "outputs": [
+            "Concise completion summary",
+            "Verification evidence"
+          ],
+          "preconditions": [
+            "Regression assessment is clean or residual risks are documented"
+          ],
+          "required": true,
+          "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+        },
+        {
+          "action": "Inspect and exercise error-handling paths to ensure caught failures retain their intended explicit response semantics, status signaling, and termination behavior without falling through or being silently transformed.",
+          "id": "n9",
+          "inputs": [
+            "Updated source",
+            "Reproduction record",
+            "Preserved-behavior invariants"
+          ],
+          "name": "Preserve explicit failure responses",
+          "outputs": [
+            "Failure-response preservation check",
+            "Error-path observations"
+          ],
+          "preconditions": [
+            "The implementation has been edited"
+          ],
+          "required": true,
+          "validator": "Relevant failure paths produce explicit, stable rejection behavior and do not continue into unrelated success or fallthrough handling."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-1-be6e9402f8-m2": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n9"
+        ],
+        [
+          "n9",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ],
+        [
+          "n7",
+          "n8"
+        ]
+      ],
+      "id": "verification_first-1-be6e9402f8-m2",
+      "metadata": {
+        "mutation": "SPLIT_NODE",
+        "parent_id": "verification_first-1-be6e9402f8"
+      },
+      "nodes": [
+        {
+          "action": "Translate requirements into a compact verification matrix covering healthy behavior, malformed inputs, failure paths, concurrency or adversarial timing, and non-functional constraints.",
+          "id": "n1",
+          "inputs": [
+            "User requirements",
+            "Existing API or CLI contract"
+          ],
+          "name": "Define acceptance oracle",
+          "outputs": [
+            "Verification matrix",
+            "Preserved-behavior invariants",
+            "Regression boundaries"
+          ],
+          "preconditions": [
+            "The task description specifies observable behavior and constraints"
+          ],
+          "required": true,
+          "validator": "Every stated requirement maps to at least one observable check, including at least one failure-mode check."
+        },
+        {
+          "action": "Trace the existing control flow and state ownership, using logs and tests to identify where inputs, shared state, errors, and output shaping are handled.",
+          "id": "n2",
+          "inputs": [
+            "Relevant entrypoints",
+            "Supporting modules",
+            "Configuration",
+            "Logs or diagnostics",
+            "Available tests"
+          ],
+          "name": "Inspect implementation evidence",
+          "outputs": [
+            "Control-flow map",
+            "State and error-handling inventory",
+            "Candidate fault locations"
+          ],
+          "preconditions": [
+            "The target workspace is readable"
+          ],
+          "required": true,
+          "validator": "The suspected path is grounded in source evidence and covers all components named by the acceptance oracle."
+        },
+        {
+          "action": "Execute focused baseline probes that isolate the reported trigger, compare them with normal cases, and record status, payload, diagnostics, timing, and repeatability.",
+          "id": "n3",
+          "inputs": [
+            "Control-flow map",
+            "Verification matrix"
+          ],
+          "name": "Reproduce the defect",
+          "outputs": [
+            "Reproduction record",
+            "Observed-vs-expected discrepancies"
+          ],
+          "preconditions": [
+            "A runnable service, job, or focused test path exists"
+          ],
+          "required": true,
+          "validator": "The defect is reproduced or a source-level proof explains it; normal behavior is separately observed."
+        },
+        {
+          "action": "Follow the failing value or state transition to its ownership boundary, distinguish the causal defect from downstream symptoms, and formulate a minimal invariant-restoring change.",
+          "id": "n4",
+          "inputs": [
+            "Candidate fault locations",
+            "Reproduction record",
+            "Observed discrepancies"
+          ],
+          "name": "Localize the root cause",
+          "outputs": [
+            "Root-cause statement",
+            "Affected invariant",
+            "Patch strategy"
+          ],
+          "preconditions": [
+            "Evidence from inspection and reproduction is available"
+          ],
+          "required": true,
+          "validator": "The root-cause statement explains the trigger, the observed symptom, and why unaffected cases currently pass."
+        },
+        {
+          "action": "Edit the existing implementation at the responsible boundary, preserving public shapes and normal semantics while making shared state, validation, failure propagation, or timing behavior safe for the trigger.",
+          "id": "n5",
+          "inputs": [
+            "Patch strategy",
+            "Existing project structure",
+            "Preserved-behavior invariants"
+          ],
+          "name": "Implement the minimal invariant fix",
+          "outputs": [
+            "Targeted source edits",
+            "Updated internal handling"
+          ],
+          "preconditions": [
+            "A root cause and patch strategy have been established"
+          ],
+          "required": true,
+          "validator": "The change is confined to the requested workspace, does not replace the project with a stub, and does not hide errors or impose unnecessary serialization."
+        },
+        {
+          "action": "Ensure handled failures retain their explicit response status and terminate the handled path without fallthrough, while leaving unrelated success and error behavior unchanged.",
+          "id": "n9",
+          "inputs": [
+            "Updated internal handling",
+            "Failure-path requirements",
+            "Observed-vs-expected discrepancies"
+          ],
+          "name": "Preserve explicit failure response semantics",
+          "outputs": [
+            "Status-preserving failure handling",
+            "Terminated failure-path control flow"
+          ],
+          "preconditions": [
+            "The targeted implementation change has been made"
+          ],
+          "required": true,
+          "validator": "Handled failure paths emit their intended status and do not continue into an alternate or success path; unaffected paths retain their prior behavior."
+        },
+        {
+          "action": "Run normal, invalid, repeated, concurrent, timeout, partial-failure, authorization, or equivalent stress cases selected by the matrix; inspect both returned artifacts and diagnostics.",
+          "id": "n6",
+          "inputs": [
+            "Verification matrix",
+            "Updated source",
+            "Reproduction record"
+          ],
+          "name": "Run adversarial verification",
+          "outputs": [
+            "Verification results",
+            "Residual failures",
+            "Performance observations"
+          ],
+          "preconditions": [
+            "The implementation has been edited and failure response semantics have been checked"
+          ],
+          "required": true,
+          "validator": "All required contract checks pass, the original trigger no longer fails, failures remain explicit, and diagnostics contain no protected or misleading data."
+        },
+        {
+          "action": "Review the final diff for accidental behavior changes, unsafe broad exception handling, data leakage, stale state, missing output paths, and avoidable latency regressions.",
+          "id": "n7",
+          "inputs": [
+            "Verification results",
+            "Repository diff",
+            "Original requirements"
+          ],
+          "name": "Check regression and diff integrity",
+          "outputs": [
+            "Regression assessment",
+            "Final changed-file set"
+          ],
+          "preconditions": [
+            "Adversarial verification has completed"
+          ],
+          "required": true,
+          "validator": "The diff is minimal and coherent; every changed behavior is justified by the requirements or the root-cause fix."
+        },
+        {
+          "action": "Report the root cause, applied fix, verification coverage, and any bounded residual risk without reproducing private reasoning or unrelated artifacts.",
+          "id": "n8",
+          "inputs": [
+            "Final changed-file set",
+            "Verification results"
+          ],
+          "name": "Finalize evidence-backed handoff",
+          "outputs": [
+            "Concise completion summary",
+            "Verification evidence"
+          ],
+          "preconditions": [
+            "Regression assessment is clean or residual risks are documented"
+          ],
+          "required": true,
+          "validator": "The handoff identifies edited artifacts and states whether the acceptance oracle passed."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-2-31f98ceb5a": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n1",
+          "n3"
+        ],
+        [
+          "n1",
+          "n4"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n5"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n4",
+          "n6"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n5",
+          "n7"
+        ],
+        [
+          "n1",
+          "n7"
+        ],
+        [
+          "n6",
+          "n8"
+        ],
+        [
+          "n7",
+          "n8"
+        ]
+      ],
+      "id": "verification_first-2-31f98ceb5a",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Extract preserved behavior, failure behavior, artifact constraints, and adversarial conditions; define concrete probes for success, rejection, partial failure, and load or edge-case behavior before editing.",
+          "id": "n1",
+          "inputs": [
+            "Task requirements",
+            "Existing project structure"
+          ],
+          "name": "define_contract_and_probes",
+          "outputs": [
+            "Behavioral contract",
+            "Verification probe matrix"
+          ],
+          "preconditions": [
+            "The task specification and workspace are available."
+          ],
+          "required": true,
+          "validator": "The contract names required outputs, statuses, error handling, and non-functional constraints without relying on case-specific constants."
+        },
+        {
+          "action": "Run or simulate representative normal and failing probes, recording response shape, status, logs, timing, and persistence behavior as a baseline.",
+          "id": "n2",
+          "inputs": [
+            "Verification probe matrix",
+            "Current implementation"
+          ],
+          "name": "capture_baseline",
+          "outputs": [
+            "Baseline observations",
+            "Reproducible failing probe"
+          ],
+          "preconditions": [
+            "The verification probe matrix exists.",
+            "The existing artifact can be executed or inspected."
+          ],
+          "required": true,
+          "validator": "At least one relevant failure or risk is reproduced or its causal evidence is localized."
+        },
+        {
+          "action": "Trace the failing path across validation, state transitions, asynchronous boundaries, and output construction; identify the smallest broken invariant and distinguish it from symptoms.",
+          "id": "n3",
+          "inputs": [
+            "Current implementation",
+            "Logs or diagnostics",
+            "Baseline observations"
+          ],
+          "name": "trace_invariant_break",
+          "outputs": [
+            "Root-cause hypothesis",
+            "Affected code path",
+            "Preserved invariants"
+          ],
+          "preconditions": [
+            "The task files and baseline evidence are available."
+          ],
+          "required": true,
+          "validator": "The hypothesis explains both the observed failure and why ordinary requests may still pass."
+        },
+        {
+          "action": "Specify focused regression cases around the identified boundary, including valid behavior, malformed or rejected inputs, partial failures, repeated requests, and the task's concurrency or timing dimension when applicable.",
+          "id": "n4",
+          "inputs": [
+            "Behavioral contract",
+            "Root-cause hypothesis"
+          ],
+          "name": "design_regression_boundary",
+          "outputs": [
+            "Focused regression suite or probe set"
+          ],
+          "preconditions": [
+            "The behavioral contract exists.",
+            "A root-cause hypothesis is available or the relevant boundary is identifiable."
+          ],
+          "required": true,
+          "validator": "Cases cover the broken invariant, neighboring valid behavior, and at least one adversarial condition."
+        },
+        {
+          "action": "Edit the existing project in place with the narrowest root-cause correction; preserve public shapes and normal behavior, and retain explicit diagnostics rather than masking failures.",
+          "id": "n5",
+          "inputs": [
+            "Affected code path",
+            "Preserved invariants",
+            "Focused regression suite or probe set"
+          ],
+          "name": "apply_minimal_root_fix",
+          "outputs": [
+            "Updated implementation"
+          ],
+          "preconditions": [
+            "The root-cause hypothesis is supported by evidence.",
+            "The affected files are known."
+          ],
+          "required": true,
+          "validator": "The change is localized, does not replace the project with a stub, and directly enforces the identified invariant."
+        },
+        {
+          "action": "Execute targeted checks for the repaired path and nearby contract cases, comparing results with the baseline and checking that failures remain observable and correctly classified.",
+          "id": "n6",
+          "inputs": [
+            "Updated implementation",
+            "Focused regression suite or probe set"
+          ],
+          "name": "run_focused_regressions",
+          "outputs": [
+            "Focused verification results"
+          ],
+          "preconditions": [
+            "The updated implementation exists.",
+            "Focused regression cases are available."
+          ],
+          "required": true,
+          "validator": "The original failure is resolved, valid behavior remains compatible, and no exception is merely swallowed."
+        },
+        {
+          "action": "Run burst, overlap, malformed-input, timeout, authorization, or other workload-specific probes as applicable; inspect status codes, output completeness, diagnostics, and reasonable latency or parallelism.",
+          "id": "n7",
+          "inputs": [
+            "Updated implementation",
+            "Behavioral contract",
+            "Verification probe matrix"
+          ],
+          "name": "exercise_stress_and_boundaries",
+          "outputs": [
+            "Adversarial verification results"
+          ],
+          "preconditions": [
+            "The updated implementation exists.",
+            "The behavioral contract includes relevant edge or non-functional constraints."
+          ],
+          "required": true,
+          "validator": "The implementation satisfies the relevant stress and boundary conditions without excessive serialization or false-success output."
+        },
+        {
+          "action": "Inspect the final diff and edited paths, rerun a compact contract smoke test, and confirm all required artifacts are saved in place with no unrelated destructive changes.",
+          "id": "n8",
+          "inputs": [
+            "Updated implementation",
+            "Verification results",
+            "Task artifact constraints"
+          ],
+          "name": "audit_artifacts_and_finalize",
+          "outputs": [
+            "Validated final artifacts",
+            "Completion evidence"
+          ],
+          "preconditions": [
+            "Focused and adversarial verification results are available."
+          ],
+          "required": true,
+          "validator": "Required files exist, the final smoke test passes, the diff is explainable, and deliverables match the requested artifact location."
+        }
+      ],
+      "or_groups": []
+    }
+  },
+  "causal_controls": {
+    "artifact_shuffle": {
+      "reason": "run_expensive_controls=False; run after primary GO gates",
+      "status": "deferred"
+    },
+    "edge_shuffle": {
+      "graph": {
+        "edges": [
+          [
+            "n5",
+            "n2"
+          ],
+          [
+            "n3",
+            "n1"
+          ],
+          [
+            "n5",
+            "n3"
+          ],
+          [
+            "n3",
+            "n7"
+          ],
+          [
+            "n6",
+            "n3"
+          ],
+          [
+            "n1",
+            "n7"
+          ],
+          [
+            "n5",
+            "n6"
+          ]
+        ],
+        "id": "minimal-1-7ce8261b0f-edge-shuffle",
+        "metadata": {
+          "control": "edge_shuffle"
+        },
+        "nodes": [
+          {
+            "action": "Inspect the supplied evidence and map the relevant request, job, authentication, or processing path without replacing the project structure.",
+            "id": "n1",
+            "inputs": [
+              "Task requirements",
+              "Existing source tree",
+              "Provided logs, entrypoints, and related modules"
+            ],
+            "name": "Orient to the existing service",
+            "outputs": [
+              "Relevant files and execution boundaries",
+              "Initial list of observed symptoms and constraints"
+            ],
+            "preconditions": [
+              "The task workspace and existing project are accessible"
+            ],
+            "required": true,
+            "validator": "Relevant entrypoints, dependencies, and diagnostic evidence are identified."
+          },
+          {
+            "action": "Write down the required success, failure, validation, status, logging, persistence, and concurrency semantics that must remain externally observable.",
+            "id": "n2",
+            "inputs": [
+              "Task requirements",
+              "Existing route, CLI, or middleware behavior",
+              "Declared types and response schemas"
+            ],
+            "name": "Extract the observable contract",
+            "outputs": [
+              "Behavioral contract",
+              "Preservation invariants",
+              "Adversarial input matrix"
+            ],
+            "preconditions": [
+              "Initial project orientation is complete"
+            ],
+            "required": true,
+            "validator": "The contract covers both normal behavior and explicitly required failure behavior."
+          },
+          {
+            "action": "Follow the failing value, exception, token, promise, cache entry, or shared state from input through transformation and output, locating the first incorrect interpretation or unsafe boundary.",
+            "id": "n3",
+            "inputs": [
+              "Source modules",
+              "Diagnostic evidence",
+              "Behavioral contract"
+            ],
+            "name": "Trace the failure lifecycle",
+            "outputs": [
+              "Root-cause hypothesis",
+              "Affected state transitions",
+              "Candidate repair locations"
+            ],
+            "preconditions": [
+              "Relevant execution boundaries are identified"
+            ],
+            "required": true,
+            "validator": "The hypothesis explains the observed failure and is tied to specific existing code paths."
+          },
+          {
+            "action": "Choose the smallest targeted change that restores correct semantics, preserves valid behavior, and explicitly handles malformed, failed, repeated, or concurrent execution where applicable.",
+            "id": "n4",
+            "inputs": [
+              "Preservation invariants",
+              "Root-cause hypothesis",
+              "Candidate repair locations"
+            ],
+            "name": "Design a minimal invariant-preserving repair",
+            "outputs": [
+              "Patch design",
+              "Error and state-handling rules",
+              "Validation plan"
+            ],
+            "preconditions": [
+              "Behavioral contract is defined",
+              "Root-cause hypothesis is supported by the code path"
+            ],
+            "required": true,
+            "validator": "The design does not rely on hiding failures, broad serialization, weakening validation, or replacing the existing application."
+          },
+          {
+            "action": "Edit the existing implementation in place, keeping public interfaces and unrelated behavior stable while adding the required synchronization, validation, failure propagation, or response handling.",
+            "id": "n5",
+            "inputs": [
+              "Patch design",
+              "Existing project files"
+            ],
+            "name": "Apply the targeted implementation change",
+            "outputs": [
+              "Updated source artifacts"
+            ],
+            "preconditions": [
+              "A supported repair design exists"
+            ],
+            "required": true,
+            "validator": "The edits are confined to the task workspace and compile or parse according to the project language."
+          },
+          {
+            "action": "Run focused checks for normal requests or jobs, malformed inputs, upstream failures, repeated or overlapping work, status and response shape, diagnostic behavior, and output persistence as relevant to the task.",
+            "id": "n6",
+            "inputs": [
+              "Validation plan",
+              "Behavioral contract",
+              "Updated implementation"
+            ],
+            "name": "Validate normal and adversarial execution",
+            "outputs": [
+              "Observed validation results",
+              "Remaining defects, if any"
+            ],
+            "preconditions": [
+              "Updated source artifacts are available"
+            ],
+            "required": true,
+            "validator": "Valid cases preserve the contract and invalid, failed, or concurrent cases produce explicit safe outcomes without accidental success."
+          },
+          {
+            "action": "Inspect the final diff and required artifact locations, remove accidental debugging or unrelated edits, and confirm the deliverable is usable by the existing verifier and runtime.",
+            "id": "n7",
+            "inputs": [
+              "Updated source artifacts",
+              "Validation results",
+              "Task deliverable requirements"
+            ],
+            "name": "Review the final artifact boundary",
+            "outputs": [
+              "Final corrected project artifacts",
+              "Completion assessment"
+            ],
+            "preconditions": [
+              "Focused validation has completed"
+            ],
+            "required": true,
+            "validator": "Required files remain in place, the implementation is not a stub, and all stated acceptance conditions are addressed."
+          }
+        ],
+        "or_groups": []
+      },
+      "mean_reward": 0.6666666666666666,
+      "status": "completed",
+      "task_scores": {
+        "E1-LS1-T4": 0.35,
+        "E1-LS1-T5": 0.9,
+        "E1-LS1-T6": 0.75
+      }
+    }
+  },
+  "deployment_scores": {
+    "E1-LS1-T4": 0.35,
+    "E1-LS1-T5": 0.9,
+    "E1-LS1-T6": 0.75
+  },
+  "family_id": "E1-LS1",
+  "forward_scores": {
+    "failure_aware-1-65560af4ff": 0.9500000000000001,
+    "failure_aware-2-523d40bc4a": 1.0,
+    "minimal-1-7ce8261b0f": 1.0,
+    "minimal-2-acbe1f6594": 1.0,
+    "transfer_first-1-a3bba1f17b": 0.9500000000000001,
+    "transfer_first-2-2101334119": 1.0,
+    "transfer_first-2-2101334119-m1": 1.0,
+    "transfer_first-2-2101334119-m2": 1.0,
+    "verification_first-1-be6e9402f8": 1.0,
+    "verification_first-1-be6e9402f8-m1": 1.0,
+    "verification_first-1-be6e9402f8-m2": 1.0,
+    "verification_first-2-31f98ceb5a": 0.9500000000000001
+  },
+  "go_gate": {
+    "B3_B4_B6_flat": true,
+    "B4_gt_B3": false,
+    "B6_gt_B1": false,
+    "go": false
+  },
+  "graph": {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n1",
+        "n3"
+      ],
+      [
+        "n2",
+        "n4"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ]
+    ],
+    "id": "minimal-1-7ce8261b0f",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Inspect the supplied evidence and map the relevant request, job, authentication, or processing path without replacing the project structure.",
+        "id": "n1",
+        "inputs": [
+          "Task requirements",
+          "Existing source tree",
+          "Provided logs, entrypoints, and related modules"
+        ],
+        "name": "Orient to the existing service",
+        "outputs": [
+          "Relevant files and execution boundaries",
+          "Initial list of observed symptoms and constraints"
+        ],
+        "preconditions": [
+          "The task workspace and existing project are accessible"
+        ],
+        "required": true,
+        "validator": "Relevant entrypoints, dependencies, and diagnostic evidence are identified."
+      },
+      {
+        "action": "Write down the required success, failure, validation, status, logging, persistence, and concurrency semantics that must remain externally observable.",
+        "id": "n2",
+        "inputs": [
+          "Task requirements",
+          "Existing route, CLI, or middleware behavior",
+          "Declared types and response schemas"
+        ],
+        "name": "Extract the observable contract",
+        "outputs": [
+          "Behavioral contract",
+          "Preservation invariants",
+          "Adversarial input matrix"
+        ],
+        "preconditions": [
+          "Initial project orientation is complete"
+        ],
+        "required": true,
+        "validator": "The contract covers both normal behavior and explicitly required failure behavior."
+      },
+      {
+        "action": "Follow the failing value, exception, token, promise, cache entry, or shared state from input through transformation and output, locating the first incorrect interpretation or unsafe boundary.",
+        "id": "n3",
+        "inputs": [
+          "Source modules",
+          "Diagnostic evidence",
+          "Behavioral contract"
+        ],
+        "name": "Trace the failure lifecycle",
+        "outputs": [
+          "Root-cause hypothesis",
+          "Affected state transitions",
+          "Candidate repair locations"
+        ],
+        "preconditions": [
+          "Relevant execution boundaries are identified"
+        ],
+        "required": true,
+        "validator": "The hypothesis explains the observed failure and is tied to specific existing code paths."
+      },
+      {
+        "action": "Choose the smallest targeted change that restores correct semantics, preserves valid behavior, and explicitly handles malformed, failed, repeated, or concurrent execution where applicable.",
+        "id": "n4",
+        "inputs": [
+          "Preservation invariants",
+          "Root-cause hypothesis",
+          "Candidate repair locations"
+        ],
+        "name": "Design a minimal invariant-preserving repair",
+        "outputs": [
+          "Patch design",
+          "Error and state-handling rules",
+          "Validation plan"
+        ],
+        "preconditions": [
+          "Behavioral contract is defined",
+          "Root-cause hypothesis is supported by the code path"
+        ],
+        "required": true,
+        "validator": "The design does not rely on hiding failures, broad serialization, weakening validation, or replacing the existing application."
+      },
+      {
+        "action": "Edit the existing implementation in place, keeping public interfaces and unrelated behavior stable while adding the required synchronization, validation, failure propagation, or response handling.",
+        "id": "n5",
+        "inputs": [
+          "Patch design",
+          "Existing project files"
+        ],
+        "name": "Apply the targeted implementation change",
+        "outputs": [
+          "Updated source artifacts"
+        ],
+        "preconditions": [
+          "A supported repair design exists"
+        ],
+        "required": true,
+        "validator": "The edits are confined to the task workspace and compile or parse according to the project language."
+      },
+      {
+        "action": "Run focused checks for normal requests or jobs, malformed inputs, upstream failures, repeated or overlapping work, status and response shape, diagnostic behavior, and output persistence as relevant to the task.",
+        "id": "n6",
+        "inputs": [
+          "Validation plan",
+          "Behavioral contract",
+          "Updated implementation"
+        ],
+        "name": "Validate normal and adversarial execution",
+        "outputs": [
+          "Observed validation results",
+          "Remaining defects, if any"
+        ],
+        "preconditions": [
+          "Updated source artifacts are available"
+        ],
+        "required": true,
+        "validator": "Valid cases preserve the contract and invalid, failed, or concurrent cases produce explicit safe outcomes without accidental success."
+      },
+      {
+        "action": "Inspect the final diff and required artifact locations, remove accidental debugging or unrelated edits, and confirm the deliverable is usable by the existing verifier and runtime.",
+        "id": "n7",
+        "inputs": [
+          "Updated source artifacts",
+          "Validation results",
+          "Task deliverable requirements"
+        ],
+        "name": "Review the final artifact boundary",
+        "outputs": [
+          "Final corrected project artifacts",
+          "Completion assessment"
+        ],
+        "preconditions": [
+          "Focused validation has completed"
+        ],
+        "required": true,
+        "validator": "Required files remain in place, the implementation is not a stub, and all stated acceptance conditions are addressed."
+      }
+    ],
+    "or_groups": []
+  },
+  "no_skill_scores": {
+    "E1-LS1-T4": 0.35,
+    "E1-LS1-T5": 0.9,
+    "E1-LS1-T6": 0.75
+  },
+  "q0": {
+    "failure_aware-1-65560af4ff": 0.1210045230156465,
+    "failure_aware-2-523d40bc4a": 0.12314758088753958,
+    "minimal-1-7ce8261b0f": 0.1259847992153896,
+    "minimal-2-acbe1f6594": 0.1233804128123627,
+    "transfer_first-1-a3bba1f17b": 0.1259428112806957,
+    "transfer_first-2-2101334119": 0.13012487832332467,
+    "verification_first-1-be6e9402f8": 0.12833008106789895,
+    "verification_first-2-31f98ceb5a": 0.12208491339714231
+  },
+  "q1": {
+    "failure_aware-1-65560af4ff": 0.10365011988364765,
+    "failure_aware-2-523d40bc4a": 0.13347736195840715,
+    "minimal-1-7ce8261b0f": 0.13655256989162107,
+    "minimal-2-acbe1f6594": 0.1337297241313472,
+    "transfer_first-1-a3bba1f17b": 0.10788016152123317,
+    "transfer_first-2-2101334119": 0.1410399242809122,
+    "verification_first-1-be6e9402f8": 0.13909457707085873,
+    "verification_first-2-31f98ceb5a": 0.10457556126197277
+  },
+  "q2": {
+    "failure_aware-1-65560af4ff": 0.10365011988364765,
+    "failure_aware-2-523d40bc4a": 0.13347736195840712,
+    "minimal-1-7ce8261b0f": 0.13655256989162104,
+    "minimal-2-acbe1f6594": 0.1337297241313472,
+    "transfer_first-1-a3bba1f17b": 0.10788016152123317,
+    "transfer_first-2-2101334119": 0.09872794699663853,
+    "transfer_first-2-2101334119-m1": 0.021155988642136827,
+    "transfer_first-2-2101334119-m2": 0.021155988642136827,
+    "verification_first-1-be6e9402f8": 0.09736620394960112,
+    "verification_first-1-be6e9402f8-m1": 0.020864186560628814,
+    "verification_first-1-be6e9402f8-m2": 0.020864186560628814,
+    "verification_first-2-31f98ceb5a": 0.10457556126197277
+  },
+  "run_metadata": {
+    "adapter": "host-native",
+    "benchmark_commit": "9e3daa339987c3cfa624121e1be442593a53d43c",
+    "codex_cli": "codex-cli 0.153.4",
+    "codex_model": "gpt-5.6-luna",
+    "component_cache_digests": [
+      "004105b4f973ce2443f2c47498495973cf008773460df223353d5a1fcabfaa60",
+      "006cd3b8a104eac728b584b65ebc2dd37bf80fdea49ac312f3bed915abde99b9",
+      "00aed307c5c3c0d481f36adf39ee3ee335d78c040ca238ee522bf40834bdbb7f",
+      "00fa0c07b71578932e37941d4197f5f771e5297646030f8835347018c0798cdd",
+      "0103f142777fc6b202e3cc93a5afaff809c4986ef7c80cd9c1c7317f8e306248",
+      "010b5d3dba0f9b0e5a70fd47d09ccd5ef250707a76d89d916042b3b5d60d7361",
+      "011e35cb15196b0b15a5657019946a31b9e19f5deedfef0933ad6f8a1906765f",
+      "0190f3501d7a0517470a237218643fa01ab130ee1c7a2f04ef313b50d3424716",
+      "01d3e426e256077878797d27e840026e1b39a4a319109c6cc2f51e4853c69a15",
+      "0206718fb808453bbbd8417a4b9ee538d08a13d5ad16bec2ed23b725d73faabc",
+      "0233544498591f45a314c7abc750690a2daba569c6ffef9e27afb8dd2d88bc22",
+      "02c7f7e7c8b22c05f2d3c01aa9702720e89c89514ea1a935161111fca0e6ded0",
+      "02c9fee566e9c98b144d29c9439868fb8707e356202585dae44599d46667f38b",
+      "02d118df5597a71d378b198af80634bebd2ea00be7bda9d34b95ead3564544e7",
+      "033c84a97a8e413fccbf12a87f2a30dcb415690739b3b73a4589ba717e93c423",
+      "034561d443a77260a5f3ec3c72b2e3b6f828ac15a39aad2be3651b3cbe481f40",
+      "035f5e9f97e80a8d8c3dd5d0b51b3797a51ab2f464b053c80027c74e0e42924b",
+      "0360b9021674b17cd854e8276fb4f0098914ebf8c6fd3cc166fa324be17a08ab",
+      "038e52a52df4c23045ae58c8b0987b0b082fc2aa70758674c125767a463024a0",
+      "039790b4e6692df10b40b4c470966d74b72541cd79c97253d64f221811b7cf21",
+      "0456fa366f4c75d1ba22fdc7504ecf99898d1cc4826b180355049497e3ec70ca",
+      "046a8b9d422425960c5a92dc1e662b9634f76a55dc5de57b280941abc1427bcc",
+      "04a297b872661af9289b8b013db9c5db81806ba57a4414781ee50c8bf553672b",
+      "04b08b30f07188995aab3124ea100804df691101a6654a7034cd0b6f17e2b82a",
+      "04bc11683316ef4bf589b528bca25e1e865481861f94007a549889b8c9dddedb",
+      "05575c0eb5a4007ce26c7424701315efcb0ec69944fa50654cfdb4108e78e7e6",
+      "05d4140fc833135eb16268997d913c13f9d6f402f0f7f6fd77227fffbbd1823a",
+      "05df00d2c34b41031de8820688c1d264050f7c9695ff07f52939130240658f72",
+      "063a9bd868bd0c660b29ad51a62dc63579a202e9ecaa264d642c9fbbdece50e1",
+      "0678cdef6f0fc2f66908104b004ee9ffaff93493196a843f83bada7ffe1584c9",
+      "0686ed8ce2b1d6efc78ef4120d9bddb0cbc8ca9fb1d0f3e18f2134bb4acfcb58",
+      "0697e2c2bc87894ccaf638124fefb589318bd006db7b65c781beceac13b6ee9b",
+      "06d40193898d5916a42d72b33d21e2608acd38b968c464a3afe0b4419c2436f8",
+      "0700e1a073cc70a53e727411e9775f92274e206185452078adb3bac3975e6faf",
+      "071c05f5f088b67581c762187308b59cc5dde44c6ab5073ee5381b3ac1d28280",
+      "07320e8ffd4c5ec9d5a4fa26943415cb20582c3276b23e81b88f09282e2af4f9",
+      "075f8b1ae213ddd9c7e42dfff3c3f2e784203eb1f980f4bf4c1516b34968043b",
+      "08a507250d252094a1cbb2cc50b89d2a0a70fffc33089c9f8630c5c6e3a24301",
+      "08a5d47c99773b991d0d908116bb22746c3aeab120bf1c5dc61398ccc472bc2b",
+      "08b86a9d0a2dd6b59b10426e7dd535a001703d4bf4406553f2108d2a7eb4d0a0",
+      "08f228b70b548b77dd37c294875ee6c8bf93c36b696581f05bcbcc3ee3f5dd35",
+      "09380398b36a59873d6df501aa4f45b1bb2238b6e10520f46f247f0ba51841c6",
+      "0a1f583b700c29b5275b6261ba097c3243111e58138f0c9e515387b8bfc6b052",
+      "0a237b333dd4da0c4bd7555c7715c5f37c92e5547bd7c73236feb92b5a5a5cd0",
+      "0a8e04673df79c5f0ee7df79de9e0766e45e0e9060f932586d33d76c1d2a55ac",
+      "0ac2f5a19f9f4dd92747a4a0687063d58c55b29f1b890aa2405dfdf0d6dbd07f",
+      "0b00787b372721247231ad2a3d43472493c3b61893297e7c811e6003cac4a7ea",
+      "0b43ed47c599298a36a708fc6a929b6e94822706dfeb47a3385d831ed74c3259",
+      "0b890e9ef78de8a71a53541a52128be71b70d7cf8d12bd60324bd17e28cef0c4",
+      "0c4472925f6b2dbccc82c8eb710bd31c32328454428ad0d3e9b752f7a874927d",
+      "0ccac50cd015a028f0e3ccb0b3106e0fdee0d6da25340a79d8d40ca4f86e5767",
+      "0ce9d7e6e75e61ceec4b137a9a6813bdf1edc55ec37819a017b6bf8678824a13",
+      "0d5eabfb8257c5e0873aaadbd236acbccf421721a6fbd22455a3afc8d0c7122c",
+      "0dea9b8bc94856379a3a619b9a7efd45b3d0688006b6b7a18792c8f626744cd2",
+      "0ea6d9c9ed975324ad58cc6c7b2152fb2ce88477dcc5f969026dd5a22a133cfe",
+      "0ea8b3a19639cf9c94d5bdc30075b68edd4c4085be164b31405a2bda996e6e85",
+      "0efa6b5a1eddc572c1a7de546516ce1205cef975d781938f578822231f2d19ad",
+      "0f88d3f73e47aecc1cff0ff955554170d695159a1337979b8ec5fd73a6881ac4",
+      "10c86b529a59f0d9ea30d8a2b4b621f8c706c5792c0e04864f13aa0abe3596eb",
+      "133b036cbbb0493124b1bd60e43383a826b3fa10584e13c481c83cdd3bcff2ab",
+      "1422aa4cbe70362bb5c5061edf70d071b8f4e6140438f845ab5ee30a7470b7c2",
+      "14adbccad68b2e130ed60ad464c04aac698e7a22e99f1544f5a81c3b3d5d801d",
+      "14d23ea31fec4fb5c7dffb719b2c342b01cd7ecb439cf8bb3c291f2c39b3cf3d",
+      "14eea398c8aed20eb42d69e7f3801c06dc991855bdd9f63adca2578bdcb6a72d",
+      "151d5be54f6cafa58e509beba608992759423780598078c7c8750cabdbd854c8",
+      "1535e8a6ca0e37bbbeb837a42c50e0967b587fcfed31c28a8dbec7fbdf5e8dcf",
+      "1586dc1619701c11bf2effa0edc47def11d671c6370e7694899a5f5c1a54a685",
+      "15cd9c3e005191e0f64a8fbf2e07140ff24d58ffd37804d7ac11e0ebc6c8ff22",
+      "15d47433feb47a9105b7c8b00a42f1fbaec8b394270e61d5681bfdb35e3ae805",
+      "16c063afffb4699878afa6eeb10a260ea65c5e7f1176dce7e2c56a8ac69cdde1",
+      "16c690fe49e3d3f74c3883b32d2db17da583b04f135e9bcfb3a34a238c10375a",
+      "16e9b31e55fb86d2d7edd9489f04965f05079cdb97736b8945528642c431fb23",
+      "16f0cbb8496243e851ac0b04f306e00bffabaa259d244f42917911cbea47c4ad",
+      "1715ccdd5d1b2d85ccf7b5ff9fe1ae3056a28a5f9d91d114fbd116aa406e0be3",
+      "179e21c99cbb639ba2699d5855e2e342bccb94fa80eb7feb182dda05bf17f26d",
+      "17f38f4f73c8a3973e0495c227af0512bb2e5caa3aac814a2d518abb1f74545d",
+      "18765e13af7bb3ad46ee8db3f226d1b20952867ec97171aed892c6635fdd736c",
+      "187d88851d44660f1c016e37e15fe61b48e4b632b5608ab7637a562acefde4ac",
+      "193ce483546e5e2f1d64c7e632dfc9e96f1324600c0f79820e9ccdd89c98fda6",
+      "194c157cebaa660d520e94fa01609d0a5aa3d759a921f620cf7f05e6f781a78b",
+      "19ed31b3cd4e5058dc4f980daa750c2da8d0e13a25ef6e8c4429a63e5ed71e1c",
+      "1c0a1bf5a83754a4abcf668f96710c69bf381f792c8f357e41ffeadd170e1a00",
+      "1c6330ecdabc6b87bc039f0cea5db8068ccaaff5cdb528bac3fecdd7270147f8",
+      "1c71aaca8316066495f2a3a75516feb078e0e26c3059eb1b5e5b216a664c5b07",
+      "1c95575d94a81090d9bd2cc6bf7ba0bccb183005fd98ffa2d349a0c8f7031978",
+      "1c9615e6cf09cb3c2fccafa22af9df59b902a8429021011c9dbe3d1b7747d559",
+      "1ccbd52aa7b14a47a9a77d8202dbb867e51ed03424b5f4804b29d0ab95ce4619",
+      "1d3532bc9779284e19d7af2d44c467f32cdd9421889e1b5dea8ffb1d7e523407",
+      "1d554c1e6ef5140202e610f6bc6d7c83119e0e0bf860fcfa6f0666a6d441e61e",
+      "1d5b54d9ad141f8d7d8f6ff70cf2cd644401c94cbfc258acbfb0c3e4dd2050f7",
+      "1da6db1b6e12d42b004d379157a54c42098c689f3be0b6c68c757c75e32ea851",
+      "1dafdb3226b1bfb7204d3016fc8aef6e25a091d7c77a38f3de8e2e2657fc37cd",
+      "1dbfa61c8e268b00362ade9781a0e0cfdd9aa9238057655bea404f1a21da9287",
+      "1e1fc7e17578c6428c5fab577d248d5c1bf8d37a3b9e52903d508a1b1199c6ad",
+      "1e74bd33ac78005c11fe8087b8bda990b6cb73605232e7b2279b871959006903",
+      "1e969378763539151a2b866b63899df007a1e6341775b266c26d6739b0d986dd",
+      "1f9d645a89e3aa3496f58fa1efe3d0d708ba4d4b8401d497d9397bd257381b99",
+      "1ffb393cd743a536c061ea053a98f22d090985b365b0eef9589a7d638bab8abf",
+      "2084c862a0435e20f95f284a73a080950dd1aa1408164030b672f67c64bd2781",
+      "208c95fd6a8a54e4fa352c6d7dcfe7103feb1733bce6129300e67396927a5d2e",
+      "20d732263be6e925343f0c884a837beb178dc733f7213969bfbeb894413086cc",
+      "21bdac799175eb7f7601bb2033be44e3d5e721a2a4c7a9d252f9c1fc2d3b5bba",
+      "2377f1b1c6fe304f382f6eeb7b2faf63ed01ac8f596f68983790ac7880a29772",
+      "23d862e0eb1c086ced138735a084daa6e9e9ca3f6c9672b99197ca02c89dc09c",
+      "23f17b7ec0bed8c5fc6738c1336cf3ccd23ed4cc3dde5903081f1d58f4ceab52",
+      "2489b59744eb437aeb7065e08bb844c6e681e860d3b952fed8740683c3393c86",
+      "24ac92bcfb9200cea1265512d0201355c890537a56d4901fedcbcc75622c2ae5",
+      "24c1169b277465fd7f6a8720b35ff1e7a02c760efd2f09d5f7cd4d52006fedc3",
+      "252293c5155199cf188991adbd6cff46e9f0b9f6728d5071fb0f8d810919b26d",
+      "2532fa342efbb184116efc2278aaaabd5972cb5d4713ac24f7434324a666960d",
+      "256699115c27d41c89bb54b9faed203afdc78524b8e55e199270e5e3dfc54a24",
+      "2577db87f9f7091ea0d6c3761e4b5c74e0ce07b01b0380f09fc8f57213c8b16b",
+      "258143d88c43e4789936b3acb482ec5b373a67f399571a1d28f9d22749217b4e",
+      "25d06783c1c7943c3ab4b184b7343c4f240753a6f31ecb3775fa1d7b4e8817bc",
+      "262b1ebce28b48b2ce7ed2968f26d6b59b6178126c1eb921f456467323827095",
+      "264bee257db8846e91d1c006ae830ba486e4872adf2624d75197af53ac5c9b9a",
+      "26aeb7ec5c5ad3e7acf5c290f5337e4a4ae14a84af4faf54ba661f6cd5a4e2bf",
+      "2761c77dcae4d6fd6ec0538e9dabd7f1c2886b070e5c078772bfccf83f69b7fb",
+      "283143408ae6648ed8bcea18ffe8d1c6525b7f5b865c591601b69dbd0829e476",
+      "285594fc9d7de2b0057d9fde2e4865181d4c84e403b8b47d13809f47e90f55db",
+      "28ca1cbf3d5f88b840b0ef850a0951eda23566fb0436915ed49c092380a1159c",
+      "28db285f5f6af7219b62a4cb5afde37fab417f0b21524b64cb56bfe30b298d49",
+      "290c4824d7480f45b7ca33abc5adf424db1a89f6f64bdb329e5b433b0fb18787",
+      "29bf5f0a349acd2266a648d36d100dabd83736c1feb8b287e0d4a9363f6bc5e7",
+      "29cd56c8a275ab561b7a91fa1bf193b42110ae95bab1c9a2eb01468840c2dae3",
+      "2a1938044b6b0bfdb45dc7e42506e5462016ffb1b0ec7567b23d43410be77c71",
+      "2a6d507ccf99f8e0f502b5a2e2fbb254aa2bc86f4bd5044f1233e9173ea4014a",
+      "2aa329b86e6d2329f7693c7f91a724ef5bd0635952525f38a8d290b5ff619d9e",
+      "2b0a657be6ba2258df19eef85998301c545504c744ebbf071e1afd9cb7092a11",
+      "2b7347146157d4252304953ee7792c85111d1eb9b41e420454c32d94c6b19cf9",
+      "2b9b871cfd0351d48677f1396c97f8f95af2d0b08022a9b3908b616d343c1826",
+      "2ba8c639dea1e5e4c728a1acc1a7d9a1f39b75fead71c06617926072e887ed6f",
+      "2bf3e7e244ad69edea544053b6ffbdcae85cb93adc21368658643af42975fbce",
+      "2c03855dd8026fa48461a3abc045a0de95662130c0f6d29ac1ef3af6486a899d",
+      "2c164af09a8b563161d3cdddfeca354128a9ae42e95d4529960f55dc2391cfa2",
+      "2c2fd8fbed43b984164b3fc3a63390bcb569a36ab24b2ea2e2fbc0532759720c",
+      "2cdebfb90538e3e10f0df08eb551930a0b8e236cfae1011b9cab42b4af42907b",
+      "2cef2033645fcc82f58d1cc462b30db95a690349843390f0d214aa0e854b1db8",
+      "2d1a8241750951fa8fe3b22a349e443d439ef2988fe08ef37ca30d53da56f27b",
+      "2d2339703646fe345e911a21b50bf0814e0ccf5aadde13cdfdc8214e1962e6fd",
+      "2d4762e1473329cc8ee4cf1e417b5f500b39657f318d92cc295c7ea702612d03",
+      "2d748361a254e8c4e756e73cdd656eb4724592da4fb9313c2c186f6ce9433431",
+      "2e14998e8d83b539be449b8305d1eed62af25151249a3ca1c3aae0722e7bdbdc",
+      "2e17d3af2eef5be618535f9b309e75fcd08a35cf336201e6e368046cd72a655a",
+      "2eca0d9901cdd3a98ee208fec2f66ba9c82dbd12fdd762f0b9751ce3c2625cb7",
+      "2ef4898053a38328624cac82e17db5f75ee58390550b768e9f900dbbbaabdb3c",
+      "2f1e6a04c3e2fe62b05b778f5c1518c49769e3a2aba4e6cb036c268f080d3912",
+      "309b7be89e9a00397d9ef06701875417ade739741e2b931e9f000f3c4472fb45",
+      "31168a1920e6d1e3ddb14a2941001073ad34cbc9bae2f28304308e6e962bb7c6",
+      "31447a382d82d825cdf972afddbd9826e4417b1fa3363b4bc1a13b246775ef26",
+      "32006701425fb1b1ddb1b00bff05378443990023927045002459ec2a58b01b0c",
+      "3241b98d786c90db622f926e0093c2e91d0ca428bd453e8aa8c0b7fa2883d75a",
+      "3244cefc4590064cbc595a1dd7b5fb693619cde611f4ef3693c05a486ec3c4b1",
+      "331e5758d3f33a97ed3c3bfa2453b91092bfe9d3781f20ba6dbed6fa3b122859",
+      "332c4d5a3f0ab488b78a5ec026c6ffd0e2e5bee9b02bc8b0e3292dd4f74887d7",
+      "336c978f432c1534a12fef82801e8f63ccc99927a0704a49931d3a7b9fb08e28",
+      "33e6add12d3621cf2bc26b992cfedc3006a8359fbfbba95352c66dc83113b896",
+      "3422ea8a749e426490da897d8b68e8c3fe0fb4b16dfbf035bff5e99ce53b42b5",
+      "347a45c9ffaaffffaf566d3d47d7d75e0954465c89d93bed5f9de68d0b151a30",
+      "3482888b833caa5bb4e6264f188f8052a6d2f0c10a5a9050771c9f0592002836",
+      "35de14826bb5f1f5aa1d44a7a18320312c1f5d83818066c3c1cf2908ee680e21",
+      "35fc575e1b156c4d1ddeef7ced1ef71c246b378954ad778ce0b2941b0a953744",
+      "36aebf4d81a8ab225a07246479697f03866e34259cf70922c7c76bfc52f67df5",
+      "37cfe594da1e6955450130afadf605fe7680ba69795faa12a215e74bbc3538e8",
+      "37e0732843364c46a4c7f6f5ae53b485b32d47b0c18d5a889fd06a225942578d",
+      "37e221e818b5c12ea462c397e087472a9d8d4781e70aacfa985109f792bda659",
+      "3829e2c622528d6d1e5b0939a0c81470009fb181dcd13474e7ec663fe8f140ad",
+      "38554452b48dbfe2ea42a6c0dbdf7ac3821cbbe627c43ac59a0111fb62eeab61",
+      "38a1defa092892b0c602645352fa092d9f8baf4bff6bd3ea4f4eb9e4f442f9db",
+      "38abd37dba2e0fb0ab352f6b8a17b3059d4450b894b268d03695b534c36b7c89",
+      "397f4db5b933a017d85a88883bb738df9f2584c7779cf4b9e649407fb660d5db",
+      "39ceeb7133a4d37072c9e2d7cbb3bb80a9f00ee0c5764936cfa2fbf4f03fb091",
+      "3a0b1a31d22a9f9b26324635c4919cb2cab433171261545940dc0bb9e47cabb6",
+      "3a4fdf2ad936187eaf0c2532339ea1ae0af4440ce7a5a8e9513107b61b337389",
+      "3a6e0b391ecf1a40cfd21014050c5c887efc7da6e4378d068c0a618a8f7e12ff",
+      "3ad237f41061581ea35a55f84eebda5ef4de2cf50be1bfda5137a0ba76a33507",
+      "3aeb8489c99f436547203f64e00120a861fae2b22c468251efbeb68c840f8545",
+      "3b1e6b1a53ecf1778e0b75c4b33b14a9f5e42ec39fec047bca4889896c3a1d1b",
+      "3b40a6a1555a9b975bec0cc7f8bdcdf7494116aafed8ac1f1c61053983462811",
+      "3b9ccea7448023f14d67e538f8d0e94418746f55711f985ae12d0bf7b8078df1",
+      "3bbee7f5105c91216e785ead586408e93d09c3c79e95988211a441563b4a1d32",
+      "3bc313dab4f239b1eb614324876897afa4fe05e29c625fdf95e97e9dd068ac5f",
+      "3bdcd97b24b4b8b40984387390c3db0275cc51d67fb6514286f07a92e1d22141",
+      "3c11738c343a606bc44f596e9f4665b012f3e2f7c9b6f85c644f47dfc4cfc5c3",
+      "3d0f81a877bd3f6e85d817438c256a1cb8112083ee471b8d0e04ec76cadb5eb3",
+      "3d184873fd9ba9b26a395591c9db15ffc98fa4ba51beee195e1b365c34723a98",
+      "3e2df38b0e1f2b7e48c05bba141860bcfb4a3d8aba476e308ef5459d4d690279",
+      "3e55f58ca98f418ee556455ab185ba93e070dfbf2efe9d531269babc53526f28",
+      "3f72348d8f240e6ab396420b054584e360ffccba69763aa0629c83b0ad8fba83",
+      "3f92e356f28c158e02eda746e13d4c934ede26e79c2189a14e015c161e27b042",
+      "3fe3f042234b8dddfb764a01f17b42b43f9e1c5e45c6cfb776319a8a6544e0f3",
+      "4001a5f1926c3f14c7deb87530e5c9e39f431d04dd18a2c104373e081eb4c954",
+      "416f105aa22d4ba400de9e22d4a924d6baae4ae7473562e8756af44b2ce3ef8f",
+      "41770fb539f178004073a8d400b8a90be2b9a7085fed17bcae016eb9f79d3f80",
+      "42205aedff80f9862fdf9e62d7d0a3c80bdb60bbcac8a07aa778f624a1fe55ed",
+      "423eb73355ad0c90c0c8920c3e281b9c731ab7bb7650c2056cbf295c685fe205",
+      "42482ca5d719125f5b8094cd731014bc6c8aa87f2507865a68c350c2f9bf01dd",
+      "4256ed48bc2f263799663ee76a8a58828483781ed1af8ec8d1fa392bcffe0fd2",
+      "428540633fd0390dc3c7237585e3ad81503f4d688dd384de7603595dfb4d3f75",
+      "428d0515964839897e8147547e39e59f88554c0f5087206f4612f8b0487b0f75",
+      "42dd04be62e8f0d203c2f1d7b23f530ab9973c3d3c0fc4fd4018846908a6d8eb",
+      "43043ce8e0a0f3618f0856c0469d87e1537467e20be5d0f4e081883ec9f0e8d9",
+      "438970087fe6fa28942c746f6e428cb30c991cffe6b48aa53568b4d81167534c",
+      "43a55adab4b42a42c5a150bd5a057687a8de161356e7c8795f08afed43471548",
+      "43b0d0e0d5b07fae1e5c416c879f9fc4f08a848096059c6e013503be3166c4d8",
+      "443e6a809c2c3d670118b2f6d8dcb4433ce806312c61bb5aa4991e65f5104e87",
+      "444bf570dd206265c03e73f4e8f727fa09b4a324c66690e32cfcd305a9ce38a7",
+      "454c52fc1bcafc03f848ac1916bfc038ecc3bd37e4c116ce624544fd9e26fb9b",
+      "4698c958f0bb2e582020a7b01b1a6ba1c486300b34848d7562788dd5af51cce4",
+      "4710a9d3e9be4bbc8e0a2e7a5e42f5aa97c4c08afcf728206f24a93e48a6dad1",
+      "4728c805fadbf831746791347d2ddc10936391e2954a6ffc8a19c883334b25e0",
+      "476c866796b56a339dee3196129a3bf03fe9d11481e63c7eae225652899c5eef",
+      "47bb7e07489f9f747137b012c82c3079ea08dd6351806200d792f8238dcc5e7e",
+      "47cbabe73cdb4fcfa1dbe1f6cf0e50f6567edc65401379a3ba2ffdad3c93f46c",
+      "48ff72b15f8183e0a39bf9bd2105eecd60242f543daa84947c5ce7e804918936",
+      "4958b5c6862c2e4182961f9523d5a821743f87cdc95c48ff2d144b3b40b93332",
+      "49a7a8cfd1516ba7b5ff19d3d451a8e88915f09df7c53e3f297e098c9f0b5bb7",
+      "49cea2ed0f73130a38abcf5c013f45e87c52977ef60316bec3f92ede1e43b5f2",
+      "4a312b7acf09d718d70c1f3712da2d33ec9a18bc63e429967f265cc4e38cbc56",
+      "4a885a65ebc8497c8ea4f19e30925ba3c64297b5aff20f26798329913310a91a",
+      "4a8e010a1cf14e05c1504259afc2bae57b1b82099f17b62d54c1a86e0bd06497",
+      "4a9ccc736d57c00163b65521aea6c8a9285a09e19d5fd393673c4ac06388a7a9",
+      "4b8258e75ee9c0b9527b2170dc980cc525bf6bd0d2ec6dcb2f74c7a643c3d7f5",
+      "4c367dd4e3613b8a52ee8cfd73b6d64e643296640418d579e595a4502551ee1a",
+      "4d08dabbf332a110bf56b7c8533b62bf9b03ee0de0e960e94fd979dd0c29e03c",
+      "4d3daa477edc8731f0323633d14002207cb4f23639d2a81b283ecf880d882cc5",
+      "4d836298a97b16ccc9ba6bfe73cfb2616b8657d921a4fb175067eb6ca8f2e472",
+      "4dc9fb3ebc067637fe3fc6933e9a1c70531becd38e7a19294bb40d1334f749f9",
+      "4e3eb5cfde044bddead86487e8dbe6dc3e09cc0bcfc75384ea55f6a1fbd5d7ef",
+      "4ecbb82036d77355de8866e6acf2698190c44eb59baf29f976f7dd5e4df9e6fa",
+      "4f78d88580940d94d9b14b8f2289d2b3c4be3842483e8d27402c692b924ab55e",
+      "4fa9df891085efa4b5edd7e5dff4e51ce200946acec2e261b06ebc4469028b63",
+      "4fc67bb1069791a49d8a374c8e2295f9b718befcfdd5db724609cc9f2e7f0f21",
+      "504c7af08c5b42942496e94c2f762875e707a7110bd5f6e3eccb31d67d4caf3c",
+      "50782444e29d45518d44803b0648ebf7fef86e895d31a517eb92ba2395aa27a5",
+      "51847229cbcb495429fcef828eb6d6ae0bedb739424f55c87b83de4d3f1d571c",
+      "51a9e7b929f84b63a26ac6edc559b42d14b780fc2f6d7ea63fe16657e2f66bf0",
+      "525714400b6f94eb292180d3658f74749e4466d1d83d6a59e02fe7a4b855a2c2",
+      "52cf9cf0e70732eb2179ddcafebd1a0354af76d8de7e6a9230780072e296556b",
+      "532502baccfd379f91df5c45abb6358df43a6a354ac69a639225d5e232f8f075",
+      "5377eb1c8460143deb4d5b9ca835e520646f16fe3e15f9dc1dcf0eeaadfff267",
+      "538ada6a7a50040bae2103b3ff54bd00a3ddbce2ade395c0ab7cf03dadfad1d3",
+      "541815a35740ff80c362875f1e340ebde6f7d43460448d9c7eb0008c8ca75ac1",
+      "541f4fa0e96799b7bbdd6f25a95a957cd8b7e10890996e8ca6b021f1a1c1d1f9",
+      "54218094c83786938b839f317df9c8067aed6335b219c3b465a4d0b96f75eeec",
+      "548b8886a804df644cf5c4048270963a5d24488e76e8fea17c43056495aabfb9",
+      "549a4f0eff093c3d36f09d626fc838f6a08747e5f1f8dfbf34ccb782bef367c6",
+      "54e7a96c406e476d5fedb68cad2e3bd65e7a1ee637a754ba2bbd1011a2a8ec01",
+      "554c9111f916acbdbfcc775e4aac3cc9942272b50709b385f7bd90d6e03ff6be",
+      "5556c410714ad625e55081e8740d6dcc5b8ef2d554b1a01f2af2d29d3ba2b517",
+      "561beee78c7c2a6a351f23ea3e286fcc13de46f94ace6786c9b61ff572171cd2",
+      "56779d4dcdd778fcf4a919727523cb015c18d8c4d8b4b27035f22bc93b68649a",
+      "56c4b7a01405f4c8e1695dcfb6e5a595783e76df3ab482823c2462ff276c5e7d",
+      "576d40c80d7a2ef52eb5185718c56eb1246dca306a1a8005c3cc4730b0938196",
+      "579404b7914450a498e583973fc2639120419fdd8fa19472bbfc1b6393332171",
+      "57e44b73beedfea97c297a171623e28d100f507ba6e82f38c15b0f2c8deaf6f8",
+      "57e6976e7851ec011fda7c67db98acb413aeef25a877737764e76c83d89c8d81",
+      "57fb2cfc9f3a0f23c28ebcb9dfe8b7ec74bf5bd008c25e6927572b978b4803c7",
+      "58455babb75fbe36a3dc20a43260c380500f9739711d0b9a43113711b6d50332",
+      "5855ba558ada38b677b5ea7c0d932b832a32987b7cc07e4825909af2449b41ca",
+      "587f912b2329f840b72c25ad2ca1f2b7b6def092254d0cc1346786a7f553e22a",
+      "588459170abf36ab20802cc9621a05ddd0574dfaa0c4e2f73e9ddbc9d0675c89",
+      "58ac646623b35fe4bca5eb87b0f31a253db266001e0e973fa112dbd81580bcbc",
+      "59d2c9d8420937fa82bd7475e788725eef9efe664175758dfea8423ff0b9deb9",
+      "5a4cedadbd0de9bde799a91e5d260941ab68fed68cb351755152e60428a26bc6",
+      "5a56343c7c6b2e7f6c7994ef86832898d200d1c9796de438120b32886d87022d",
+      "5b95ce37b746cbdae4dea6a580751d71790f8a1e9980a788ca25acd9fb315577",
+      "5bdcc4f245273e8347f781ac9fbe68bc42c6d86afddbb2d0aa74f4f86c22f9f7",
+      "5c66a19da06dd0adaf34aaf24538604504f1e0154df2d29bb9eb797c40d95ce9",
+      "5c8730cdcf9f866fdf5a5bc3f74bea75da546f756ddc61b71010ec917bd92419",
+      "5e1a480e93972951a0c8f367abe7eccf7411c077e648dba8ca148eac087ae365",
+      "5ee22b4b158d5863fd15aeaa0b2b7e52cf979ad091857e5e176f8d1dc51fa9be",
+      "5f055ea8ab2aab834bb9ab56170fc8842a7f235cfedc7625f35f3e5b47d1567d",
+      "5f38339d26193348f967fb2a8e7f7b3e621a349cbc4c95c700ce162a728f9ca4",
+      "5fbde7460196aaca3415f0940b64015b419ce26fe540b437583b919d3563fc4e",
+      "6023a8295526e34e1acfa956514a9feaaa41b77edd0f3092ca01e71ccb016307",
+      "603ed29b024b2fa93fa01908777213d7c81ce48e3b85ee68de95fb1802bb014f",
+      "6091f0e0068472722318a94c18f5d6561814dc07afc579c0128ef39f20ffc3c2",
+      "60f0e540ad4549c4e2dc9d7814c5cd9539d2f21854eecc9c17909f9c82a9bd19",
+      "610189fe5905d0313db8e4eadad7d50d05970332ef4c9bb92a28a8878d6ed575",
+      "61025c5655d736888b2a6f88e428bfe9f8ca53bb31906d61dca3f2c821659916",
+      "6109f2ecaa1eb21fc918fec572285ef63c51521c3034fb02860bfea7c5ffd0c2",
+      "616ea6cc70555328c0fe6ffda11d74a01b1043dc3ea539cac0c48c2d37237ab3",
+      "61cbf291a45a7742959f4516f9a5901e38c669b34e289e0132eefe7e1592d4da",
+      "621711af47331a7e1be5fec96f0d29b4fa7da41efe77ceee6bb76af2b593afb3",
+      "624c0f53e06d3269d93128397068742a2a05b1c8f433b3301c2fa103be96c0d1",
+      "62ddbe3cb9cbe9d9247dfd3a80a85846bac616792aad25ea9be0be1461d15f5b",
+      "639616cf3821f5fb007c3f2de4003f9d7249cb1bb7136568249550caca1a332d",
+      "63dc4129257793e77067594cf5c8ca6988e90ea7b913261fa30e65e4b71c69fe",
+      "64250f4e313e05268ae11bdaec3c0f391c616283c7e9012e99b096e42d114f94",
+      "64e5f2f9c43d8debb4173eae88e0b8464831ac46f6cad238c459ec8167320b69",
+      "6507ac113fa36549fcf023da7c3e57f43f6e1b760e4259c9fb1d876484415f67",
+      "65696cc3aefb11ae38c7df52f75a19c7ae88714192231a534cc0e64cb03ccd5c",
+      "65a69f3e42a77e4118255f0bc045bf1717e569956ffdf529a75bd77700d8eac4",
+      "665be9e55e1597a7fe2c92d1db6a440e3bf04b7848cff2f15eef6cfa6b35462e",
+      "66a91f51fab7faf2d5e4dde6c937ecdc0475d2917302f6912423a0b30948380e",
+      "67872a7d45e5e9b52a4ae3c81d067a5fcf06cdd62d5fd550ac0ceac2a4e32518",
+      "67a299d1499cff69c14e8b2ab258ae6f63f7637d6f4abc38a06845ee07fa2951",
+      "67d3f75c655edb49f29ce1c6173bfadd249f7f3ed5407797c251e5d2d3e03108",
+      "67e0e115c06e8fee24401d9955055c4cb57ac95a2c40e18edd4f8ea2e926431e",
+      "68b8579554f3fb9f020a8b1de9427dd9079d8900a6eaa271caad42956821ac35",
+      "68fb56dab1a789cf08e8f8f12b5d78a190013bd2a16843701d7b9160cb8b8c02",
+      "69f771ef9c33a6c6f8fa280fa8a315dba32155ad5f57896e2b33df8843cd7910",
+      "6ab8bef4e117c4e1538e58398676b8271cbf7db578a9c1ac351ee59f31de95c9",
+      "6b6691a26b9e3a358e47516870a6dedd04d27d063b4437f7480963c486e77e25",
+      "6b8039c477d4cb693460713904085f8d221b32541940411ee5e07c85d8e8a041",
+      "6b94db575730fe56fcf08254ed0b8dedbf88c600499b6c36ba9ac53be4526171",
+      "6c0355b23064939061dc0402206ba197d27d423a947803f3222221445e5200be",
+      "6c04dd810f309123e4af35cfc11ab7a128edc13f09c008a0d5bedd8f4d1e1b54",
+      "6c7a5c5ce9e8b7a36e5e714d46200c589df45e2af6b1850398ad065b98fead1b",
+      "6cae243b35245a7209b2cb6b1ba631206c9f9029104d77316a6b29a6dcb76650",
+      "6cb3d89e360129d5dd67533be8876cbb182b281d6a96ed894199b93e7d49ec26",
+      "6d771c100e9bbdc71903da2afb654e3cf1200c99be4df74439a7ac72b031fd8d",
+      "6dd0c48691f1a6969185e86b2b54ec74e828031130f5197c07e298cb7ec37967",
+      "6dee142a3aa600fa9cef0e7088b1260d33baf43ad5d5c6f5606cbe7c7a97ae79",
+      "6e2b4eb58903a5a31fd8d0ffd42fb13be7cf0c4a768a648299310080d36ac0bb",
+      "6ed537a9cf5572047b0b8be8a912659df0e92c365e777d32a1ae9df833375211",
+      "6ed5adb37cb4fa6caa1c7263db3798ae0fc315e63a9aa95237a6a039418c5f91",
+      "6f3402f3b2f02f5f46237cdf3875041e3561f80dd110f06aba1f1c9e528d3652",
+      "6f3f3a1e93999aaf1062dcd47f956018b7574a05f6a6e5af6c91af42ae3bfd92",
+      "6fa8be93dd389e931faf0e0371caf4b8e035ba16af38d812d8f491c1f8317621",
+      "6fd702a8054dc01e470f754ea7ac2299e48c99a0869e6274f787c0b7ee007d1c",
+      "708e7b10de5d98184879b5ce4ab1a67505ec55a9c9dd6ac655ae691c3938c743",
+      "7119a23128708ddf559ae990a85b39d9786ebf9e4ba5863d1e8ff286ee19ccec",
+      "71e056c5f3056bdc2bbe43cc35bd03dfdb9e1d5a16c51ce20ad3d069e3f1d1ca",
+      "72e1b3c7d9a3bfcaa71132065e31632140cff3242f120c845444d617cbe2d0da",
+      "73410f36be41da86c39b7f99eea4c523580a7b39feba0f1d6f54211b1b77dbd6",
+      "7382d7249a3e931579492da96abc2cde185c2888d37953158eea777a18ad9d56",
+      "738e4607658219d3aac31c5e79fc273f62af08ce7d739ff02dd6fe68ab04969a",
+      "73b0a40ac0c9d20acba7a1328b8196455678a912b11c3a1772bd065243d14f1b",
+      "73b1633524657de9eee9a0af3a04dbb99e1be2b717ed0ff03c2f7f668ca36415",
+      "73c586deae8935e2fe3528821575f65bdf5e36ad28d50042cc52eb6d49e5bc7c",
+      "747130499174346fc3eeca6fa8f85033e74944ed47402cc6a8cdb3cea5bc5637",
+      "749f0364e416cf9f8e957bdd3184536b0538c268ea52c78a49a5cbde9705e9d8",
+      "751fc977b85b7759826e728a7f777690e8ac733d8acebda0cb9cadbdc0fd376d",
+      "754c8d3e6101baac623e26a4606d9eb0238a1025beede7640a41da8f2de6cd13",
+      "756fd30514672ccc047fea0f1a9278fcbf63b74647680e581c7e71aff672b499",
+      "75f7bbed261b030e1732bdf4d44de254df2107f1aabd5fc05c066820c8c6a34a",
+      "76e37e1768adc05651be26d6a7bf7cb283eb8b9125fb2ff5c373d5caedc49bbc",
+      "771e674c60a1cddcc2bcad9fe67e85d199f94b0ed27db75bb04968cbc3ac027a",
+      "785c05b047a6852d1d3785021cdb4e36d41920899b33ccdcc4cd54b4ed04a1db",
+      "78f5b0f9e55d238da6d083d03c05f38f663623e15941ebc7c7c95b9a6474d713",
+      "791db2bc7a6e79ec7d8f865917b61541cbb21f4c84ad36041ffb35d3803706a5",
+      "7933b0a2d87a0c9326da2a4638c38f4d6b86414826b213f700b7a5d536779f4c",
+      "7a59b5e9e94413c186b78765c40c7f7f574e12e0a8a06022ea5206902cb1b2ab",
+      "7a98dc255163f3760eff9831fd54ef158048045a018ab7737781e1a37dcc94c7",
+      "7b504509a383938ca3437be4bd1f9c5504ae68cd56f33020fe94640bc5b13f41",
+      "7b9e9759f23b8909a45ea18fd5954038ed779fe2593f0f1809d45914f0e3f778",
+      "7ba05454e5e3c198e39d15c496d68ea73e4143ee27eb5ef742153b9f10950188",
+      "7bc415ab96e00257915bbf42c6a5c5d3bc29d17d50a3fb6d99f64abc935f1f80",
+      "7c2b792021672779c261cbe6714919ed6c7dc5a8fdc57ce14abffc2007f803fa",
+      "7c91939a10c1d955ccb8f2c394caf700d96b5632f6bdce34edb528e7e7631f30",
+      "7ccb5ef5b33aab3912091552546988ebf17d28256e88e02d1a11cf379c31966d",
+      "7d34db16db6acfa7dc9a08929fb39d0988c83918f130ceb47fe45e176d318b4a",
+      "7d921b46a20948e6ddfbee0d041c10606b658a6d869f2293119bf09a16695dff",
+      "7dd451af4a4a635f08a2c39f78ed8a0a8fdce10eed3e15b4f1fa613c25c222a6",
+      "7e8796b5f5da50b488e661ca0f9447c3474460682f9d6fcd041761a3bf43a47b",
+      "7f311afe199d5d9cf2a0b0c3e468315fea11c99724662d297a82c601577bade6",
+      "7f6787bc5f010837fa22077a0d1ddf4cff4448460e99150f47541b3c058ffe29",
+      "7fa5c01a93cab44cd4ad7a2aa2f47534dbf490b28461a8bc26b33801ecab1770",
+      "8007f43621a3a6cfa80b63a8e7a7f6f193b053ec1d520c12ea6d114e5e9a820d",
+      "80085001f59d6110995ddd5d05b0cc80272165c96b2b4a030000de20cfcc15cc",
+      "80a3f66804eb2563f6e07f201bcf6a63112ba44e6c6127be530b7b70b2136966",
+      "81212b7b9641dcd931ce8da95174c6d0eeead0abb24ba16c6bbd80218a5d25ea",
+      "813da738e86e5b09139e6da90c092b3fe9c7ce60e463c11698f0cc86a78ca2c3",
+      "8142e0ca749dce82a4bef6a03575141cf527f2e224a64def66cc9e737c012225",
+      "818cdcc4d081f51259f3e9b66be72a5bbff5b5f62ab19f7c8b7a9be3f6031cad",
+      "81b8bb5e2979c395c80a9780ceb38a4aeeb32a482dd49b6218ab24c2f411ebe6",
+      "81f371a80fe98c74630ac5f7312ec21763a0d13d76cb6e9d8d25024ec9968ae0",
+      "82eb6e3da9c0c5193ae1cb77d6a95d0e270edb384e8462f77490b8d751c36b6b",
+      "834d52dcc5516f0c0b32ee0e7d5faad6613468f260234a4cf2066b4447394dfd",
+      "84e41c809c59b1c2b04bc72eb44bae7c4b4c3345c567ad61218e79e11d08ca32",
+      "84f5e6c6131e95f5175ac038fc2b8c2e088e77cb7381c4d80e4bcd7b684a395a",
+      "85aca206670f5a5fff6dccfd874cf81d68bfa2c62eaf0e2c74e7a6f073cd34e8",
+      "85d4c7cc18ff50d3836460189946126a5ba8aee017483e169e9a5c93fb112529",
+      "85e08b4a80791897a956b3a57022c5697daea204be2b16ff907085b713e91f27",
+      "868efd5242dad1765ac93d66c02a86f3c9564e160cb25857a7e2093b94bb5a86",
+      "86ae72a7489ee6707bba720b9050defd0da8b856c12fe634a9d6f284af580a8c",
+      "87063322cc820e2e8fa67c5ca78b720860366a0741b81e59b618c9c54dfd3992",
+      "873e1c05777fcc3c6502f2877fc082f847a5627ffc2334483bf8e3da8561855c",
+      "873e5a645cccf70afac09caea45373d4a1e718fb00872768f3931f0c62cead92",
+      "879d8747101d70c1e438feb9ab51200ba1031bc13943ed628e84072f37b27a75",
+      "87d34105a6033a04d84442e7cf8b1c1be2c17169b0c5c081ce2af2c58ac1224e",
+      "87e799f5f58d6875aaa15ca58b881e02bd557b61d8ad7779bc18506702bfea22",
+      "8885930a95a49ffe24e76d6cbc29cf4b7a7b21c1326d70ec97b226a4267ccb39",
+      "88b63eed1b7293dfb6120a453ef6b01d04ce0361507cc9237d282b02a12d35f1",
+      "88beb420954849205cf0c3fb96e4bfc37435ec5e5c2e39398fd53a8b65da3f63",
+      "88dc842db6ef83d3835fa9b40883a8a0461b46961991ae676cd83300b66d1f15",
+      "8949e1e7fe5efcd11fed8ff9c1c23c80fa3c6c8491d0c070e6d1f6346fca126b",
+      "8998e3d8775ff6295a2e3e8e570705f11176d3f12585cbff1954016487f9c68a",
+      "8a6a9ddf4a01564d2c9d6f9166e0ef2cac39a243bb479fec56eb7558f99f7877",
+      "8aadf8682407ac4ac16e279011e6d36eb4a533d18fab30dc83074341ba0feab8",
+      "8b4a2732686cdc727f07339cecb8aca2f2d3e494bbf3858a7a48f7caa2141a47",
+      "8b553faa5100f26cb2e88ea389d0472ab938d70d2fb3e096a20d63ae2a013c9a",
+      "8bd3408bed67c2648a53371b512c4fac2f4f151b372718d2afbf214e81996ada",
+      "8bd633c34b48d5b4884c7e8959efdd6e42c9386bfb3597e11bfcd7078535319d",
+      "8bdad089f51775cc476250aca587f2aa08096c3a7e64dd2aabb4f7e33afe9360",
+      "8bf5e1a079a49b2f0f7ec71d61082547841f36b7c3e23d964e78a47124c09c99",
+      "8c7b0f9ccc8128165bc2cf76c37bdb7fc263a9cfa9a94dc0cd0a1d3ceb2c9871",
+      "8ce3fe8f586507c3d5ec4ea2ff5e11291512bccc29904f8792580cf6098ddf8f",
+      "8d123435d13c7ec47c6757cce0af15d23876f06e7facdc420fb25f814ebfe7e3",
+      "8d5aeaf3570e213c4f9848f23b4df14f2195b3f6558b14bad6bdf5379bdc13ca",
+      "8d7c42548c4c30e490113866e726c991c43a2648eb78deb758b1a6bd81fbce3f",
+      "8dcb1f357088957fb6405eee68080223fea78f9884b3b7af1925a389b6dddc91",
+      "8de021a5eb122f0c701319ffb9b1e573283d7a5f2cfabe01bb34799eac31748b",
+      "8ded91f4992c0563122a23b04ef1be2290a1a9342a335891349cfdf20299e2f8",
+      "8e04c01b700755534572220ac2365eead3ec678ef1cfcfa381244fae5adbf60e",
+      "8e1dbecba1d20caff1a28a515aaf308d3bcb3bffe7652f96c4471ebfc48ea9ce",
+      "8e7b1e928f1ccb95ce05282652ddee5a155958429c40d174ffbb6be7ca7a2505",
+      "8eca92f7c6d6b26e390169f5ea72d608db5edabded5c1ef50f91d619631b915b",
+      "8f26478e26f9a4464b74a3c5b9049b7045ecf115d1a4859a064aa3d0843221d7",
+      "8f6b696250df8e24b799daed631f85b836218c3ab5622054d4f6cfd92e091cc8",
+      "8fa72f12bf646f5c61fddc8410a484801513d38d11ed221363418ae0aad4981d",
+      "9015f4d4b51eca18fd5f7d179d3aa411246ff80183b3d7f1c84df6221ba38040",
+      "90b31946adabfcd25b3b2fcf2d2d24773cd32553371b179d07f125056598a9ae",
+      "9101ba3ca38939393a15bb74215efd157b988d4bc1bfd9251a3cbe2ec32c9a6f",
+      "911104b9cfcf5974a746ef689c1c05006d500054facb2b92dff55afcfa7f8e1d",
+      "9120e681ed0df371a11c8867d16ee2d1e1bcdef9076c5467352657ede1c3ca5c",
+      "91c0a468076a8b77c13625cf9e71d55a44e6e6216e8c86b677f131c75326565f",
+      "922b3dc2801f57f379586f5f7569c7b93ccd4bcf559a8c06e9bf01b1146b0d25",
+      "92a354d88bf561b2082748314e3756d372ccf1d0aa0d297a0f70964fa375f20a",
+      "92b9d201e15a86e0c4dd7cf5a35ed5ec5dbd65dce971ba58945c1154edbf11a9",
+      "92cdb04d3b8fdacef8f105d4ad533678cc748f0c87dd2d040c753c9ad0f83ccc",
+      "92fda85b7182cbdc4a50431c468168a16388aa23987f84117dd5cfc4f4f3f257",
+      "93359c8fc0a9f1c2472bff7993fda84c8d8214117d145cdfec9f16b341f44fad",
+      "938944277f7709a51187cb95e9639038fe3f1ced4e9559d7eb47f65f7f39acde",
+      "9447e504952699054a710ac038cddc3fb46dec114aba00fe9e04aa4e48b621a9",
+      "9478be5f9de3679cd0a540afe150cbedcbccfa661f3e4f21229a030b9d70591e",
+      "94e725051d1e0ad46dca4890e76f22900e7a4d02128704f4924ae1338def0cd5",
+      "955581c4c4f5c58f46e15109a843d01f2fcf1704697812bed3daf5f0848c0fff",
+      "958db15215c05b630f8e8279d0b6edeca462634e521ae990a5710d07241e83e4",
+      "95c9f4e6489faec5fd23b7b6e8225ae4ef5519e60ed27f43dd078e61e3300e62",
+      "9658414cc3e41b04cd5808c4113e698f27b067a994aaff71531ac3474e3ea9c5",
+      "9658668c29dcc92cb3976ef5fcc84456c82c5ec08d4480b30b5e17c627e6b088",
+      "9835763508970a5821b0c39f33ba274d08b49bad91943f06f28dba566327dc14",
+      "98faca520b88f4c965d55895105f85091051014135886f8cf4b7ad907db2036b",
+      "99233a0bd57c9e35d0018712c7c213dbf0886c2295edc7c33e127652f41707bf",
+      "99c2ef20d25a7d1f9ec0945595984342db08d4efe692a1dfb628fdcebcf0d6ef",
+      "99da029b02258fcc78e04e0c1424362e1b3f72f1cd27365b2ce8eb15656cd533",
+      "9a3d9c757dada8531be506bbfe26a50e57c96413f4460d3721ed46ddccf89b1b",
+      "9a7734509cc495c390be1d993cf04fa86cd145922578c3924b0cebba6c1abca8",
+      "9a9b0feffb3f3d5d21c565e0ca93479cedd48760789002a6659f3b256f8034cc",
+      "9adec49f783aa97cf772743acbf959842698a0fac7812ef458ab36d72cf816c2",
+      "9ba6390920ea484c07fbd20f8507b9195978a9f4b538f2d0dbdd6bf40949c970",
+      "9bd4de8d95ce3b622ab6769e7440ca624f929e3e41d3418e695733055c010d45",
+      "9c2035de41d7080172edbd6e3c10302898f89186247d142fd0aa86376e57800a",
+      "9c7a2212d00f290a644d6808c594a799bb9b8d20adf92a13af74e4ca596d96af",
+      "9d523fa81d5e2b436ce94682edf7d7de0b31fb982120a926aa1ec2d41dc4b3b9",
+      "9ed10ab0eb407476a2c87b7a96bf88403517104a776c9be94c0a62bf8caf00a9",
+      "9f174bee65c2c6a1f2315c5a76c7b42942286766aaea296d0847127aec0777bd",
+      "9f78e454a7a1f1b4fca387d5816144c9162a09dc1c4fdd670077844980c16423",
+      "a0843038fa89ffef62647efe406ffcd6f755560d5c16c71cb4007b3f9caef409",
+      "a1610dd3cf757beaa6fb1474c5de99255066e152cfb71bfe5757fd90d772f658",
+      "a16384c5e1675307ab8c13519753534eab2aab16282861d9b3011571253f626f",
+      "a17f3e832bd2514f6e099a43792ce4dd583a023fd92a4479e85d323f1bc985c2",
+      "a1966114af243a0df1ab19e0ab91f8e058c445dd8097a8e5d2e764cea2dd1504",
+      "a1f73276545ad4c7a3cb87c2055fe467c025de53a701609358df1bcaeb45f065",
+      "a340e37f8df0ebb2a182b941ed8ebaa33531c55efa914b56cea060ba9f2b75c5",
+      "a36211643acc28a1372b69f6c8bcf81893de1d4c2809d7f963f891d9ddea821d",
+      "a3b97ce9537a23a57fae850d208609e6ac696f09c1c12db34745869478e2f5e9",
+      "a439d7ee31b7cc60d737ab2302b54dc158a56fbf24caef195cf51ea098fefe7a",
+      "a4441fe58f038bef461c8500712edba231663ecd848655f2b64b0338614c043b",
+      "a44521e992300c839a155f5c87d92fc13aa76c1f8a4b5ab774504f0d34167030",
+      "a4571ce90892a7bb6e1feac819e370b8bcafa3d255331fba7749f5d4de5e3e75",
+      "a4f319ceb489df7ce39539d29884729354652ad0a1e905a8555b687bb1373224",
+      "a53c903b49be4841ae0241de933dc8eb23273ea2ca0e7af8d1266d0b2da94a67",
+      "a58fd054ce871d4430c7e988ff6a869474b7224843b7aba9cdc6b7c7321bd3ca",
+      "a5d2a8f102b7ff9b14b673c383ca7a9918711c51b34bf52c26471e16f4f9a60b",
+      "a6741463957a80df7bc0a4f9d8be726953c9eb48156e33a8cffdf2418ec0a1c6",
+      "a694119c685efa2005d83a292d67a7c2bfe37043f427e7f6b1fd0e738602aaae",
+      "a7016be9cfb21e35533c1f59eb0fcc1f7b3e73cbf46c498d2f527ce00a267b22",
+      "a7620c9ce5d636a73c6eb4edd577940ee3a1b674fa28b9cfacbe851d6b9b7596",
+      "a76279c3b1486453f909beeccbfaf6fa510e6c150e6b6884f285e56552660b13",
+      "a7b75c6368b3c3d4e5b288e1afe8bd08f299174eda176e1673586b4ea4acc793",
+      "a7c763a1e3db70f5ca94b3bbdd530d35d63747badd3f4289d99f688b73253a0e",
+      "a7f4d47f3b2b3d1a04f3c76068fb0f1b8c62803ac1adff4567346eb117e46c74",
+      "a891be7ce235f051fdfd68eb40a1530ad470bc5a916341fcd4da33c7575064bb",
+      "a8bf9f052ef54330ee903d13cf1312d550b6538f52016a11bffa6f817e604c35",
+      "a8e86a9e6eeeec2e64cab501f41545c7c8b555a2a745b89eb71fedea4d7e8fcd",
+      "a8f306d8aa02c3389d3454722d338a20bf2376824acd72b9e084aaf640ef2c62",
+      "a94a67eb86562ee3a79541623e124becdc3372865003c3c45333259f230e02c4",
+      "a9544429e3debd5e9bfa2530da239444ebe87e1ed8f283b6b2f5d10f905fe6ba",
+      "a9c6555cea43f0e9ba6b91aa3b9ef3a4a783a2d75397d45ba89143dcbcbe3c8c",
+      "aa034ce89e8501e36c407ae6586f5ae514b7bb82bfd47b33f4e17a0dfdf9b27f",
+      "aa594711ae0a364e1f6c0698968db63574392107ec5044d5325cff7167be7a36",
+      "aa8524a5194386351d90768e82c53588669d0990a6e3444318f10457ff8de847",
+      "aa91c2c6f6b92d579013afa00fc12c17c1cd5572a7a9c61e2408a69522c03435",
+      "aaf41df94b6b4b31e3d7fcef86ad841b3efd71f8b870e25ad2867e36f73e7763",
+      "ab46cc09dce986ec7d5436b5af81c1469de639258f0f60df080df61c2b7ad8a5",
+      "ab606aa99df3e726a7054d1bc7700caa5556cc20c43c1313797d7666757e788b",
+      "abd43e146fea49d05d8676e2b8232c6857cc653f916302e06bcb242ac758a0e8",
+      "ac7aa7129cb6fd9296740bbb18ac515377018f47f5891b80a41a212fc8cd6f23",
+      "ac85e6d69488182b2936f839ce68ffea5b92424ed1208a3bf7495f5bbe6be9ed",
+      "acb79bc02665f35d481139d610991edd7a38b40d60e9427108d41dfa6259277f",
+      "acc935308b43ddf8b3f47e94423bf8e30f0a686964f0ae499aa2f84cc179fc21",
+      "acffb790df293b662b3a38ac73350ac78ddce9d81bbecdd5b455965ec34025cb",
+      "ad0b279f37d3c8b9c11173ac91c32357a66de5b30784b721bf3da71860167af0",
+      "ad319d59df154fea4db8425b99c0ce2e45e5cd87353de84451c40575f86c6bff",
+      "ada348723a47bffdab56d87a8232af68d0ff102020b50c3277a4be608048e77a",
+      "adcffbd6d58fa58d3c03e7b23f1820a14b3dc470bb68f558e47c2d8b46b95552",
+      "ade166ae9f30d2fb7ddf6fc0ae40003ccd487492d18347307ceff03f425a048c",
+      "ae5e69eaed66c9e6feae7fdf55167bf56ae74163d52a38c4a252b5bc7a4e2158",
+      "aeaf4761f4163827ae4b7c0ef31d290caa1818b63b15a1e250c24bcfae121114",
+      "af0ffa2be67654df4493d4af5db5fb914ea3350334f41d4ae1ab0b1ef153e42d",
+      "afbc630c8656d0522cac2a089ac3a8f24d0b48a4755b22bf8f2277aa9ffde88b",
+      "b041f06e77895cd6d13c087409ca6c8e08aa6ac241575b5ba261e5e0809bca25",
+      "b0b155473af50391c901c0439797431477a2c111c80210ea74c9b00be564f746",
+      "b0be49f7e837d1f6594b7ae58f0e0171a14b52673e6c8b67ebb5de54487dc28e",
+      "b0d1fcba51739f8e3490e09ad39c277099f7043e4f3e9acddf975c8b449877da",
+      "b115949fd886c95e929167382610e5b3a65ccc8b209cc82508d1fec4e2073fa2",
+      "b140080dbd6210f4f085ad4eb048a0370f0cce0d0f386f8ebdf8e0a3dd85a7e2",
+      "b20ac4764ad3fcfe7e5eff82101808a69f4811d8c65324cb26645a99879ad664",
+      "b346038c100d3d9e40384c3fe1129b4a41d7a9040fc75b9f149271c7e462ccb3",
+      "b34df649682909cc9ed857a3f538b257a6ea9ea40004ffad7985722ef4028274",
+      "b3503768223ba214ccd660f63f136c28955fabcbd927975f8eecd49d6cd8d2c8",
+      "b3ef4e56c2806923368583537099f7d9ea054724849ab6125e7635f3141bf8bb",
+      "b433855403632c0aad304804e611a46705bbb130fbf6086a9ec5c639ad0be649",
+      "b48ffb07a8fd9648d197742d5e6ba708684fd4e8f4164d15fcb2d26e1d7df692",
+      "b5bd665be14c48609b757bdc1ae95310a80b5b6ada232407faa279341ab446a9",
+      "b772acf8e244746c611430cb4c583a4e2ab1b033821e98d6357d76263d2d85d1",
+      "b7a6cab3383b9e15941f0edd270efc35aa806b677b321159eeec999fb449af2f",
+      "b7b81023b3ce99c313896b62b7b4436c8ad6f970b90561915f44b149313519f0",
+      "b7f204a0095b5a5caa3066ab87eab2c42bc105ba6fa544323472c1615231b39f",
+      "b8735ffed8f60a3a358c50b64249e1e8fc50b1c917c673d7a3cfe698d4f29b11",
+      "b8b519308524735a70ebd468c257efde376dce971e40d137750fd3851e302b6f",
+      "b8e1d9d26a51986bfe170a966cdc4eec67c6a24692b436e84bd73b7ead636d85",
+      "b98c6b7d7545cecd69def521d9a9a05dfdc63f17f518f553ee0b88a7a0530423",
+      "b99162b710506fb77384647739e5a3d2e66edab0b13fe47d3e1bb19075e8aa9b",
+      "ba1f10b7c0cbad20f8762d8517e11711d20104310d2cc8ac62da72617416c371",
+      "ba3903a2e87609867fddc9578ab2276f651e93a2030f6d43e79f6efceff77338",
+      "ba8ba2d72c7f784d6b2ae1a12cba43794d66c033bf435f018060417fafb2c598",
+      "ba9043ad37610b2a7fae353485c2c57bac235ba81709288aada5d3fa8a352714",
+      "ba98f01317250b5ebf41fa8c47e2a51706ea3957377e989919d9456e5c929754",
+      "bae14da9ff66b0e8c3efe0aea5538a584211a5eecc3f1e80a000cf083c00dccc",
+      "bb6706dabe4a1922013153b866c4d8a4da836fb062e0c494f1421a6e0052dfc0",
+      "bbadf3259ef9cf768dc343fe47078f57bd8919d97240db11e1fc3c5ee8d77f45",
+      "bbfc2ef9715f1368887abbd78879d18001cfd700c8c17211b4f4214f465baffd",
+      "bc1704b89a982157067afd7e2cdfd15809c5828d83e9fa67abe34ab92337e8cd",
+      "bc7be83635f7a601d05c41a9f6ccf0a8b45b3fd232c11f7906bdc690d2eff06b",
+      "bc7cb0ce701608b38e5c6960a1fe12843c207ef9856ede142460f3bc9104d2ec",
+      "bca1c0709c3e3d328534affa4eb26644876b5266d9369a5596e3d31f505cbac1",
+      "bcecd6801e4e677518cb00502ec8174fdf11022e774e59a57aa681b50fbcbcda",
+      "bd0122005602ccac2da6dfd30de3f62342ef067a355bf3cfd7d243f4294130c8",
+      "bd083dd9712b4f6b789d82a268490a040c15eda2e89c8e39866151553f9ed102",
+      "bd53f8e050989496fb1fd77e7622dac393771a8781956716f43ca9e544e1a61b",
+      "bd7f7ce68d501d196fb11a34a1ba2190ad994519fed809af28dd75d945c76539",
+      "bdaf5ad56bd5518ed26c5eb98dc4eca87c942bab8219a98682a4188e739bc1ce",
+      "bdc1e7539fab56f75b0a9b0c272096c963df682fefac2bcddffa5e7750cbbfa4",
+      "bdcea26dc7b87257750410e063862583eb249e1d4da70e4308f956a3361ac373",
+      "bddaddd2e990ee78186f811c97858da39ad1e6d0636e02d5a38adb3b3c54e72d",
+      "be42a0c9d2ff89edff7ce4a6fb544ff43a8333f9e8cbaa578ef32d1f5cd4105f",
+      "be42e5658a16c78a611dffecf3d7efaa7556fc71df86c83dda6a0aef5063186e",
+      "be75a73bc2070d41f0c0adc24b3482e2de7ad49549f7472005fac3669ed79f0d",
+      "bec38e25b3d311bdaa4ef1f5c477e5deaa331c8531a53d805cf26a89365acaaa",
+      "bedad00d076ff363ff8012f212857cc2a08224ba8846b915cac116d74288a1ec",
+      "bf8a2208c3ad37eaa3f6efacb4c78f84d2c181624af49ac2c077bda90cfcb43b",
+      "bfa85374803c7df02c4ec93dfe4a9983ee10c6c065e6b6a733d2cc578642d14e",
+      "c0155dd3817d60f6409f0cdafdeb5ad169fa554d55fd336b3ceb4ffe45e641a1",
+      "c0c2747dc4b2061b93d84e3f7ba4b3f6b79397f451b30fd1aa4c5f52ebd32837",
+      "c0e67eaa0c0f62ab29ba40ece55ddc0a17a61c1c47468401178901653770b165",
+      "c14e22553439f29b1707b2dd6b55abff36fa469276a3aa04c881874fd6c42a04",
+      "c161a91c238b06769e3e1f06614a7a151cdf7ae87db7cad87b50cc3b8ca872d3",
+      "c1871adeb0fac6de81a7302e378909955b1b77ea492e67e931764e80510d0c94",
+      "c1a4ff6243d306386043d8693ba9c96907c34022d79f5f0d4aabc8b9d0233e59",
+      "c1c24c23add58dce5cf45f449ee0c1d7aab6b756153cb19c451f33eebd602e78",
+      "c22034244137caec8c0b29393c2d18d2aa90cccfce3b92c53edcb56984c74cac",
+      "c23f5b276764cea8e7ddf55ce6c89bf5e3c8f32af1d69f3b39f6e2111bec53da",
+      "c24135e66ae5ee25c9c3f357044a7d0f33129537ad621b9bf159e074b08457b7",
+      "c257cedcc0d78c6914aa016895b96b5337382933a24f01456ff10fc213f502ee",
+      "c25ce294842a377b0e622b3b0c41812abb9816b480767041e0695a88a90af48a",
+      "c341549a61fe044658f2684e79cbba2b04dd4a983496832ed8052f5eadf17891",
+      "c36f9253ea7df72f36b9ba90913a98ac80976d0884f47efcdadfa74d29c20c59",
+      "c39f080976b70992b974353c78be1322526d95272d926db76bad87a1c803a1b6",
+      "c3bbd35a84fe159a8619269a5b7c9ddcb1be7ff07ad543a82935cba6ebf17313",
+      "c3f94d2a039d44a21adc418ce6880283790ad0a0b14cafae7ad31c20c827db03",
+      "c5339c49af53c4fd45a845e7b6bf745959662af90d80f3c486d86e7e2da775f4",
+      "c632a9df364c01cdc23bcc204e146a5aa7066027928994953a67ea393d98561e",
+      "c6a0a1fb895a3bfcdd866fc805929d314ea9f5baf1e279a96390e1d015ff8ace",
+      "c6d686a2a4bdc51cd6260ee38e40ec0c8aac723abb49417a25a28ee9c1ff582b",
+      "c6eddc2c7a1910ec4703782ec13b3f79e7ba64ce1a68004ee55ad6aa4ef6d7ce",
+      "c724d5577d0c0fb798d859581d8ad021aa99f9898c8448be58ddf6055188ec7b",
+      "c8322266e173ddf0ed68fa911d64b0b0e393a7dcb4f4c08978a1cacee52019b4",
+      "c84b3da9c3154d52ad6b182934790b33f6a3be963a11538f9b6c37c65392d835",
+      "c87375f6642d22f8038765ff40798c12c71e63df82160c0b78b8fa2f832b4521",
+      "c884438d5008abfdc91692497414b4ddebecb3acbc98e7195baf97d5bac3b016",
+      "c8b7d39255367194984995675457e90935e586f052b6989087fc8175d40b1fda",
+      "c8f3ccf0779ab0e53bcb65ac4c069552a9336db43f0a4c4e3cc73f10f6319586",
+      "c94d12a8d10aae42f5d2f5062966cd8ef49f8f01cb569d55c3705960af4d0131",
+      "c984dc600bd26f89afaf5a4d0f5c26cbfd91a621ef7b2b4ceebf94f7e6eb86e3",
+      "ca2882a89c4ca3a67d8e967d34acaec6e834035b65bc1bd963f64475d913584c",
+      "ca38941a8970beb0d0de2a5828aa1b75e47d73ad06cb603301f792e772ba572f",
+      "ca905055cfae3110e1923558f903046687c31eb0b9e558f592147c6937129745",
+      "cb3a0e3d1c91aa794931ea0e06e4bb32ea4cedd912c5d54f4c643b9826d6a012",
+      "cc53fc15c8d820deabfd92b8380b6e0d60898cbcf1d7c8373241095ba61b2f2d",
+      "cccf2986042f821c3906bd7344f71f7818547e9c1b2191960b5feb263905ddf6",
+      "ccdb6f835dff270e07fa9af5fedfc17f746376b9f74b875ac46c7415d6381fe3",
+      "cd149900c9b5cec1483089f26e65c736f52ea2ce71be933e4e3f5e0c39179728",
+      "cd64da9314bab8f75f539e1c048a02bf0c11c02c6fb4168d3995cbfc520a8bc5",
+      "ce24487a1d8eb37e5e0093859c79e609c5ae2909872c776359008e9945e723dd",
+      "ce336d724e5ee2e996ba3460a80d8b61bac5820ce1b460ccf27d98fb97ec9d9d",
+      "cfcfae7030f68e15bec9ef6b816caffe024b8ec5476ab8eb0a8c5c13281c8c41",
+      "d033d89b845d9797e718e75bff77a751dc8f3c93498bd9f9c95413929f7f0e5d",
+      "d08028926b037891a2dd1980f40d69972f7195c9bd402127f1b9210ac3474019",
+      "d0cccc749a5bb763aa50f6f73e1e8e8cf7052447c0d8d7178f96d018161bf158",
+      "d121119bae4ee4cd1de0fd8f70d7922e7aec67c9f6b3b95000c2544b55910a0c",
+      "d1b85d6ebce12f13ef699dcdbcee94605527fe719d5bffab7912e9180541e37c",
+      "d25eed15529b8419a49f9a0035b4bcb4221b414df8f21de91e60ca6bcb2945e2",
+      "d2b2503f105c698619467295dffe0e0e3b01a0d522558ae3c143fc56ef55ff7f",
+      "d308975bdddbbc7676883da194b7386974622bdc542d912136f219c28cea7f0d",
+      "d3256d36b42750accf183f1a9cb2ae5be2deace81610efedc0b43a091d3c245e",
+      "d3782716469c47f6124a18a9bdb2e7e07b5dcaef7e899a02c0f04f0f6a16a69e",
+      "d388dee43f9f9272bbd6d73b0561e872a9b9593c555453ea5ee73a708baeab80",
+      "d41dc70de74fca9876c63dec914bc2e2ae2de7bc1296a47359745e3b55f8da79",
+      "d49575ae3a3a0e5a3ea081a510c05bbb5a1b2ecb74e76766af3fadab48763afc",
+      "d4d35c714305573f5b0544d8dc8683039baf38bd8ea010a9d2ed95ddbaecb80c",
+      "d4f17e0e478522de5974bce04c4683244777675ba784f60742c991c2a8cd1abb",
+      "d51af4700adf1a6f41053ee37208760952b5b4745c1d79ec7f111f54cacedc7b",
+      "d5245df12bf41bf041c98ec4221ab3cc29b46ccf6fd81bfa35dc72deeb100f42",
+      "d540b84c522fbd37e9c0266f078ae85399acd2e7cba9458b882a71d8df092312",
+      "d5deb01ed50d1f70a4ca457f47cd13ecd473b9d0407d6e7a1679571b2a1e1f7a",
+      "d5e35c02ef12971db3c2d5fa063db9c5f4df09b5292044bdd223f9973e773428",
+      "d600f2e9972d2b888e74420d99f51e53fec98e6cda5802288e55850ce64f52eb",
+      "d610890d29f680dfc526cd23b9a71fb2e500bc060d47f45ce042fcc743a87851",
+      "d66faf3f3d5339b87421ef76d04dd9a0481b60d1673aab400f8ef24cbc71a501",
+      "d6854c0879b3c636f484b273a0a26a9cbdca3ef462e33457608bbee4a423f597",
+      "d6c7ddc966f5f612bf1055b4ef272d4086b94e47b7b1620a0e5ef1c093afebc3",
+      "d6fd9d60d9a52ddb004c355207acaa8d3933b7d3595d51b3c3ffc488c6ec7aaf",
+      "d797d0be237f2c7f88935f57003c75ca11df365bbf773865589a9b01d72a0acb",
+      "d7a72015edd52244fb192987e4712367d7f4aae4aa0643e08413e94d28537019",
+      "d7b3ebf6dc77c49a4bb72db4689bac5a7129ce34061359a12a6c737283fb61ae",
+      "d7fb3b5693bdbc3a67b6bcf33318c512ed89b4fb41a9dcd45a6385390223149b",
+      "d84e840b67e45f51036aaf17a1fd6c5fec7bb51de691577df8f564c10e7bf9a4",
+      "d98e91234db7dbcf53afab5a9dce7ed3ce25544ca7e28acbe1a6979f42c8b86f",
+      "d9abe50a80de28621a7535dcb061c6b94158d0781a7aaaa6c4e7f3ea10b591b2",
+      "d9f532a7d13219ec32245f520f9026047a8daee773bd3d2eda5b428921505a26",
+      "da073497435925966c49e12ebf6d1b3fe4534efae966af12f290f4edf19b61c3",
+      "dad1070d1afc196172ad25881c2a314f19da7f7ae2bef30547d950e09377f28a",
+      "dafa659993e9bfcbc456c5853a5d7d5313d0f0cc08ee7fa0f8c3610510bde5fc",
+      "db8b8f8e322f07556778f624af418934c657336bc1c98f4221e979cb9e7ac63b",
+      "dbf4e9647cf9d59ab10e79621b8528883c21802e671ca6876aa917324e336bbd",
+      "dc70acebb6a6f1e5494a7b37259d21ab7aa13cd980082ae50ce73ecb2493e4a4",
+      "dca26fafb642245960c70bb24a4da9d190b201ed43cb74dff539d6bf0b4aaf9c",
+      "dd232fc93e4b24e4417f649366d0e8395f6bd3c3507f96d7310677ff7d170c20",
+      "dd25a083e281196ea3afca812a81b637604486e85d4b69d44f387c06b8330e38",
+      "ddfb2ffc83ba4ad005cdcef64411f3b3671ab59d66404359febc106530e83c04",
+      "de76ea9a6db656f785c578614d08aa4dad7c0f52304394965eb0b258ebcd05a5",
+      "de8d91822b811ecb143f4e61d552b1c7d44361679b929d1acb1ab2b0c3a34a4b",
+      "dea356bbab852774a547a6c4295ad679f2dcaa6c8a185c681d24c375f9206e56",
+      "dedd3727e81287a267de65552f557834510e259f1ba7e315ed861362880a207e",
+      "df3a316a42185e10e6a41b335e881eddd051c7fe7c1c8f25d8c5272a8114db38",
+      "dffad65243713380242bd5e74e8406767ceedf2a570d629654dad9c64b9a2c98",
+      "e0512b9bde244f9311e74d8cc8b31024f358ef6f2eea966e4ed2aaa75f90e9bb",
+      "e0a5973919a0c6da2af0d2c9abad01958a28f69f912976fc6430c925b7145d0d",
+      "e0a7953a800070b682c4b362849ffe636ad71ecd6681f542fe6b69e53aaf059c",
+      "e0bab478dc8b963c1304281146c91a000b6ab31653764fe32febd8ae04d7f5e2",
+      "e13acb70225a136ceff03b18c515dabea48dfc2e2554dc04b922076a910596e0",
+      "e14231f5d9b63d8268e096c2c24422faff40cde5517c5aec3467880bc795953b",
+      "e19d77bdeac2f628d606ee5d56c3c3291f5ef1d58d0683796b9049fc1e05bc99",
+      "e1af8b341c7427acc5ea3da4bae24bd1fcca991a504a8f56dfb7961a035935e2",
+      "e1e19c0703679338192c5431633bc28068b300f3cc5a0ca54b6498fe8c776b28",
+      "e25fe996f9a3a168859d5079b3ccb3e438fbb62de669d0ed7ebc5a680290cb6c",
+      "e2695fb9cfc1082a4e4daf87ac090515b27c7022e013b8b2dd9e5f18efb6d36d",
+      "e2c0eea6dc76e273f2b2538a0ce9347949cf9ac3a10809cec06c2b790aaf34d3",
+      "e32032c57d60309bc675049a5db4d5d04ffd9dbaab38aa144e9a60305e63a421",
+      "e4198d1fb3ed66720b1a91369098555d029aa62d0b5c60551d4f24262af34917",
+      "e44c149a75323249db41d99b214161923abc10b49497ec382b0177278d8319b2",
+      "e5335045f2994825a543c6b9bee7b4d19d2999287503c8c4477ef92968e6bf9a",
+      "e589f43c05e86c5fe2117ce33e8163b7277e53d95c7262674b770950ce772f80",
+      "e5c6e020ea19dfa7c48353034b3b2e59471dab96811b04503eb5f24dba5734f3",
+      "e5c9b956c42929c72d2d773d1a14081f1f6be63411cee17f4331302046e6fdcc",
+      "e5d16722e3eaa10ac8b967f50708b531810b825789c07628d2e3a242c8680c92",
+      "e5d16895e1a31edb3e66d206a2d72ec920069ed670d33e31520e407277986834",
+      "e5f00d89be6a9aed2c2af9fa9a5ae403e4ce5150f85821030a228f81624ced92",
+      "e634598a3892c2da3c543ccaf7c0061149887f8ce78fc18b2108ca8a2061f2b2",
+      "e65a7d0db7c0ea218adaa954fafbce9ee82887a827543fdc78e8f00a01394d97",
+      "e7f88f633e9f7fe69ebf69e47f8e24aea7f3fde4243a39026490478c9fe4230f",
+      "e81d3538ef182c07e534bfeae95733b512d723ef4f2cc00c09c646fa8519ec5a",
+      "e82ddcfc4da7d1e082ffb8f44f20972b021f0a822b2e44adc85d59ab9bc256f8",
+      "e85e12f9f370e8bbe2699068902d752f09c8ac7758a12932d79e81dccf2ec342",
+      "e8a3bdd6d057633f80086b28e571eb05eb8017530b5393981379209cfb7afeb2",
+      "e952ee4a5479b83f47d1f53fa9b3e3dfebefd2a31fb5d3311a428c6c691abb42",
+      "ea4bfab851219f52efccea5830cf7bb86540d0687a966f4049ff84bb8f63789f",
+      "ea5aa5e7771556aeb942fe9e85a986e25ef2f4867cca6d8cac7b0f98b7803047",
+      "ea9631ebae1f5e72d3b4a67fbff96337f57cbd5a029f9ed3168f575b50c6cd46",
+      "eab180095141d4a9ac1ada6dfabc5a077bc0680aec7e28d358c27d291c59c6b9",
+      "eaf3834a7c907890545f1934418ca4167e1a620d53f976c88a6d2e47f6e06ffd",
+      "eb065f834d524989061233e526ff67e1780cf09f42527a79f9bbc24d7b814b72",
+      "eb92ed986e486a0d363c32a78d053b8eede144b6c227de0f473833cb59d3db01",
+      "ebf8f222db304ba047c28bd103644d406c33a4a698ce163e245847b356136ea3",
+      "ec19e4142c9a4c9e603270b3db68d9357a2436426200642c82d9148e909a1a8d",
+      "ec7d6ddf76cfcbc32be347c1e6c557c333c04b1d2e9dd6272830d1ae87eabb06",
+      "ecf5f92b36deb4aceeec59cd86a6b67c844592e39d9903fee28e5a7318d87c30",
+      "ed656855cc5f7e0d5a6bb4d2cf47641a44a222d555fb805999d0b311a4211883",
+      "ed844f3357ab586da1c9fb9e0ac0424e2c0dda81506498e3051650b97418004a",
+      "edc2754309c813ef02cddb5504935aa2762167e9a20e308e92907d49426a41a8",
+      "edf91c01251fe64dd08af65c4971ff6fd50cc54f920c3bca03bf85efacf24609",
+      "ee23935d6b8d8004993ab27d3dcf80d5f54285854a8784eb72f4e24af0d03733",
+      "eed1d4319257fc7e5d10465aa316087ac45b7cba189167f08c3f01c21510b729",
+      "eee7bb26a32af7aa040511054fab16d037dcfd69cddbadb0ece0de3c65ac4d51",
+      "ef07d8c2d43b1acfcab048088cc053d4e281bfc7b70359491e553502614870ab",
+      "ef33bb512677384e8918b0b4b17e486c75e173da855553622db1e261333553ef",
+      "efc6eabdef446514ce2f0a62b0613f91410c0374abb1ea739c464316b3fb3155",
+      "efe793db5a9c8839a9c4689e9226394e46e4250ab87ddca2e3e9d2efcdb45e56",
+      "effa8e7203a9d55c5df57f112707c374706fb23e7008b07624090acde9433481",
+      "effbfb2b551469ac132a300642de8e82bb665683380fc816b9f1e42dad0154c4",
+      "f005b1c94892fbf8e015707c681e60445a77656552ae909e435372998a75dd78",
+      "f016ea8d47993fe43c78e56ed422cfb191702d99f1f74fcc780ff4b120c6e293",
+      "f072c69427aead3527cc22bd867668d2f66d0e355020ae1c704ba0c6675998a2",
+      "f0ae12046bc3dfcca2cce75884e08960dba695c3f970495b96c4fe715cffd24d",
+      "f0e8895458e698121d930a411342a65eff4710375def4bcce67f16fdfe14306e",
+      "f124eb731af9ff1cef9952dcade5b81bae16cfd0383b03c64a12bc37dadbeefc",
+      "f12f010d1a5371146f7ac75c3777dfc4814bf2dd5a266b69310658e519b4d0e0",
+      "f1798ac5635b5e20b60d3859772e66b804ea6f79584bb9f7816ec40ffa2297a3",
+      "f17f4d079ab61635fd9ca24b0a5139d62f85cbeaae4db7838dddd36bffc5680a",
+      "f1b7d924227f96d38337066ce1b8d0de15e8630c82dc042359a8fcb44aba7b9d",
+      "f200d691f59a16791b8b47a9914325252699a41ecfd2f6e8c638671d9620bb7b",
+      "f20334e115d82612a3a0b9a4f76b90e59bdeff5487c62c2d2100319503fb334b",
+      "f2670728e35250afb688670841b26ff11a46e4e253907265832c50c1503f4ce9",
+      "f2a4e4ab7a1ec44c5c9c418a5660a9f2bbb13187b89e8fce6c83a5f26f29b6a0",
+      "f3937e95adbb9406383339f33e8f071fc3023a576ce55b4512e44574f1427209",
+      "f3cb78a09a73f705b00118df7abd6c894707ca7adf0c54405424dd6b8ab383a8",
+      "f3d1ec72120d26face4f4681a777e0571f9881b0ec39f67434396b9222150647",
+      "f4052ed8f70c44e1054c97002fc820eab3693f04ef2691c4152e881d7446003b",
+      "f455e00b1aedd8623437acc9babf3677e9ebb010d0489152c558434f87ad76bc",
+      "f46cd88292da7c76ba5099a1e29f5be075b138a141fbfcfe9c0efd23ebd21697",
+      "f480de59dcffdb44cc3d3274a464ee0416ff74b96638595887634c28ddc4657d",
+      "f4b6d85f3eb8910916021ea6727a9da9d59bdbda4519ba35e6e5442a62a73c3f",
+      "f4c2757a288939b3a17e34ac11a1910fd3e9244d1c17ffb38938c8596eeda64f",
+      "f524617d52c71e4091a5e64bfd4790048aca7f78299f48c7e181ab95845c9ef8",
+      "f534f6bd016b5c15b3096e989c9e7201e38526784cb90ac095085becc20d9b7f",
+      "f5d8f1c61089749e210f2a8cb1926d4a373ca45580e614ade335f3b7adb10092",
+      "f61cbd7bc848e1077ae22b835a3aa328955e33bdc079d70eb46b07b5e4c21050",
+      "f647cf2412982c8d242c873b24752c35aa73ef7aac54b7cde6303db356213199",
+      "f84a8fc942d8e81e6d04d6b07314718184cebfb2c8718ce736527ad7ce42472c",
+      "f95341dacc6aedd0a46b69777e2a13becf4c88696379a251a65436b912c7ce2c",
+      "f9b76b58b716b66fd9e3d38da434f06a0b945e8ce9b3624e81e86e0e4b462e2c",
+      "fa7fe36a626c47ba8329aca88d284226898131f1ee1a0dfc5bc11edb849e2c52",
+      "fabe77745be8e9ba22a2ef67f0044c875317b9d9b9a04a0911e2abc490f88a16",
+      "fac6ce5b468bf8a9871d089b553ac62d75a1ba115788dcf34c0f8ba380ec1250",
+      "fac8698d3f458382ec3e2fbe0dcfe450c088d68f515f502cd2eb5fc11f844007",
+      "fb2d9d3bd864c6d40c0b27af4015cb548600cb8a32d5cfbc59f434c7a4408ca2",
+      "fb7c97c5bb6ff5a7bf578bdb2169e4919832733a72c6c41b550b3175f2b1277a",
+      "fb8ff04fcc4fa9317323e8044c45621f490a362c5ef56b0c88f83ebed912fa45",
+      "fb9844cf5c83ed1958884744a98473a926a26887ff775a7df06f6c50fe5c6f81",
+      "fc12a6253e17bee4b6226b88c35172e14307fa0aae8cabdbfffa7e5b88c13c6e",
+      "fc863779e8bb412cfbf2c6a1aab97cf6d384c35f6df106733944aafb04736d25",
+      "fca330c6e804d585d0a1941ab9812ff97e773efdd21df53e10ff6ae47b4e78d3",
+      "fd2819b434cce034c3bc7494dd2d814cc23eff54d75663fd6d0621a20ab1300c",
+      "fde8cf1c63025b0936c98fe78297f3316033c16b433caa7f3f4b924bf523ecc9",
+      "fe7477ba9a6cb4eb4d3664d62f5cecacecdf4f2fd189dfe3ef667ec09d8b774a",
+      "ff0bcccf6960c5901c8a3ccd6ba28e07e9579232d43b08c1d424a9fdd48d8c4e",
+      "ff9c86a244191437c2ab6d5de37a9cefd28f3d9ff5e7a1d8274ad223495049fc"
+    ],
+    "isl_dual_commit": "f8c782ebda79dea3bcf8ea28df9b2db865da4d2b",
+    "native_verifier": "unmodified SkillEvolBench tests/test.sh@9e3daa339987c3cfa624121e1be442593a53d43c",
+    "official_harbor_score": false,
+    "pilot_config": {
+      "acquisition_tasks": 3,
+      "beta_artifact": 2.0,
+      "beta_forward": 4.0,
+      "c_uct": 1.4,
+      "candidate_graphs": 8,
+      "complexity_penalty": 0.1,
+      "deployment_tasks": 3,
+      "forward_workers": 3,
+      "graphs_mutated": 2,
+      "max_graph_nodes": 12,
+      "max_plan_length": 12,
+      "max_pool": 12,
+      "mcts_budget": 8,
+      "mutants_per_graph": 3,
+      "mutation_probability": 0.3,
+      "outer_loops": 2,
+      "p_stop": 0.4,
+      "seed": 20260901,
+      "stability_penalty": 0.5,
+      "utility_threshold": 0.05
+    }
+  },
+  "scientific_metrics": {
+    "forward_correlation_advantage": 0.5106751807918468,
+    "posterior_entropy_q0": 2.07916336928067,
+    "posterior_entropy_q2": 2.3010321127232864,
+    "posterior_entropy_reduction": -0.22186874344261653,
+    "rho_forward": 0.2602400194529422,
+    "rho_static": -0.2504351613389047,
+    "skill_lift": 0.0,
+    "spurious_skill_rejection_rate": null
+  },
+  "winner": "minimal-1-7ce8261b0f"
+}

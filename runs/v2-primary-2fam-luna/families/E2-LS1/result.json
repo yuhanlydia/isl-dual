@@ -1,0 +1,3234 @@
+{
+  "artifact_rewards": {
+    "E2-LS1-T1": 1.0,
+    "E2-LS1-T2": 1.0,
+    "E2-LS1-T3": 1.0
+  },
+  "artifact_scores": {
+    "failure_aware-1-85dbe54408": 0.948,
+    "failure_aware-2-11d9e6d1a4": 0.956,
+    "minimal-1-b47a5b21cd": 0.8540000000000001,
+    "minimal-2-6596152b0f": 0.954,
+    "transfer_first-1-984a8834da": 0.982,
+    "transfer_first-2-61162e12e0": 0.956,
+    "verification_first-1-ebe65c0cca": 0.972,
+    "verification_first-2-65433a17d4": 0.956
+  },
+  "baseline_rewards": {
+    "B0_no_skill": 0.7611,
+    "B1_direct_text_skill": 0.7194333333333334,
+    "B2_one_shot_dag": 0.7611,
+    "B3_static_critic": 0.7611,
+    "B4_greedy_forward": 0.7611,
+    "B5_mcts_forward": 0.7611,
+    "B6_isl_dual": 0.7888999999999999,
+    "B7_oracle_solution_procedure": 0.7611,
+    "B8_curated_skill": 0.7472333333333333
+  },
+  "baseline_task_scores": {
+    "B0_no_skill": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.5333
+    },
+    "B1_direct_text_skill": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.4083
+    },
+    "B2_one_shot_dag": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.5333
+    },
+    "B3_static_critic": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.5333
+    },
+    "B4_greedy_forward": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.5333
+    },
+    "B5_mcts_forward": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.5333
+    },
+    "B6_isl_dual": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.6167
+    },
+    "B7_oracle_solution_procedure": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.5333
+    },
+    "B8_curated_skill": {
+      "E2-LS1-T4": 1.0,
+      "E2-LS1-T5": 0.75,
+      "E2-LS1-T6": 0.4917
+    }
+  },
+  "benchmark_commit": "9e3daa339987c3cfa624121e1be442593a53d43c",
+  "candidate_deployment_scores": {
+    "failure_aware-1-85dbe54408": 0.7611,
+    "failure_aware-2-11d9e6d1a4": 0.7611,
+    "minimal-1-b47a5b21cd": 0.7611,
+    "minimal-2-6596152b0f": 0.7611,
+    "transfer_first-1-984a8834da": 0.7611,
+    "transfer_first-2-61162e12e0": 0.7611,
+    "verification_first-1-ebe65c0cca": 0.7888999999999999,
+    "verification_first-2-65433a17d4": 0.7611
+  },
+  "candidate_graphs": {
+    "failure_aware-1-85dbe54408": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n3",
+          "n5"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ]
+      ],
+      "id": "failure_aware-1-85dbe54408",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Extract field rules, normalization policies, output shape, and dispatch/audit behavior before editing the processor.",
+          "id": "n1",
+          "inputs": [
+            "README",
+            "client implementation",
+            "API/reference documentation",
+            "input records"
+          ],
+          "name": "Inspect local contract",
+          "outputs": [
+            "Reusable validation and reporting contract"
+          ],
+          "preconditions": [
+            "Project files and input batch are available"
+          ],
+          "required": true,
+          "validator": "Required rules and output fields are explicitly identified; no request is sent."
+        },
+        {
+          "action": "Implement validation that checks every applicable field, collects all failures for the record, and exposes normalized values needed for comparisons.",
+          "id": "n2",
+          "inputs": [
+            "One input record",
+            "Field rules",
+            "Normalization policy"
+          ],
+          "name": "Build independent record validator",
+          "outputs": [
+            "Record-level error list",
+            "Normalized candidate or validation metadata"
+          ],
+          "preconditions": [
+            "Reusable validation contract exists"
+          ],
+          "required": true,
+          "validator": "Malformed records produce all applicable structured errors; valid records produce no errors."
+        },
+        {
+          "action": "Traverse records in input order, preserving original indices and payloads while separating rejected records from dispatchable candidates.",
+          "id": "n3",
+          "inputs": [
+            "Input batch",
+            "Record validator"
+          ],
+          "name": "Screen the complete batch",
+          "outputs": [
+            "Accepted candidates",
+            "Indexed failure entries"
+          ],
+          "preconditions": [
+            "Independent record validator exists"
+          ],
+          "required": true,
+          "validator": "Every input record is classified exactly once and invalid records retain their original index and error details."
+        },
+        {
+          "action": "Call the external operation only for candidates with an empty error list; skip rejected records without relying on remote validation.",
+          "id": "n4",
+          "inputs": [
+            "Accepted candidates",
+            "Indexed failure entries"
+          ],
+          "name": "Gate outbound dispatch",
+          "outputs": [
+            "Successful remote results",
+            "Trace of actual outbound calls"
+          ],
+          "preconditions": [
+            "Batch screening completed"
+          ],
+          "required": true,
+          "validator": "The call trace contains no rejected record, and accepted records are dispatched in input order."
+        },
+        {
+          "action": "Return one stable result object containing successes, failures, counts or summary, and auditable dispatch information.",
+          "id": "n5",
+          "inputs": [
+            "Input batch",
+            "Successful remote results",
+            "Indexed failure entries",
+            "Outbound trace"
+          ],
+          "name": "Assemble structured result",
+          "outputs": [
+            "Batch result"
+          ],
+          "preconditions": [
+            "Batch screening completed",
+            "Outbound dispatch completed"
+          ],
+          "required": true,
+          "validator": "Counts reconcile with input size; failure entries use the contract shape; trace reflects only dispatched candidates."
+        },
+        {
+          "action": "Exercise or inspect cases covering missing, malformed, out-of-range, normalization, duplicate, and mixed-validity records, then confirm valid records still complete.",
+          "id": "n6",
+          "inputs": [
+            "Batch result",
+            "Input batch",
+            "Outbound trace"
+          ],
+          "name": "Verify failure paths",
+          "outputs": [
+            "Verification findings",
+            "Final corrected implementation"
+          ],
+          "preconditions": [
+            "Batch result exists"
+          ],
+          "required": true,
+          "validator": "Checks demonstrate complete error aggregation, isolation of invalid rows, correct normalization, and no bad outbound requests."
+        }
+      ],
+      "or_groups": []
+    },
+    "failure_aware-2-11d9e6d1a4": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n4",
+          "n6"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ]
+      ],
+      "id": "failure_aware-2-11d9e6d1a4",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the implementation, fixtures, mock boundary, and relevant documentation to identify required fields, normalization rules, permitted values, and output shape.",
+          "id": "n1",
+          "inputs": [
+            "Project files",
+            "Documentation",
+            "Input data"
+          ],
+          "name": "Inspect project contract",
+          "outputs": [
+            "Validation and processing contract"
+          ],
+          "preconditions": [
+            "Target project and documented input/output contract are accessible"
+          ],
+          "required": true,
+          "validator": "Confirm the contract is explicit enough to distinguish locally rejectable inputs from dispatchable inputs."
+        },
+        {
+          "action": "Separate field projection, normalization, cross-field checks, duplicate or state checks, and structured error construction into deterministic validation stages.",
+          "id": "n2",
+          "inputs": [
+            "Validation and processing contract"
+          ],
+          "name": "Define reusable validation policy",
+          "outputs": [
+            "Validation policy",
+            "Error schema"
+          ],
+          "preconditions": [
+            "Validation and processing contract is known"
+          ],
+          "required": true,
+          "validator": "Every required check has a defined error representation, and independent failures can accumulate."
+        },
+        {
+          "action": "Parse the batch and project each record into a validation candidate while retaining its original index and original payload for diagnostics.",
+          "id": "n3",
+          "inputs": [
+            "Input data",
+            "Validation policy"
+          ],
+          "name": "Load and project each record",
+          "outputs": [
+            "Indexed candidates"
+          ],
+          "preconditions": [
+            "Validation policy exists",
+            "Input data is readable"
+          ],
+          "required": true,
+          "validator": "Malformed records produce controlled local failures rather than aborting the entire batch."
+        },
+        {
+          "action": "Run all applicable independent checks for each candidate, including type, requiredness, format, range, normalization, cross-field ordering, and state-dependent constraints; collect every failure before deciding dispatchability.",
+          "id": "n4",
+          "inputs": [
+            "Indexed candidates",
+            "Validation policy",
+            "Current local state"
+          ],
+          "name": "Screen candidates without side effects",
+          "outputs": [
+            "Accepted candidates",
+            "Structured failures"
+          ],
+          "preconditions": [
+            "Indexed candidates exist",
+            "Validation policy exists"
+          ],
+          "required": true,
+          "validator": "Rejected candidates have complete field or parameter diagnostics, while accepted candidates have no unresolved validation errors."
+        },
+        {
+          "action": "Invoke the operation only for candidates that passed screening, preserving input order and updating local state after each successful operation.",
+          "id": "n5",
+          "inputs": [
+            "Accepted candidates",
+            "Mock or external operation"
+          ],
+          "name": "Dispatch accepted candidates",
+          "outputs": [
+            "Operation results",
+            "Dispatch trace"
+          ],
+          "preconditions": [
+            "Accepted candidates exist",
+            "Screening completed"
+          ],
+          "required": true,
+          "validator": "The dispatch trace contains no rejected index and successful results correspond one-to-one with accepted candidates."
+        },
+        {
+          "action": "Build the required return object with successes, failures, original indices or payload references, diagnostics, trace information, and total/succeeded/failed counts.",
+          "id": "n6",
+          "inputs": [
+            "Structured failures",
+            "Operation results",
+            "Dispatch trace",
+            "Original batch"
+          ],
+          "name": "Assemble failure-aware result",
+          "outputs": [
+            "Contract-compliant batch result"
+          ],
+          "preconditions": [
+            "Structured failures exist",
+            "Operation results and trace are available"
+          ],
+          "required": true,
+          "validator": "Counts reconcile with the input size, every input is classified exactly once, and failures use one consistent error shape."
+        },
+        {
+          "action": "Run post-processing checks for no bad dispatches, preserved valid-row progress, deterministic ordering, complete diagnostics, and compatibility with the documented API contract.",
+          "id": "n7",
+          "inputs": [
+            "Batch result",
+            "Dispatch trace",
+            "Local state"
+          ],
+          "name": "Verify safety invariants",
+          "outputs": [
+            "Verified implementation"
+          ],
+          "preconditions": [
+            "Contract-compliant batch result exists"
+          ],
+          "required": true,
+          "validator": "The implementation passes representative valid, singly invalid, multiply invalid, boundary, normalization, duplicate, and mixed-batch cases without replacing the project structure."
+        }
+      ],
+      "or_groups": []
+    },
+    "failure_aware-2-11d9e6d1a4-m1": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n4",
+          "n6"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ],
+        [
+          "n3",
+          "n8"
+        ],
+        [
+          "n8",
+          "n4"
+        ]
+      ],
+      "id": "failure_aware-2-11d9e6d1a4-m1",
+      "metadata": {
+        "mutation": "ADD_NODE",
+        "parent_id": "failure_aware-2-11d9e6d1a4"
+      },
+      "nodes": [
+        {
+          "action": "Read the implementation, fixtures, mock boundary, and relevant documentation to identify required fields, normalization rules, permitted values, and output shape.",
+          "id": "n1",
+          "inputs": [
+            "Project files",
+            "Documentation",
+            "Input data"
+          ],
+          "name": "Inspect project contract",
+          "outputs": [
+            "Validation and processing contract"
+          ],
+          "preconditions": [
+            "Target project and documented input/output contract are accessible"
+          ],
+          "required": true,
+          "validator": "Confirm the contract is explicit enough to distinguish locally rejectable inputs from dispatchable inputs."
+        },
+        {
+          "action": "Separate field projection, normalization, cross-field checks, duplicate or state checks, and structured error construction into deterministic validation stages.",
+          "id": "n2",
+          "inputs": [
+            "Validation and processing contract"
+          ],
+          "name": "Define reusable validation policy",
+          "outputs": [
+            "Validation policy",
+            "Error schema"
+          ],
+          "preconditions": [
+            "Validation and processing contract is known"
+          ],
+          "required": true,
+          "validator": "Every required check has a defined error representation, and independent failures can accumulate."
+        },
+        {
+          "action": "Parse the batch and project each record into a validation candidate while retaining its original index and original payload for diagnostics.",
+          "id": "n3",
+          "inputs": [
+            "Input data",
+            "Validation policy"
+          ],
+          "name": "Load and project each record",
+          "outputs": [
+            "Indexed candidates"
+          ],
+          "preconditions": [
+            "Validation policy exists",
+            "Input data is readable"
+          ],
+          "required": true,
+          "validator": "Malformed records produce controlled local failures rather than aborting the entire batch."
+        },
+        {
+          "action": "Run all applicable independent checks for each candidate, including type, requiredness, format, range, normalization, cross-field ordering, and state-dependent constraints; collect every failure before deciding dispatchability.",
+          "id": "n4",
+          "inputs": [
+            "Indexed candidates",
+            "Validation policy",
+            "Current local state"
+          ],
+          "name": "Screen candidates without side effects",
+          "outputs": [
+            "Accepted candidates",
+            "Structured failures"
+          ],
+          "preconditions": [
+            "Indexed candidates exist",
+            "Validation policy exists"
+          ],
+          "required": true,
+          "validator": "Rejected candidates have complete field or parameter diagnostics, while accepted candidates have no unresolved validation errors."
+        },
+        {
+          "action": "Invoke the operation only for candidates that passed screening, preserving input order and updating local state after each successful operation.",
+          "id": "n5",
+          "inputs": [
+            "Accepted candidates",
+            "Mock or external operation"
+          ],
+          "name": "Dispatch accepted candidates",
+          "outputs": [
+            "Operation results",
+            "Dispatch trace"
+          ],
+          "preconditions": [
+            "Accepted candidates exist",
+            "Screening completed"
+          ],
+          "required": true,
+          "validator": "The dispatch trace contains no rejected index and successful results correspond one-to-one with accepted candidates."
+        },
+        {
+          "action": "Build the required return object with successes, failures, original indices or payload references, diagnostics, trace information, and total/succeeded/failed counts.",
+          "id": "n6",
+          "inputs": [
+            "Structured failures",
+            "Operation results",
+            "Dispatch trace",
+            "Original batch"
+          ],
+          "name": "Assemble failure-aware result",
+          "outputs": [
+            "Contract-compliant batch result"
+          ],
+          "preconditions": [
+            "Structured failures exist",
+            "Operation results and trace are available"
+          ],
+          "required": true,
+          "validator": "Counts reconcile with the input size, every input is classified exactly once, and failures use one consistent error shape."
+        },
+        {
+          "action": "Run post-processing checks for no bad dispatches, preserved valid-row progress, deterministic ordering, complete diagnostics, and compatibility with the documented API contract.",
+          "id": "n7",
+          "inputs": [
+            "Batch result",
+            "Dispatch trace",
+            "Local state"
+          ],
+          "name": "Verify safety invariants",
+          "outputs": [
+            "Verified implementation"
+          ],
+          "preconditions": [
+            "Contract-compliant batch result exists"
+          ],
+          "required": true,
+          "validator": "The implementation passes representative valid, singly invalid, multiply invalid, boundary, normalization, duplicate, and mixed-batch cases without replacing the project structure."
+        },
+        {
+          "action": "Apply the documented timezone policy by normalizing temporal values to UTC before dependent validation, and initialize a reusable per-record accumulator that preserves every independent field error with complete structured metadata.",
+          "id": "n8",
+          "inputs": [
+            "Indexed candidates",
+            "Validation policy"
+          ],
+          "name": "Canonicalize temporal fields and error accumulation",
+          "outputs": [
+            "UTC-normalized candidates",
+            "Multi-error accumulators"
+          ],
+          "preconditions": [
+            "Indexed candidates exist",
+            "Validation policy exists"
+          ],
+          "required": true,
+          "validator": "Temporal values have explicit timezone handling, and records with multiple failures retain all errors in the required structured collection."
+        }
+      ],
+      "or_groups": []
+    },
+    "failure_aware-2-11d9e6d1a4-m2": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n8"
+        ],
+        [
+          "n8",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n4",
+          "n6"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ]
+      ],
+      "id": "failure_aware-2-11d9e6d1a4-m2",
+      "metadata": {
+        "mutation": "SPLIT_NODE",
+        "parent_id": "failure_aware-2-11d9e6d1a4"
+      },
+      "nodes": [
+        {
+          "action": "Read the implementation, fixtures, mock boundary, and relevant documentation to identify required fields, normalization rules, permitted values, and output shape.",
+          "id": "n1",
+          "inputs": [
+            "Project files",
+            "Documentation",
+            "Input data"
+          ],
+          "name": "Inspect project contract",
+          "outputs": [
+            "Validation and processing contract"
+          ],
+          "preconditions": [
+            "Target project and documented input/output contract are accessible"
+          ],
+          "required": true,
+          "validator": "Confirm the contract is explicit enough to distinguish locally rejectable inputs from dispatchable inputs."
+        },
+        {
+          "action": "Separate field projection, normalization, cross-field checks, duplicate or state checks, and dispatch gating into deterministic validation stages.",
+          "id": "n2",
+          "inputs": [
+            "Validation and processing contract"
+          ],
+          "name": "Define reusable validation stages",
+          "outputs": [
+            "Validation stages"
+          ],
+          "preconditions": [
+            "Validation and processing contract is known"
+          ],
+          "required": true,
+          "validator": "Every required check has a defined execution stage and can run before any external operation."
+        },
+        {
+          "action": "Parse the batch and project each record into a validation candidate while retaining its original index and original payload for diagnostics.",
+          "id": "n3",
+          "inputs": [
+            "Input data",
+            "Validation stages"
+          ],
+          "name": "Load and project each record",
+          "outputs": [
+            "Indexed candidates"
+          ],
+          "preconditions": [
+            "Validation stages exist",
+            "Input data is readable"
+          ],
+          "required": true,
+          "validator": "Malformed records produce controlled local failures rather than aborting the entire batch."
+        },
+        {
+          "action": "Run all applicable independent checks for each candidate, including type, requiredness, format, range, normalization, cross-field ordering, and state-dependent constraints; collect every failure before deciding dispatchability.",
+          "id": "n4",
+          "inputs": [
+            "Indexed candidates",
+            "Validation stages",
+            "Diagnostic policy",
+            "Current local state"
+          ],
+          "name": "Screen candidates without side effects",
+          "outputs": [
+            "Accepted candidates",
+            "Structured failures"
+          ],
+          "preconditions": [
+            "Indexed candidates exist",
+            "Validation stages and diagnostic policy exist"
+          ],
+          "required": true,
+          "validator": "Rejected candidates have complete field or parameter diagnostics, while accepted candidates have no unresolved validation errors."
+        },
+        {
+          "action": "Invoke the operation only for candidates that passed screening, preserving input order and updating local state after each successful operation.",
+          "id": "n5",
+          "inputs": [
+            "Accepted candidates",
+            "Mock or external operation"
+          ],
+          "name": "Dispatch accepted candidates",
+          "outputs": [
+            "Operation results",
+            "Dispatch trace"
+          ],
+          "preconditions": [
+            "Accepted candidates exist",
+            "Screening completed"
+          ],
+          "required": true,
+          "validator": "The dispatch trace contains no rejected index and successful results correspond one-to-one with accepted candidates."
+        },
+        {
+          "action": "Build the required return object with successes, failures, original indices or payload references, diagnostics, trace information, and total/succeeded/failed counts.",
+          "id": "n6",
+          "inputs": [
+            "Structured failures",
+            "Operation results",
+            "Dispatch trace",
+            "Original batch"
+          ],
+          "name": "Assemble failure-aware result",
+          "outputs": [
+            "Contract-compliant batch result"
+          ],
+          "preconditions": [
+            "Structured failures exist",
+            "Operation results and trace are available"
+          ],
+          "required": true,
+          "validator": "Counts reconcile with the input size, every input is classified exactly once, and failures use one consistent error shape."
+        },
+        {
+          "action": "Run post-processing checks for no bad dispatches, preserved valid-row progress, deterministic ordering, complete diagnostics, and compatibility with the documented API contract.",
+          "id": "n7",
+          "inputs": [
+            "Batch result",
+            "Dispatch trace",
+            "Local state"
+          ],
+          "name": "Verify safety invariants",
+          "outputs": [
+            "Verified implementation"
+          ],
+          "preconditions": [
+            "Contract-compliant batch result exists"
+          ],
+          "required": true,
+          "validator": "The implementation passes representative valid, invalid, boundary, normalization, duplicate, and mixed-batch cases while preserving the project structure."
+        },
+        {
+          "action": "Define a complete reusable structured-error schema, support accumulation of independent failures, and specify explicit timezone handling with canonical temporal normalization before comparisons.",
+          "id": "n8",
+          "inputs": [
+            "Validation stages",
+            "Validation and processing contract"
+          ],
+          "name": "Define diagnostic and temporal policy",
+          "outputs": [
+            "Diagnostic policy",
+            "Canonical temporal policy"
+          ],
+          "preconditions": [
+            "Validation stages exist",
+            "Validation and processing contract is known"
+          ],
+          "required": true,
+          "validator": "Each failure can represent its location, category, message, and relevant value or parameter; multiple independent failures are retained, and temporal comparisons use an explicit canonical timezone policy."
+        }
+      ],
+      "or_groups": []
+    },
+    "minimal-1-b47a5b21cd": {
+      "edges": [
+        [
+          "inspect_contract",
+          "define_validator"
+        ],
+        [
+          "define_validator",
+          "process_batch"
+        ],
+        [
+          "process_batch",
+          "record_failure"
+        ],
+        [
+          "process_batch",
+          "dispatch_valid"
+        ],
+        [
+          "record_failure",
+          "assemble_result"
+        ],
+        [
+          "dispatch_valid",
+          "assemble_result"
+        ]
+      ],
+      "id": "minimal-1-b47a5b21cd",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the existing implementation, input shape, documented rules, side-effect behavior, and required return contract.",
+          "id": "inspect_contract",
+          "inputs": [
+            "README",
+            "implementation",
+            "input data",
+            "API or domain reference"
+          ],
+          "name": "Inspect project contract",
+          "outputs": [
+            "Validation rules",
+            "Processing contract",
+            "Side-effect boundaries"
+          ],
+          "preconditions": [
+            "Target project and input batch are available"
+          ],
+          "required": true,
+          "validator": "Rules and output requirements are identified without changing unrelated project structure."
+        },
+        {
+          "action": "Implement a reusable validator that checks every applicable field, collects all failures for one item, and emits the required structured error shape.",
+          "id": "define_validator",
+          "inputs": [
+            "Validation rules",
+            "Input schema"
+          ],
+          "name": "Define local validation",
+          "outputs": [
+            "Validation function",
+            "Complete per-item error list"
+          ],
+          "preconditions": [
+            "Validation rules are known"
+          ],
+          "required": true,
+          "validator": "Invalid items produce all applicable field-level errors before any outbound or mutating call."
+        },
+        {
+          "action": "Load the batch and process entries in original order while preserving each entry's zero-based index and original payload where required.",
+          "id": "process_batch",
+          "inputs": [
+            "Input batch",
+            "Validation function"
+          ],
+          "name": "Iterate through batch",
+          "outputs": [
+            "Per-entry validation outcomes",
+            "Ordered processing state"
+          ],
+          "preconditions": [
+            "Input batch is loadable",
+            "Local validator exists"
+          ],
+          "required": true,
+          "validator": "Every input entry is examined exactly once and order/index metadata is preserved."
+        },
+        {
+          "action": "Append a structured failure record for each invalid entry and continue processing subsequent entries.",
+          "id": "record_failure",
+          "inputs": [
+            "Entry index",
+            "Original entry",
+            "Structured errors"
+          ],
+          "name": "Record rejected entries",
+          "outputs": [
+            "Failure report"
+          ],
+          "preconditions": [
+            "An entry has validation failures"
+          ],
+          "required": true,
+          "validator": "Failure records contain the contractually required index, original data, and complete errors; invalid entries cause no side effect."
+        },
+        {
+          "action": "Invoke the existing outbound or mutation operation only for valid entries and collect successful results.",
+          "id": "dispatch_valid",
+          "inputs": [
+            "Validated entry",
+            "Existing client or mutation API"
+          ],
+          "name": "Dispatch valid entries",
+          "outputs": [
+            "Success results",
+            "Side-effect trace"
+          ],
+          "preconditions": [
+            "An entry passes local validation"
+          ],
+          "required": true,
+          "validator": "No invalid entry reaches the external API or creation operation."
+        },
+        {
+          "action": "Build the required summary/result object, then verify counts, error shapes, ordering, and absence of forbidden calls.",
+          "id": "assemble_result",
+          "inputs": [
+            "Success results",
+            "Failure report",
+            "Processing trace",
+            "Output contract"
+          ],
+          "name": "Assemble and verify result",
+          "outputs": [
+            "Contract-compliant final artifact"
+          ],
+          "preconditions": [
+            "All entries have been processed",
+            "Successes and failures are available"
+          ],
+          "required": true,
+          "validator": "Returned keys, counts, traces, and nested records satisfy the documented contract and valid/invalid dispatch invariant."
+        }
+      ],
+      "or_groups": []
+    },
+    "minimal-2-6596152b0f": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n3",
+          "n5"
+        ],
+        [
+          "n4",
+          "n5"
+        ]
+      ],
+      "id": "minimal-2-6596152b0f",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the batch and identify required fields, optional fields, normalization rules, and output/error schemas.",
+          "id": "n1",
+          "inputs": [
+            "batch file",
+            "local client/API contract"
+          ],
+          "name": "Load and inspect batch contract",
+          "outputs": [
+            "ordered input records",
+            "validation policy"
+          ],
+          "preconditions": [
+            "Input batch and project contract are available"
+          ],
+          "required": true,
+          "validator": "Records are retained in original order and policy requirements are explicit."
+        },
+        {
+          "action": "Convert each raw record into a validation-ready representation while preserving its original index and payload.",
+          "id": "n2",
+          "inputs": [
+            "ordered input records",
+            "validation policy"
+          ],
+          "name": "Project records for validation",
+          "outputs": [
+            "indexed candidate records"
+          ],
+          "preconditions": [
+            "n1 completed"
+          ],
+          "required": true,
+          "validator": "Every candidate has its original zero-based index and source payload."
+        },
+        {
+          "action": "Validate every candidate before dispatch, applying type, presence, range, enum, format, uniqueness, timezone, and cross-field rules as applicable; collect all failures for each record.",
+          "id": "n3",
+          "inputs": [
+            "indexed candidate records",
+            "validation policy"
+          ],
+          "name": "Accumulate local validation errors",
+          "outputs": [
+            "valid candidates",
+            "structured rejected records"
+          ],
+          "preconditions": [
+            "n2 completed"
+          ],
+          "required": true,
+          "validator": "Rejected records contain field/parameter-specific error objects with the required fields, and no candidate is dispatched during validation."
+        },
+        {
+          "action": "Send only candidates with no validation errors to the external operation, preserving batch order and recording the operation trace.",
+          "id": "n4",
+          "inputs": [
+            "valid candidates"
+          ],
+          "name": "Dispatch valid candidates",
+          "outputs": [
+            "successful results",
+            "dispatch trace"
+          ],
+          "preconditions": [
+            "n3 completed"
+          ],
+          "required": true,
+          "validator": "The number of outbound calls equals the number of valid candidates and invalid candidates cause zero calls."
+        },
+        {
+          "action": "Build the required structured return value with successes, failures or rejections, counts, original indices/payloads where required, and trace information.",
+          "id": "n5",
+          "inputs": [
+            "successful results",
+            "structured rejected records",
+            "dispatch trace",
+            "original batch"
+          ],
+          "name": "Assemble batch result",
+          "outputs": [
+            "contract-compliant batch result"
+          ],
+          "preconditions": [
+            "n3 completed",
+            "n4 completed"
+          ],
+          "required": true,
+          "validator": "Summary counts reconcile with total input, successes, and failures; all rejected records retain required structured diagnostics."
+        }
+      ],
+      "or_groups": []
+    },
+    "transfer_first-1-984a8834da": {
+      "edges": [
+        [
+          "inspect_contract",
+          "define_projection"
+        ],
+        [
+          "define_projection",
+          "screen_row"
+        ],
+        [
+          "screen_row",
+          "process_batch"
+        ],
+        [
+          "process_batch",
+          "record_audit"
+        ],
+        [
+          "record_audit",
+          "verify_side_effects"
+        ]
+      ],
+      "id": "transfer_first-1-984a8834da",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the existing implementation and project documentation to identify input shape, required output shape, validation rules, side-effect boundaries, and existing audit or mock interfaces.",
+          "id": "inspect_contract",
+          "inputs": [
+            "README",
+            "client or importer module",
+            "input batch",
+            "API/reference docs"
+          ],
+          "name": "Inspect project contract",
+          "outputs": [
+            "Explicit validation contract",
+            "Preserved integration points"
+          ],
+          "preconditions": [
+            "Target project and task documentation are available"
+          ],
+          "required": true,
+          "validator": "Required fields, optional fields, normalization rules, error schema, and return schema are identified before editing."
+        },
+        {
+          "action": "Create or reuse a small projection/normalization layer that preserves the original row while exposing normalized values needed for validation and downstream dispatch.",
+          "id": "define_projection",
+          "inputs": [
+            "Raw batch row",
+            "Validation contract"
+          ],
+          "name": "Define normalized row projection",
+          "outputs": [
+            "Normalized candidate",
+            "Original row and index retained"
+          ],
+          "preconditions": [
+            "Validation contract is known"
+          ],
+          "required": true,
+          "validator": "Normalization is deterministic, makes default policies explicit, and does not silently discard source values."
+        },
+        {
+          "action": "Evaluate every applicable rule before any external call, collecting all failures for the row rather than stopping at the first failure.",
+          "id": "screen_row",
+          "inputs": [
+            "Normalized candidate",
+            "Validation rules",
+            "Previously accepted state when uniqueness matters"
+          ],
+          "name": "Screen each row locally",
+          "outputs": [
+            "Complete per-row error list",
+            "Dispatchable valid candidate or rejected row"
+          ],
+          "preconditions": [
+            "Normalized candidate exists"
+          ],
+          "required": true,
+          "validator": "Errors identify the relevant field or parameter, reason, observed value when useful, and expected constraint; invalid rows have no outbound side effect."
+        },
+        {
+          "action": "Iterate through the complete batch in source order, preserve zero-based indices, continue after rejected rows, and dispatch only candidates with no validation errors.",
+          "id": "process_batch",
+          "inputs": [
+            "Input batch",
+            "Row screening result"
+          ],
+          "name": "Process batch in order",
+          "outputs": [
+            "Ordered successes",
+            "Indexed failures"
+          ],
+          "preconditions": [
+            "Rows can be iterated",
+            "Row screening is available"
+          ],
+          "required": true,
+          "validator": "Every input row is represented exactly once as either a success or failure, and valid rows are not blocked by invalid rows."
+        },
+        {
+          "action": "Construct the project\u2019s required structured result, retaining original rejected payloads, detailed errors, side-effect trace, and aggregate counts without changing the public contract.",
+          "id": "record_audit",
+          "inputs": [
+            "Successes",
+            "Failures",
+            "Original rows",
+            "Outbound trace if available"
+          ],
+          "name": "Build structured audit result",
+          "outputs": [
+            "Contract-compatible result",
+            "Summary and audit trace"
+          ],
+          "preconditions": [
+            "Batch processing has completed"
+          ],
+          "required": true,
+          "validator": "Return keys and nested error fields match the documented contract; counts reconcile with total input rows."
+        },
+        {
+          "action": "Run focused checks that valid rows were dispatched, invalid rows were not dispatched, all row-level failures were accumulated, and normalization/default policies are visible where required.",
+          "id": "verify_side_effects",
+          "inputs": [
+            "Result",
+            "Mock/API trace",
+            "Input batch"
+          ],
+          "name": "Verify dispatch boundary",
+          "outputs": [
+            "Verified implementation",
+            "Detected regressions"
+          ],
+          "preconditions": [
+            "Structured result exists"
+          ],
+          "required": true,
+          "validator": "Outbound-call trace contains no rejected row, accepted/rejected partition is complete, and representative multi-error cases retain every applicable failure."
+        }
+      ],
+      "or_groups": []
+    },
+    "transfer_first-2-61162e12e0": {
+      "edges": [
+        [
+          "n1",
+          "n2"
+        ],
+        [
+          "n2",
+          "n3"
+        ],
+        [
+          "n3",
+          "n4"
+        ],
+        [
+          "n4",
+          "n5"
+        ],
+        [
+          "n5",
+          "n6"
+        ],
+        [
+          "n6",
+          "n7"
+        ]
+      ],
+      "id": "transfer_first-2-61162e12e0",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Extract the input shape, required fields, optional fields, normalization rules, outbound-call contract, and required result schema before editing.",
+          "id": "n1",
+          "inputs": [
+            "README",
+            "client implementation",
+            "API/reference documentation",
+            "input data"
+          ],
+          "name": "Inspect project contract",
+          "outputs": [
+            "Reusable validation and processing contract"
+          ],
+          "preconditions": [
+            "Target project and input batch are available"
+          ],
+          "required": true,
+          "validator": "Required fields, optionality, and output keys are explicitly identified."
+        },
+        {
+          "action": "Centralize deterministic local checks, including type, presence, emptiness, format, range, uniqueness, ordering, and timezone normalization rules as applicable.",
+          "id": "n2",
+          "inputs": [
+            "Field rules",
+            "range or enum rules",
+            "format rules",
+            "normalization policy"
+          ],
+          "name": "Define local validation policy",
+          "outputs": [
+            "Validation policy",
+            "Consistent structured error schema"
+          ],
+          "preconditions": [
+            "Reusable validation and processing contract exists"
+          ],
+          "required": true,
+          "validator": "Every rejected condition maps to a structured error containing the relevant field or parameter and observed value or comparison context."
+        },
+        {
+          "action": "Parse each raw item and derive the comparison or API-ready representation without mutating the original payload.",
+          "id": "n3",
+          "inputs": [
+            "Raw batch item",
+            "normalization policy"
+          ],
+          "name": "Normalize and project input",
+          "outputs": [
+            "Original item",
+            "Normalized candidate"
+          ],
+          "preconditions": [
+            "Validation policy exists"
+          ],
+          "required": true,
+          "validator": "Naive or encoded values are normalized according to the documented policy, while the original item remains available for reporting."
+        },
+        {
+          "action": "Run all applicable validations for the item and accumulate every failure before deciding whether to dispatch it.",
+          "id": "n4",
+          "inputs": [
+            "Original item",
+            "Normalized candidate",
+            "validation policy"
+          ],
+          "name": "Collect all item errors",
+          "outputs": [
+            "Complete error list or validated candidate"
+          ],
+          "preconditions": [
+            "Normalized candidate exists"
+          ],
+          "required": true,
+          "validator": "An item with multiple independent defects reports multiple errors and does not stop at the first failure."
+        },
+        {
+          "action": "Dispatch only candidates with no validation errors; otherwise record a failure entry containing the original index, original item, and structured errors.",
+          "id": "n5",
+          "inputs": [
+            "Validation result",
+            "validated candidate"
+          ],
+          "name": "Gate outbound operation",
+          "outputs": [
+            "Successful result or failure record",
+            "Outbound trace"
+          ],
+          "preconditions": [
+            "Complete error list or validated candidate exists"
+          ],
+          "required": true,
+          "validator": "No invalid item reaches the external or mock API, and valid items preserve input order."
+        },
+        {
+          "action": "Build the required return object with successes, failures, trace or audit information, and total/succeeded/failed summary counts.",
+          "id": "n6",
+          "inputs": [
+            "Successes",
+            "failures",
+            "outbound trace",
+            "batch metadata"
+          ],
+          "name": "Aggregate batch outcome",
+          "outputs": [
+            "Contract-compliant batch result"
+          ],
+          "preconditions": [
+            "Successful results and failure records exist"
+          ],
+          "required": true,
+          "validator": "Counts reconcile with input length and every failure retains its zero-based index."
+        },
+        {
+          "action": "Run focused checks covering valid dispatch, local rejection, multiple simultaneous errors, optional fields, normalization edge cases, duplicate or ordering rules, and summary consistency.",
+          "id": "n7",
+          "inputs": [
+            "Updated implementation",
+            "representative valid and invalid cases",
+            "batch result"
+          ],
+          "name": "Verify behavior",
+          "outputs": [
+            "Verified implementation",
+            "Evidence of no bad requests"
+          ],
+          "preconditions": [
+            "Contract-compliant batch result exists"
+          ],
+          "required": true,
+          "validator": "Checks confirm invalid inputs are rejected before dispatch and valid inputs continue processing independently."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-1-ebe65c0cca": {
+      "edges": [
+        [
+          "inspect_scope",
+          "derive_validation_contract"
+        ],
+        [
+          "derive_validation_contract",
+          "design_error_accumulation"
+        ],
+        [
+          "derive_validation_contract",
+          "implement_pre_dispatch_gate"
+        ],
+        [
+          "design_error_accumulation",
+          "implement_pre_dispatch_gate"
+        ],
+        [
+          "implement_pre_dispatch_gate",
+          "preserve_batch_accounting"
+        ],
+        [
+          "derive_validation_contract",
+          "build_boundary_checks"
+        ],
+        [
+          "implement_pre_dispatch_gate",
+          "build_boundary_checks"
+        ],
+        [
+          "preserve_batch_accounting",
+          "run_and_inspect_verification"
+        ],
+        [
+          "build_boundary_checks",
+          "run_and_inspect_verification"
+        ]
+      ],
+      "id": "verification_first-1-ebe65c0cca",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the project guidance, current client or importer, representative input data, and external contract before editing; identify existing side effects, return shapes, and audit hooks.",
+          "id": "inspect_scope",
+          "inputs": [
+            "README",
+            "implementation",
+            "input batch",
+            "API/reference documentation"
+          ],
+          "name": "Inspect project scope",
+          "outputs": [
+            "repository constraints",
+            "input schema",
+            "API contract",
+            "existing behavior risks"
+          ],
+          "preconditions": [
+            "Target project and stated entry points are available"
+          ],
+          "required": true,
+          "validator": "Required files are read and the expected input, output, and dispatch boundaries are documented."
+        },
+        {
+          "action": "Translate the documented requirements into explicit local checks, including required/type/format/range/enum/normalization rules and any cross-field or duplicate constraints.",
+          "id": "derive_validation_contract",
+          "inputs": [
+            "API contract",
+            "input schema",
+            "migration or policy notes"
+          ],
+          "name": "Derive local validation rules",
+          "outputs": [
+            "ordered validation rules",
+            "normalization policy",
+            "cross-field invariants"
+          ],
+          "preconditions": [
+            "Project scope has been inspected"
+          ],
+          "required": true,
+          "validator": "Every documented rejection condition has a deterministic local rule and an explicit expected representation."
+        },
+        {
+          "action": "Define one stable error object shape and a per-record failure entry that preserves the original index and payload; ensure validation accumulates all applicable field and cross-field failures before dispatch.",
+          "id": "design_error_accumulation",
+          "inputs": [
+            "ordered validation rules",
+            "required output contract"
+          ],
+          "name": "Design structured diagnostics",
+          "outputs": [
+            "error schema",
+            "failure schema",
+            "aggregation behavior"
+          ],
+          "preconditions": [
+            "Validation rules are explicit"
+          ],
+          "required": true,
+          "validator": "A malformed record can yield multiple errors without terminating validation or losing its original position."
+        },
+        {
+          "action": "Update the processor to validate and normalize each record before any outbound operation, route invalid records to failures, and invoke the external operation only for records with no errors.",
+          "id": "implement_pre_dispatch_gate",
+          "inputs": [
+            "batch input",
+            "validation rules",
+            "normalization policy",
+            "error schema"
+          ],
+          "name": "Implement pre-dispatch gate",
+          "outputs": [
+            "validated processor",
+            "side-effect gate",
+            "ordered successes and failures"
+          ],
+          "preconditions": [
+            "Validation rules are explicit",
+            "Structured diagnostics are designed"
+          ],
+          "required": true,
+          "validator": "For every record, validation precedes dispatch; records with errors produce no outbound call, while valid records retain input order."
+        },
+        {
+          "action": "Return the project\u2019s required aggregate structure with complete successes, failures, trace or audit data when applicable, and totals derived from the original batch rather than hard-coded counts.",
+          "id": "preserve_batch_accounting",
+          "inputs": [
+            "success results",
+            "failure entries",
+            "original batch"
+          ],
+          "name": "Preserve batch accounting",
+          "outputs": [
+            "contract-compliant result",
+            "reconciliation summary"
+          ],
+          "preconditions": [
+            "Pre-dispatch gate is implemented",
+            "Failure schema is defined"
+          ],
+          "required": true,
+          "validator": "Total equals succeeded plus failed, every input index appears exactly once, and failure details retain original values where required."
+        },
+        {
+          "action": "Exercise valid records, each individual invalid condition, combinations of simultaneous failures, optional fields, timezone or normalization boundaries when relevant, duplicates, and mixed batches.",
+          "id": "build_boundary_checks",
+          "inputs": [
+            "boundary cases",
+            "multi-error cases",
+            "normalization and duplicate cases"
+          ],
+          "name": "Build boundary-focused checks",
+          "outputs": [
+            "verification cases",
+            "expected call trace",
+            "expected diagnostics"
+          ],
+          "preconditions": [
+            "Derived validation rules exist",
+            "Processor behavior is implemented"
+          ],
+          "required": true,
+          "validator": "Checks cover both rejection semantics and the absence of outbound calls for rejected records."
+        },
+        {
+          "action": "Run the focused checks and inspect returned structures plus the mock or audit trace; compare observed calls, indices, errors, normalized values, and counts against the derived contract.",
+          "id": "run_and_inspect_verification",
+          "inputs": [
+            "processor",
+            "verification cases"
+          ],
+          "name": "Run verification first",
+          "outputs": [
+            "verified artifact",
+            "verification evidence",
+            "remaining defects if any"
+          ],
+          "preconditions": [
+            "Boundary-focused checks are defined",
+            "Batch accounting is implemented"
+          ],
+          "required": true,
+          "validator": "All checks pass, invalid records have no dispatch trace, valid records are dispatched, and diagnostics are complete and contract-shaped."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-1-ebe65c0cca-m1": {
+      "edges": [
+        [
+          "inspect_scope",
+          "derive_validation_contract"
+        ],
+        [
+          "derive_validation_contract",
+          "define_structured_error_shape"
+        ],
+        [
+          "define_structured_error_shape",
+          "accumulate_validation_failures"
+        ],
+        [
+          "derive_validation_contract",
+          "implement_pre_dispatch_gate"
+        ],
+        [
+          "accumulate_validation_failures",
+          "implement_pre_dispatch_gate"
+        ],
+        [
+          "implement_pre_dispatch_gate",
+          "preserve_batch_accounting"
+        ],
+        [
+          "derive_validation_contract",
+          "build_boundary_checks"
+        ],
+        [
+          "implement_pre_dispatch_gate",
+          "build_boundary_checks"
+        ],
+        [
+          "preserve_batch_accounting",
+          "run_and_inspect_verification"
+        ],
+        [
+          "build_boundary_checks",
+          "run_and_inspect_verification"
+        ]
+      ],
+      "id": "verification_first-1-ebe65c0cca-m1",
+      "metadata": {
+        "mutation": "SPLIT_NODE",
+        "parent_id": "verification_first-1-ebe65c0cca"
+      },
+      "nodes": [
+        {
+          "action": "Read the project guidance, current client or importer, representative input data, and external contract before editing; identify existing side effects, return shapes, and audit hooks.",
+          "id": "inspect_scope",
+          "inputs": [
+            "README",
+            "implementation",
+            "input batch",
+            "API/reference documentation"
+          ],
+          "name": "Inspect project scope",
+          "outputs": [
+            "repository constraints",
+            "input schema",
+            "API contract",
+            "existing behavior risks"
+          ],
+          "preconditions": [
+            "Target project and stated entry points are available"
+          ],
+          "required": true,
+          "validator": "Required files are read and the expected input, output, and dispatch boundaries are documented."
+        },
+        {
+          "action": "Translate documented requirements into explicit local checks, including required/type/format/range/enum/normalization rules, cross-field or duplicate constraints, and an explicit timezone policy with UTC normalization where timestamps are accepted.",
+          "id": "derive_validation_contract",
+          "inputs": [
+            "API contract",
+            "input schema",
+            "migration or policy notes"
+          ],
+          "name": "Derive local validation rules",
+          "outputs": [
+            "ordered validation rules",
+            "normalization policy",
+            "timezone policy",
+            "cross-field invariants"
+          ],
+          "preconditions": [
+            "Project scope has been inspected"
+          ],
+          "required": true,
+          "validator": "Every documented rejection condition has a deterministic local rule, timestamps have an explicit timezone policy, and expected representations are defined."
+        },
+        {
+          "action": "Define one stable structured error object containing the field or scope, machine-readable code, human-readable message, and relevant value or context; define a per-record failure entry that preserves the original index and payload.",
+          "id": "define_structured_error_shape",
+          "inputs": [
+            "ordered validation rules",
+            "required output contract"
+          ],
+          "name": "Define structured diagnostics shape",
+          "outputs": [
+            "complete error schema",
+            "failure schema"
+          ],
+          "preconditions": [
+            "Validation rules are explicit"
+          ],
+          "required": true,
+          "validator": "Each validation failure maps to a complete structured error with field or scope, code, message, and relevant context, while original index and payload are retained."
+        },
+        {
+          "action": "Specify and implement collection behavior so every applicable field and cross-field failure is recorded for a record before dispatch eligibility is decided, without short-circuiting on the first error.",
+          "id": "accumulate_validation_failures",
+          "inputs": [
+            "complete error schema",
+            "failure schema",
+            "ordered validation rules"
+          ],
+          "name": "Accumulate validation failures",
+          "outputs": [
+            "multiple-error aggregation behavior",
+            "complete record diagnostics"
+          ],
+          "preconditions": [
+            "Structured diagnostics shape is defined"
+          ],
+          "required": true,
+          "validator": "A record with several invalid fields yields a collection containing all applicable structured errors and remains associated with its original position."
+        },
+        {
+          "action": "Update the processor to validate and normalize each record before any outbound operation, route invalid records to failures, and invoke the external operation only for records with no errors.",
+          "id": "implement_pre_dispatch_gate",
+          "inputs": [
+            "batch input",
+            "validation rules",
+            "normalization policy",
+            "timezone policy",
+            "error schema",
+            "aggregation behavior"
+          ],
+          "name": "Implement pre-dispatch gate",
+          "outputs": [
+            "validated processor",
+            "side-effect gate",
+            "ordered successes and failures"
+          ],
+          "preconditions": [
+            "Validation rules are explicit",
+            "Validation failures are accumulated"
+          ],
+          "required": true,
+          "validator": "For every record, validation precedes dispatch; records with errors produce no outbound call, while valid records retain input order."
+        },
+        {
+          "action": "Return the project\u2019s required aggregate structure with complete successes, failures, trace or audit data when applicable, and totals derived from the original batch rather than hard-coded counts.",
+          "id": "preserve_batch_accounting",
+          "inputs": [
+            "success results",
+            "failure entries",
+            "original batch"
+          ],
+          "name": "Preserve batch accounting",
+          "outputs": [
+            "contract-compliant result",
+            "reconciliation summary"
+          ],
+          "preconditions": [
+            "Pre-dispatch gate is implemented",
+            "Failure schema is defined"
+          ],
+          "required": true,
+          "validator": "Total equals succeeded plus failed, every input index appears exactly once, and failure details retain original values where required."
+        },
+        {
+          "action": "Exercise valid records, each individual invalid condition, combinations of simultaneous failures, optional fields, timezone and UTC-normalization boundaries when relevant, duplicates, and mixed batches.",
+          "id": "build_boundary_checks",
+          "inputs": [
+            "boundary cases",
+            "multi-error cases",
+            "normalization and duplicate cases"
+          ],
+          "name": "Build boundary-focused checks",
+          "outputs": [
+            "verification cases",
+            "expected call trace",
+            "expected diagnostics"
+          ],
+          "preconditions": [
+            "Derived validation rules exist",
+            "Processor behavior is implemented"
+          ],
+          "required": true,
+          "validator": "Checks cover rejection semantics, complete multi-error collection, timezone normalization policy, and absence of outbound calls for rejected records."
+        },
+        {
+          "action": "Run the focused checks and inspect returned structures plus the mock or audit trace; compare observed calls, indices, errors, normalized values, and counts against the derived contract.",
+          "id": "run_and_inspect_verification",
+          "inputs": [
+            "processor",
+            "verification cases"
+          ],
+          "name": "Run verification first",
+          "outputs": [
+            "verified artifact",
+            "verification evidence",
+            "remaining defects if any"
+          ],
+          "preconditions": [
+            "Boundary-focused checks are defined",
+            "Batch accounting is implemented"
+          ],
+          "required": true,
+          "validator": "All checks pass, invalid records have no dispatch trace, valid records are dispatched, and diagnostics are complete and contract-shaped."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-1-ebe65c0cca-m2": {
+      "edges": [
+        [
+          "inspect_scope",
+          "derive_validation_contract"
+        ],
+        [
+          "derive_validation_contract",
+          "implement_pre_dispatch_diagnostics_gate"
+        ],
+        [
+          "implement_pre_dispatch_diagnostics_gate",
+          "preserve_batch_accounting"
+        ],
+        [
+          "derive_validation_contract",
+          "build_boundary_checks"
+        ],
+        [
+          "implement_pre_dispatch_diagnostics_gate",
+          "build_boundary_checks"
+        ],
+        [
+          "preserve_batch_accounting",
+          "run_and_inspect_verification"
+        ],
+        [
+          "build_boundary_checks",
+          "run_and_inspect_verification"
+        ]
+      ],
+      "id": "verification_first-1-ebe65c0cca-m2",
+      "metadata": {
+        "mutation": "MERGE_NODES",
+        "parent_id": "verification_first-1-ebe65c0cca"
+      },
+      "nodes": [
+        {
+          "action": "Read the project guidance, current client or importer, representative input data, and external contract before editing; identify existing side effects, return shapes, and audit hooks.",
+          "id": "inspect_scope",
+          "inputs": [
+            "README",
+            "implementation",
+            "input batch",
+            "API/reference documentation"
+          ],
+          "name": "Inspect project scope",
+          "outputs": [
+            "repository constraints",
+            "input schema",
+            "API contract",
+            "existing behavior risks"
+          ],
+          "preconditions": [
+            "Target project and stated entry points are available"
+          ],
+          "required": true,
+          "validator": "Required files are read and the expected input, output, and dispatch boundaries are documented."
+        },
+        {
+          "action": "Translate the documented requirements into explicit local checks, including required/type/format/range/enum/normalization rules, an explicit timezone policy with UTC normalization where applicable, and any cross-field or duplicate constraints.",
+          "id": "derive_validation_contract",
+          "inputs": [
+            "API contract",
+            "input schema",
+            "migration or policy notes"
+          ],
+          "name": "Derive local validation rules",
+          "outputs": [
+            "ordered validation rules",
+            "normalization policy",
+            "timezone policy",
+            "cross-field invariants"
+          ],
+          "preconditions": [
+            "Project scope has been inspected"
+          ],
+          "required": true,
+          "validator": "Every documented rejection condition has a deterministic local rule and an explicit expected representation."
+        },
+        {
+          "action": "Update the processor to validate and normalize each record before any outbound operation, accumulate all applicable field and cross-field failures in a stable structured error object, preserve the original index and payload in each failure entry, route invalid records to failures, and invoke the external operation only for records with no errors.",
+          "id": "implement_pre_dispatch_diagnostics_gate",
+          "inputs": [
+            "batch input",
+            "validation rules",
+            "normalization policy",
+            "timezone policy",
+            "error schema"
+          ],
+          "name": "Implement pre-dispatch diagnostics gate",
+          "outputs": [
+            "validated processor",
+            "structured error schema",
+            "failure schema",
+            "side-effect gate",
+            "ordered successes and failures",
+            "aggregation behavior"
+          ],
+          "preconditions": [
+            "Validation rules are explicit",
+            "Structured diagnostics are designed"
+          ],
+          "required": true,
+          "validator": "For every record, validation precedes dispatch; records with errors produce no outbound call, multiple applicable errors are retained in the contract-shaped structure, and valid records retain input order."
+        },
+        {
+          "action": "Return the project\u2019s required aggregate structure with complete successes, failures, trace or audit data when applicable, and totals derived from the original batch rather than hard-coded counts.",
+          "id": "preserve_batch_accounting",
+          "inputs": [
+            "success results",
+            "failure entries",
+            "original batch"
+          ],
+          "name": "Preserve batch accounting",
+          "outputs": [
+            "contract-compliant result",
+            "reconciliation summary"
+          ],
+          "preconditions": [
+            "Pre-dispatch gate is implemented",
+            "Failure schema is defined"
+          ],
+          "required": true,
+          "validator": "Total equals succeeded plus failed, every input index appears exactly once, and failure details retain original values where required."
+        },
+        {
+          "action": "Exercise valid records, each individual invalid condition, combinations of simultaneous failures, optional fields, timezone or normalization boundaries when relevant, duplicates, and mixed batches.",
+          "id": "build_boundary_checks",
+          "inputs": [
+            "boundary cases",
+            "multi-error cases",
+            "normalization and duplicate cases"
+          ],
+          "name": "Build boundary-focused checks",
+          "outputs": [
+            "verification cases",
+            "expected call trace",
+            "expected diagnostics"
+          ],
+          "preconditions": [
+            "Derived validation rules exist",
+            "Processor behavior is implemented"
+          ],
+          "required": true,
+          "validator": "Checks cover both rejection semantics and the absence of outbound calls for rejected records."
+        },
+        {
+          "action": "Run the focused checks and inspect returned structures plus the mock or audit trace; compare observed calls, indices, errors, normalized values, and counts against the derived contract.",
+          "id": "run_and_inspect_verification",
+          "inputs": [
+            "processor",
+            "verification cases"
+          ],
+          "name": "Run verification first",
+          "outputs": [
+            "verified artifact",
+            "verification evidence",
+            "remaining defects if any"
+          ],
+          "preconditions": [
+            "Boundary-focused checks are defined",
+            "Batch accounting is implemented"
+          ],
+          "required": true,
+          "validator": "All checks pass, invalid records have no dispatch trace, valid records are dispatched, and diagnostics are complete and contract-shaped."
+        }
+      ],
+      "or_groups": []
+    },
+    "verification_first-2-65433a17d4": {
+      "edges": [
+        [
+          "discover_contract",
+          "inspect_baseline"
+        ],
+        [
+          "discover_contract",
+          "define_local_projection"
+        ],
+        [
+          "inspect_baseline",
+          "screen_all_records"
+        ],
+        [
+          "define_local_projection",
+          "screen_all_records"
+        ],
+        [
+          "screen_all_records",
+          "dispatch_accepted_only"
+        ],
+        [
+          "screen_all_records",
+          "assemble_audit_result"
+        ],
+        [
+          "dispatch_accepted_only",
+          "assemble_audit_result"
+        ],
+        [
+          "assemble_audit_result",
+          "verify_artifact"
+        ]
+      ],
+      "id": "verification_first-2-65433a17d4",
+      "metadata": {},
+      "nodes": [
+        {
+          "action": "Read the project guidance, current implementation, input shape, and authoritative reference material; identify required outputs, validation rules, normalization policies, and side-effect boundaries.",
+          "id": "discover_contract",
+          "inputs": [
+            "README",
+            "implementation",
+            "fixtures",
+            "reference documentation"
+          ],
+          "name": "Discover authoritative contract",
+          "outputs": [
+            "Explicit contract checklist",
+            "Known validation and dispatch rules"
+          ],
+          "preconditions": [
+            "Project files and task inputs are available"
+          ],
+          "required": true,
+          "validator": "Required fields, optional fields, accepted values, error schema, and output schema are recorded without relying on remote responses."
+        },
+        {
+          "action": "Trace the current control flow and identify where malformed data can reach external effects, where processing stops early, and which observability hooks can prove behavior.",
+          "id": "inspect_baseline",
+          "inputs": [
+            "Current implementation",
+            "Mock or trace facilities",
+            "Existing tests or fixtures"
+          ],
+          "name": "Inspect baseline behavior",
+          "outputs": [
+            "Baseline risk map",
+            "Verification points"
+          ],
+          "preconditions": [
+            "Contract checklist exists"
+          ],
+          "required": true,
+          "validator": "Every requested behavior has a corresponding observable verification point."
+        },
+        {
+          "action": "Create or select a deterministic projection that preserves original records and indices while making types, defaults, canonical values, and comparison forms explicit.",
+          "id": "define_local_projection",
+          "inputs": [
+            "Raw batch records",
+            "Normalization policy from contract"
+          ],
+          "name": "Define normalized local representation",
+          "outputs": [
+            "Normalized candidates",
+            "Original-to-normalized mapping"
+          ],
+          "preconditions": [
+            "Contract checklist exists"
+          ],
+          "required": true,
+          "validator": "Optional inputs remain optional, defaults are explicit, and normalized values are suitable for all contract comparisons."
+        },
+        {
+          "action": "Evaluate every applicable rule for each record before dispatch, accumulate all failures for a record, and classify each record as accepted or rejected with structured field-level diagnostics.",
+          "id": "screen_all_records",
+          "inputs": [
+            "Normalized candidates",
+            "Validation rules",
+            "Duplicate or cross-record state"
+          ],
+          "name": "Screen records completely",
+          "outputs": [
+            "Accepted candidates",
+            "Rejected records with complete error lists"
+          ],
+          "preconditions": [
+            "Normalized candidates exist"
+          ],
+          "required": true,
+          "validator": "Invalid records contain all discovered failures in the required consistent shape; valid records contain no screening errors."
+        },
+        {
+          "action": "Invoke the external operation only for accepted candidates, preserving input order and isolating rejected records from side effects.",
+          "id": "dispatch_accepted_only",
+          "inputs": [
+            "Accepted candidates",
+            "External client or mock API"
+          ],
+          "name": "Dispatch accepted records",
+          "outputs": [
+            "Successful results",
+            "Dispatch trace"
+          ],
+          "preconditions": [
+            "Screening is complete",
+            "Accepted candidates exist"
+          ],
+          "required": true,
+          "validator": "Dispatch trace contains no rejected record and successful count matches the number of accepted candidates."
+        },
+        {
+          "action": "Build the requested return object with successes, failures, original indices or records, normalized evidence where required, trace data, and aggregate counts.",
+          "id": "assemble_audit_result",
+          "inputs": [
+            "Accepted results",
+            "Rejected records",
+            "Original batch",
+            "Dispatch trace"
+          ],
+          "name": "Assemble structured result",
+          "outputs": [
+            "Contract-shaped batch result"
+          ],
+          "preconditions": [
+            "Screening is complete",
+            "Dispatch results exist"
+          ],
+          "required": true,
+          "validator": "Result keys, nested error fields, ordering, and summary counts match the discovered contract."
+        },
+        {
+          "action": "Run focused checks covering valid processing, multiple simultaneous failures, optional/default behavior, boundary and normalization cases, ordering, and no-dispatch guarantees; inspect the diff for scope compliance.",
+          "id": "verify_artifact",
+          "inputs": [
+            "Saved implementation",
+            "Representative valid and invalid cases",
+            "Side-effect trace",
+            "Final result"
+          ],
+          "name": "Verify final artifact",
+          "outputs": [
+            "Verified implementation",
+            "Evidence of local rejection and correct dispatch"
+          ],
+          "preconditions": [
+            "Contract-shaped batch result exists",
+            "Implementation changes are saved in the required project directory"
+          ],
+          "required": true,
+          "validator": "All required scenarios pass, invalid inputs never trigger outbound calls, valid inputs still progress, and no unrelated project relocation or stub replacement occurred."
+        }
+      ],
+      "or_groups": []
+    }
+  },
+  "causal_controls": {
+    "artifact_shuffle": {
+      "reason": "run_expensive_controls=False; run after primary GO gates",
+      "status": "deferred"
+    },
+    "edge_shuffle": {
+      "graph": {
+        "edges": [
+          [
+            "n3",
+            "n4"
+          ],
+          [
+            "n5",
+            "n3"
+          ],
+          [
+            "n5",
+            "n2"
+          ],
+          [
+            "n1",
+            "n4"
+          ],
+          [
+            "n3",
+            "n1"
+          ]
+        ],
+        "id": "minimal-2-6596152b0f-edge-shuffle",
+        "metadata": {
+          "control": "edge_shuffle"
+        },
+        "nodes": [
+          {
+            "action": "Read the batch and identify required fields, optional fields, normalization rules, and output/error schemas.",
+            "id": "n1",
+            "inputs": [
+              "batch file",
+              "local client/API contract"
+            ],
+            "name": "Load and inspect batch contract",
+            "outputs": [
+              "ordered input records",
+              "validation policy"
+            ],
+            "preconditions": [
+              "Input batch and project contract are available"
+            ],
+            "required": true,
+            "validator": "Records are retained in original order and policy requirements are explicit."
+          },
+          {
+            "action": "Convert each raw record into a validation-ready representation while preserving its original index and payload.",
+            "id": "n2",
+            "inputs": [
+              "ordered input records",
+              "validation policy"
+            ],
+            "name": "Project records for validation",
+            "outputs": [
+              "indexed candidate records"
+            ],
+            "preconditions": [
+              "n1 completed"
+            ],
+            "required": true,
+            "validator": "Every candidate has its original zero-based index and source payload."
+          },
+          {
+            "action": "Validate every candidate before dispatch, applying type, presence, range, enum, format, uniqueness, timezone, and cross-field rules as applicable; collect all failures for each record.",
+            "id": "n3",
+            "inputs": [
+              "indexed candidate records",
+              "validation policy"
+            ],
+            "name": "Accumulate local validation errors",
+            "outputs": [
+              "valid candidates",
+              "structured rejected records"
+            ],
+            "preconditions": [
+              "n2 completed"
+            ],
+            "required": true,
+            "validator": "Rejected records contain field/parameter-specific error objects with the required fields, and no candidate is dispatched during validation."
+          },
+          {
+            "action": "Send only candidates with no validation errors to the external operation, preserving batch order and recording the operation trace.",
+            "id": "n4",
+            "inputs": [
+              "valid candidates"
+            ],
+            "name": "Dispatch valid candidates",
+            "outputs": [
+              "successful results",
+              "dispatch trace"
+            ],
+            "preconditions": [
+              "n3 completed"
+            ],
+            "required": true,
+            "validator": "The number of outbound calls equals the number of valid candidates and invalid candidates cause zero calls."
+          },
+          {
+            "action": "Build the required structured return value with successes, failures or rejections, counts, original indices/payloads where required, and trace information.",
+            "id": "n5",
+            "inputs": [
+              "successful results",
+              "structured rejected records",
+              "dispatch trace",
+              "original batch"
+            ],
+            "name": "Assemble batch result",
+            "outputs": [
+              "contract-compliant batch result"
+            ],
+            "preconditions": [
+              "n3 completed",
+              "n4 completed"
+            ],
+            "required": true,
+            "validator": "Summary counts reconcile with total input, successes, and failures; all rejected records retain required structured diagnostics."
+          }
+        ],
+        "or_groups": []
+      },
+      "mean_reward": 0.7611,
+      "status": "completed",
+      "task_scores": {
+        "E2-LS1-T4": 1.0,
+        "E2-LS1-T5": 0.75,
+        "E2-LS1-T6": 0.5333
+      }
+    }
+  },
+  "deployment_scores": {
+    "E2-LS1-T4": 1.0,
+    "E2-LS1-T5": 0.75,
+    "E2-LS1-T6": 0.6167
+  },
+  "family_id": "E2-LS1",
+  "forward_scores": {
+    "failure_aware-1-85dbe54408": 0.8611,
+    "failure_aware-2-11d9e6d1a4": 0.875,
+    "failure_aware-2-11d9e6d1a4-m1": 0.8611,
+    "failure_aware-2-11d9e6d1a4-m2": 0.8611,
+    "minimal-1-b47a5b21cd": 0.8611,
+    "minimal-2-6596152b0f": 0.8611,
+    "transfer_first-1-984a8834da": 0.8194333333333333,
+    "transfer_first-2-61162e12e0": 0.8611,
+    "verification_first-1-ebe65c0cca": 0.8611,
+    "verification_first-1-ebe65c0cca-m1": 0.8611,
+    "verification_first-1-ebe65c0cca-m2": 0.8402666666666666,
+    "verification_first-2-65433a17d4": 0.8611
+  },
+  "go_gate": {
+    "B3_B4_B6_flat": false,
+    "B4_gt_B3": false,
+    "B6_gt_B1": true,
+    "go": false
+  },
+  "graph": {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n3",
+        "n5"
+      ],
+      [
+        "n4",
+        "n5"
+      ]
+    ],
+    "id": "minimal-2-6596152b0f",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Read the batch and identify required fields, optional fields, normalization rules, and output/error schemas.",
+        "id": "n1",
+        "inputs": [
+          "batch file",
+          "local client/API contract"
+        ],
+        "name": "Load and inspect batch contract",
+        "outputs": [
+          "ordered input records",
+          "validation policy"
+        ],
+        "preconditions": [
+          "Input batch and project contract are available"
+        ],
+        "required": true,
+        "validator": "Records are retained in original order and policy requirements are explicit."
+      },
+      {
+        "action": "Convert each raw record into a validation-ready representation while preserving its original index and payload.",
+        "id": "n2",
+        "inputs": [
+          "ordered input records",
+          "validation policy"
+        ],
+        "name": "Project records for validation",
+        "outputs": [
+          "indexed candidate records"
+        ],
+        "preconditions": [
+          "n1 completed"
+        ],
+        "required": true,
+        "validator": "Every candidate has its original zero-based index and source payload."
+      },
+      {
+        "action": "Validate every candidate before dispatch, applying type, presence, range, enum, format, uniqueness, timezone, and cross-field rules as applicable; collect all failures for each record.",
+        "id": "n3",
+        "inputs": [
+          "indexed candidate records",
+          "validation policy"
+        ],
+        "name": "Accumulate local validation errors",
+        "outputs": [
+          "valid candidates",
+          "structured rejected records"
+        ],
+        "preconditions": [
+          "n2 completed"
+        ],
+        "required": true,
+        "validator": "Rejected records contain field/parameter-specific error objects with the required fields, and no candidate is dispatched during validation."
+      },
+      {
+        "action": "Send only candidates with no validation errors to the external operation, preserving batch order and recording the operation trace.",
+        "id": "n4",
+        "inputs": [
+          "valid candidates"
+        ],
+        "name": "Dispatch valid candidates",
+        "outputs": [
+          "successful results",
+          "dispatch trace"
+        ],
+        "preconditions": [
+          "n3 completed"
+        ],
+        "required": true,
+        "validator": "The number of outbound calls equals the number of valid candidates and invalid candidates cause zero calls."
+      },
+      {
+        "action": "Build the required structured return value with successes, failures or rejections, counts, original indices/payloads where required, and trace information.",
+        "id": "n5",
+        "inputs": [
+          "successful results",
+          "structured rejected records",
+          "dispatch trace",
+          "original batch"
+        ],
+        "name": "Assemble batch result",
+        "outputs": [
+          "contract-compliant batch result"
+        ],
+        "preconditions": [
+          "n3 completed",
+          "n4 completed"
+        ],
+        "required": true,
+        "validator": "Summary counts reconcile with total input, successes, and failures; all rejected records retain required structured diagnostics."
+      }
+    ],
+    "or_groups": []
+  },
+  "no_skill_scores": {
+    "E2-LS1-T4": 1.0,
+    "E2-LS1-T5": 0.75,
+    "E2-LS1-T6": 0.5333
+  },
+  "q0": {
+    "failure_aware-1-85dbe54408": 0.1253086573928017,
+    "failure_aware-2-11d9e6d1a4": 0.12627304921105378,
+    "minimal-1-b47a5b21cd": 0.10383259645925669,
+    "minimal-2-6596152b0f": 0.12788268064550107,
+    "transfer_first-1-984a8834da": 0.13449912999891456,
+    "transfer_first-2-61162e12e0": 0.12662429529701788,
+    "verification_first-1-ebe65c0cca": 0.12965681354065478,
+    "verification_first-2-65433a17d4": 0.12592277745479957
+  },
+  "q1": {
+    "failure_aware-1-85dbe54408": 0.12668444035935797,
+    "failure_aware-2-11d9e6d1a4": 0.13629132955916143,
+    "minimal-1-b47a5b21cd": 0.10497259045930543,
+    "minimal-2-6596152b0f": 0.1292867242080949,
+    "transfer_first-1-984a8834da": 0.11636475404011462,
+    "transfer_first-2-61162e12e0": 0.1280145228538877,
+    "verification_first-1-ebe65c0cca": 0.1310803355803814,
+    "verification_first-2-65433a17d4": 0.12730530293969655
+  },
+  "q2": {
+    "failure_aware-1-85dbe54408": 0.12721386164367945,
+    "failure_aware-2-11d9e6d1a4": 0.09580262899542481,
+    "failure_aware-2-11d9e6d1a4-m1": 0.019228937424458383,
+    "failure_aware-2-11d9e6d1a4-m2": 0.019228937424458383,
+    "minimal-1-b47a5b21cd": 0.10541127672181623,
+    "minimal-2-6596152b0f": 0.12982702058057602,
+    "transfer_first-1-984a8834da": 0.11685104878443299,
+    "transfer_first-2-61162e12e0": 0.1285495026265327,
+    "verification_first-1-ebe65c0cca": 0.09213968928780572,
+    "verification_first-1-ebe65c0cca-m1": 0.019744219133101225,
+    "verification_first-1-ebe65c0cca-m2": 0.018165558534627188,
+    "verification_first-2-65433a17d4": 0.12783731884308677
+  },
+  "run_metadata": {
+    "adapter": "host-native",
+    "benchmark_commit": "9e3daa339987c3cfa624121e1be442593a53d43c",
+    "codex_cli": "codex-cli 0.153.4",
+    "codex_model": "gpt-5.6-luna",
+    "component_cache_digests": [
+      "013a70c9b2f8e577ce876a5b334af6c935ed61bb9ada88b4eb59d053ca6d4e76",
+      "01ef6b8e155c0cdc161ac6d01a1214f17240369b1f08c852566127e61b51a7e8",
+      "0209c4c4e61db1d50a5fb077ea4d6ba885823c745922119304001fa8005d3e28",
+      "0277c0929069db4caa2ea7616ef1d76ce051282f9fe4e2efd3be2528076b91d4",
+      "0295d700c399eb541ad95addff3c2f3407f3882c75f7e5c92befbabb159a5833",
+      "02a209323584add9c1f57d387a1966a681952af0c4d3bfe057222e0337703fd8",
+      "030c1f9ea57a907b3a09d39dedc6a6e855a2e8a82c0a3d0743baedd86054c786",
+      "03af02f5492e7697a3ed9faf773ef34c489b28461a5f16a3d2242ed0d35387cc",
+      "03becfc3f3680d20f521eb2d90ed524cd628f0ffb7eb8593e41ae951e37e204c",
+      "0408ee0e9efbed60e94aa5300aa7bb2b9a201ff37f16d66f0c1c4344de3d38ab",
+      "0447a1e996cd91ede2b367445886ce4c81bfd738dfee5ef9de54c0cfe4e318a1",
+      "04602a4f378eedfd82d7c63a00a9ec2d538a4bde83211fad0e12323232426c28",
+      "047e73bc7a8efa70251cc4aeaab10348a808dc374c81b18f057c23d60f070db9",
+      "04c90cf30edc621314f4ad23104645156723984ba851092c8bd708e26e6a01a2",
+      "04e45af4ffd07941ff92aec9438e218397dc9a92dbf0c31dc5acbbcfd468d8b2",
+      "04f908b24b1e9d2474fe28fbc6cccf71c231cd2e548e00fa80319cc19ff5956f",
+      "0546e0d0aa2fd84b75b5cb924c959152a43ddc32f49ca1d58205c7c6733b0fd5",
+      "055432cd40271e8d13cdfaf234ae0c2c80282824164ef9aacb79cea4a656036c",
+      "05c96d13aed4f20aeb0a8d3acd4195dea985f5530348e17b957327adb1bc1e3d",
+      "060f21f2d31b1505ae1ff835681029c15fe901bc0ebc51decaa5425b5c2733ef",
+      "0619356b6f5f911fc61b5143c07f0a35f41d5f5eebef895e9bc11ac47e932ed7",
+      "06d73476ea5b7d8886b72c07301bc8601ff53b7fe06dfe056a1e4f48602f5dc7",
+      "06e33183616eb30ea3484a86114304f5b8be034f73d8911b8b1cc38aeea1a242",
+      "07059b373b971fe3a0d21cd6d950af1eee39f7d2a6faa5663ca8dcbd387269c7",
+      "071d427d96a828f25db7836c189a3c769aea2272b49339b75e8a95a6bbafc21b",
+      "075a1588ddf6a6c464155bd0e9a1059d47d27ab60cdaabd092a4dea38ccdbd9b",
+      "07747479721510472a01d69412dc658935fab9f0cc4107850318dd884cc23c91",
+      "07c29ed5c81494255e26da4c7fb7aaaf659480e3389025aba754cbc6cecc74b0",
+      "09018cf3c0f25ae7c536a0c983e60553ae52cc5fc9b6a6e594a457336a1a80fa",
+      "09342e2e0a3526e31bbcc7b052cf247c89001261f6d351d6a376034de0a699ce",
+      "09a88c05d30fd20a8713b433fe15426da81f1a3eef955515745dc27eb1ca96cc",
+      "09fdcaccb9e76e0eedf1f17110d6eb6fd177ca9027bbddf0b33609aef0b87021",
+      "0a84055c5edb174feb1b014322fb1a6147afe1c95e1cbda863e8af9c74aa96ba",
+      "0b9445eca0f28c38ca2bce8a80d598cf7762540f3d3ebe271ab040d4d59a4868",
+      "0bc4a33c0ba4d3456d4e26f0ef0ee1b4f02c39ae5308f95b9935586ed309fbce",
+      "0c003abdd52fd4f776a1dc6d9ffa5432c1c00fb26b71ac3006078bb050923045",
+      "0c8884ef40ec4864321b02ab0a3faa56e3d3cd457a90cb178b8e14edfb6a3b4b",
+      "0ce7f20253a612a133bfe713262d358eddf160434949105adfb37a4d82961bc8",
+      "0d6b59b431362e0ab402b07c3e88f0ce89700696860e925fa7b6a1ee7ce9b622",
+      "0d7a2af1a3feb555aa904c00fa1e60bf1893a61897068c2d71ebfd89d5a2e89a",
+      "0d88bdb9286432f015d99258986853999217013b921b0c3304e1aea663358c75",
+      "0dbddc2f70b1a81a67c374241d0346eb604e86d29d2405b343833e580f4a6399",
+      "0dce7826055f009dacf391068ea98614e576b61efa28d59a360145e7246ea3c6",
+      "0dcfbbdc2487108ea9abb0e3e24aa55201ea9affd2641ebfc50aea573efcf8dd",
+      "0de0c727e5a1eb382901d49351ea104cc2091c99570f5b2b4a8e4b3556409913",
+      "0df93b3cf22fbfb83e29fd843c9fc3ec9220fe325aadd822223bc244e3e1cbdc",
+      "0dfa3bd585b3db85a29cbca6c727b4d8ff780d329ec2ececc76b9da9f574dd63",
+      "0e5d89448acd168cbb60571ee9a975ee0a17ac32ce773eeeddc6b03f1b7e1221",
+      "0f10e56e6e67d061a002fb2deca4d428bd5e536f9f61b23d05d41a58e075f90b",
+      "0ff896849ef473e41f3f03d6ac038da4f67f803d2211fc34e4d38e65f3dcd3c1",
+      "100b2827f8b684570d270bef55d2b85b45bd6bfc0a4db5157b0251f47a3fa906",
+      "1016df09185f88d98a8a57e4119ccdd2cbece8a19848229e063b5776b8962d9b",
+      "116ef7dc659b3c19e3e108207b6e657e61fe5d1e23d77946bc2544c250e6ebff",
+      "11704d5f8a23b8d3dc0afa57936fd9c24fccbbd10a4c7fb3a240866655dcfcd4",
+      "11e0c9d04e0f1e5c394cb0f92745edd6947af91c1a77d416fc47f67316beb00b",
+      "14035b247dc7c2f1315d5c59dea8e51f65998d53ae02992e79610f9ae1fd1450",
+      "14949e8f90dc6c0d021e511306f80b9cbfd775149f3206311b19c0c8edddeba6",
+      "14c0c11e93262ed655001559480c891240665812806fcf067b57392fa59fb771",
+      "14dcd9f3179e56b6649625c19f1ce942dccf76b262f5113d33935868d8b4929e",
+      "14dd0a2edbdeaa0a5e7327b9cef19fce9fce290fcfef565112ec0b4ee1771f57",
+      "14e38434e2012ef440bd4c07094c74c6b09f2a19566a46604ba2e36236946abc",
+      "14eaee08caa61ab296655e8d9d67927e1b7972844b8abccf575d475eef5d8ebf",
+      "152359aa0798cc65b368d5f90b00d1ac9001a553752c578e2bebac09c1dca2dd",
+      "153dc377e7d4f891930cae345d90a0ce8678cc456cd28407fd9bca66d9ef8c35",
+      "158922a91bb07778bf6cfa0fd63b97d27f8c89d389c2d0dfb4d3537d8c22b518",
+      "158ee8a55ae56194d0a575e78b1d7a22926b85bd54a72e1a248295c6f6f3d3a0",
+      "16679fc47ad6aaa4cf6f190766cedd4ea6b1d3c4dcaca9f9b68f43aba4cc136b",
+      "16a993e1de02bc6aa24cc15590d1a16d7be8b28e98bf02373c3d3d05c301ff7f",
+      "16c811287c01264cfe120db0c57bd5e1bfb2a63f5d60e5b3591192076c1eea4c",
+      "1707101995c58da45c09def88670ac4ff830607231929488c6768f8390414500",
+      "175d9f49b15a8ca6416e5dd5ae264c338970b98c285db2f8de3529002cef4242",
+      "1770c7dc02236e091150dfadf7639de249378b8cc9e9310f3d485838283ca7b5",
+      "17daed2a7f5030e67b5dc4d8225efa2fba4f143997a9c7a51ecbf885fc90afcd",
+      "17fd2cefee56ebf12cbaeff6ee917f54eac8d957386e23e80a9414b361651234",
+      "182e88cc59889032e73edf51a4c247eefdc11c9c8aa00c7fbe557ee259efdf51",
+      "18a87266e81ca502e80f1413ddc527a55e47e0145315aff5317a7bbcad52b2d5",
+      "18ad399e49c3fdc5c82b1a72184e0c6886bfb08eca01966f60c4fd40a022b259",
+      "18d32dfb649d194864bab724bcc232b40e9201fc55befb4980f4aadf3a26a473",
+      "18ef0fce9ca9a47ca267f8cee373772b9f9183797c767d2614b01e7b264f765f",
+      "192e1f911c53850962e276eef62924b5d0f291b64731f5605946155d5b4515bf",
+      "195ec4250bad6ffa95d46481ca3350fc65ffb3a0d9a5fbfa4a7815a3425c52d6",
+      "19b72cfec3e62fea6c329bc6fb7956c2874588839fca85e3ab016877784a8dbf",
+      "19e09dd754345d20cb4ea0fe32ab1074d4c416d9d926d498323f19ad7fbdf923",
+      "1a184eaa455f37292877ddd2b7112d029c4ecca6b367d98e61c9a74a4b4b9ec7",
+      "1a5f87a882f2546d29db09c99c1fca5c6cafed1bdaaed0e1cc0df90a9e9749ba",
+      "1a7a3c108423c5965d338f9a60c9939c0c057413c073cee80b8fe8a6315cd06d",
+      "1b270be2a3c672ac8975054f836bbd519bf52a9adfaaf8f6429d8d47fdc299b3",
+      "1b52ab309c8271456c481a5837136e7acb87ce487e18d626fd3c8381ba0c3895",
+      "1b8fd9cb3a9f99e6e76045f480889b7fdea6d9510ff2ede97e293205cf12c0c8",
+      "1b90b0199554501ba5c24475178868a0ca862072fd3611ea9066941960b1572d",
+      "1bf832a21bc0314d2d404be4b58a0f0ce5f0b5bf2327eaf02489e64be6081031",
+      "1c202375641b453f46b21587e6c99bf5436bf0817da07a618552ebf2bd92451d",
+      "1c49891cc97ecea07adf2f00c9f5630cd869ce555c54a111ddc55489b5398dcc",
+      "1c52c113ebb4c2dd4cd6e292c7bfa802e4a455eaad04520aeef0006e8bc6a391",
+      "1c6acd1deef01c4bcd8713059659b6a00a319866542b5651c4c334081afd2dfb",
+      "1d6db130dec87a5006ca58602182cef317cf1ceb4696cfd949c3ebfe7fd7e802",
+      "1e02178616f6c2832bc9383ad93dbe8c08829924db1f299fd3c745db45f79b8d",
+      "1ecefc3b3e2561f48a54e48884fe6300318a7fde219d661876ce3cf66317cd04",
+      "1eed868053f10fc59a66070e02b1bec40b7b9d3f84abb0590db458f366a48c1d",
+      "1f21624ddd66082e0eb6eb75b59f05724cc6ffe0586ff693e45ffbdfb3d10a30",
+      "1f3759a8f38d1ee8f9284e3c48a4c703eb410a4969af87cd32a4cd624207e5b7",
+      "1fbaf037d089a7c64f5b0ee2536de5a39f83ce788b3a6723b5993e57a58fecda",
+      "1fc5a61adf10d4434b3a4f3a7a954e803c6df7948ee827b06289ff56cef44ed9",
+      "20224064a953fcf6c1bb73b6bcb86c8aa23be0a6043c79d6500391ef66fd9bd0",
+      "2035646b3cf3498ca6e043c3d42f22e2de62d01759268b9ad42c903970001703",
+      "20c99ed503eb425dc386104933c32794102e4f1af86f6aa09e03dcbcd979589f",
+      "20fb213c9f9434ec3bd58a49b89e3cea1205a5c0d0e6aeb4b96465cc6ebbf9cb",
+      "210190ac656b7027fc266ec6a1317c21cba76f1a447c7d9f57c142cbdfcf322a",
+      "21351719bf5a093fc1cffaa8fb5b924e9c3cbd4d48116c0dc546980d8230b832",
+      "2140ff40fcf2fd2b4ae9765057b05ca5ea60e8554aa901bba7e78f1c9130ca3f",
+      "215f7aeb957da8401c45632b34d00b2ce135d506f23959e7d897a50b04bdc8c1",
+      "21efdf4d48ae561e4cfa84827c031266240814a9c7e7ecaee254f4d1ff4f74a3",
+      "22051de583281add2175a90def13b0601ac38cde4cebf0be47955f95b532d640",
+      "23566e66826dbedf89e9707d0e841245e56e17aed875db6ea3eff7181efb763f",
+      "2399a9fedb0f40d306b8f2a160a335089d635542cbd0d4e70acb4f8ba2f7de98",
+      "23c7e43e80b7e3b3e0625579562c841f523f0c961ff0535f0b96dcddd6b650bf",
+      "2427e80210f2d1cd98bcaf7435a8d505856945b52b247294a8f7c11042018f6e",
+      "2428943291fa2dc4c92ac2aad7d2737d341642c7c3ce91ef2489c3b76ce7e993",
+      "246df979d36bdb523059b59b89b058e41e6a27ca4ae17bbc234f7cf95dfff010",
+      "24d0720d21c344422d57b574d99ee95ea09e14ef398bd8e3825931a361698669",
+      "25b328acbe11146631cee43a85a655c443bf54137a693e684a07410ab8da6321",
+      "2636741ddc563f005593cfb1d3178e3c9af250641459114321876b76f5496a72",
+      "270093e78cdc6b6f41f03a8e14f4b1cba40aa4d5dc30530a6fd932aa2a3ca98a",
+      "27637b98ba602b3cd2c9fd86004f511b3d121f8d248fabda3dec0f175e445d20",
+      "2767f196c93340809b8d0c2b001904984e64a3e4b3575c25e75b8cf28ac72a83",
+      "27ad57a9efcca43b9f3c64ceeb630d8664da416c9c28e21bfcc4436325a47bce",
+      "27cfbdb0d9c1332087944d88d13d705dbc98f09d665027d7befd9f0f1d3c703e",
+      "27d74e2d236e7e2bc2a0f5420857ae0e4aaec699b39f8dbd601e600d918eeaf8",
+      "280dc734123eed4adb7867c5e82c6f532fec6823031548c7150629d4ab7a8fd7",
+      "28439f907a6963627b8548b94af1d4a575a416e542132f7e276e53548b1a6f99",
+      "285e9d7b820929cd7d467a61060026be9afbf1b50d9a3c9f58eac4bc30e37dfc",
+      "28d1ef6f5bb8b84aa5c540d04704ff08b82c31ff02f981bf817178fc7f6683e2",
+      "299ecd4563ac9776d9d6e283a9106d40cf4cd55e7e8a067201b87666a2333e92",
+      "2a152d2d9707452d8f713b28e885a781930b9fcbb48ad26ff290ada65b181892",
+      "2adbbe740906418a71b3f50a90a0b5e851b1a995911b081c3709647b80960706",
+      "2b0d7dde2854759542770597ee602d0f206bd7858d44934451715454aae1e856",
+      "2b979150c4edf7b7b4ebadfc784ea7279377b3b1139b4ed9fc59485726a7984a",
+      "2bbfde8545b4df6dbe8e7b7fb0022232a28a41ec9a7b4f6db9c5604047a625e4",
+      "2bd5e582f903ed646a93746b15fd501217310ebbd9d4500a7165bffe58a6afe4",
+      "2c977e7594f7f33cf3b8790e3023c1778f34362aeccb2711134fe6bd1b6f3422",
+      "2d6f18559264b359d67f319e91a4e41b347932c3095cde06853db21157113107",
+      "2daf3c83cf919d6b60d7da98ebd6bbb9982131ef9e090ade99efa13865469968",
+      "2e2d83fbd855266b12ffae9c005949166fe77963e203f4955519338c86b96ac1",
+      "2ecdb487e3153d3ff2e97939d1ec592c46afb735e769d5d1d71db4739f1e4e80",
+      "31023020044560fb82e1e4e62ced60d2fe19fb0253d96bd3f11a31ba249763a6",
+      "3156e868c2644d938bda3ca42f384ab1b15fa64d291c503ff24945815e87e42e",
+      "31e606ff127d8a965b29a909d4e0739b37c02aa7d678b6813f5ad0d382502d16",
+      "31f062f4e9b5d7615412388f05f50d8194f104737d1efab48fc9b5039f83d285",
+      "31ff00eea51c9194b734bf5e0f2df820623c5334c9a7f22e611614a16b536518",
+      "33171ca497c5fa46b8ebfb78a0a630220915e79e7aab5077370d4d1a0f151e0a",
+      "333c58cf42c54b2a94d06970745f7c17491d09d6815fa7c9c8d0587f73f4b7bb",
+      "33ea5f7340e8b853a482800a06b826ee571b3e85e85984a44268a09f69c58d5c",
+      "34fd680bc9d9df453f3d0cb534d7956df7176f9463de45176f8bb45138ee9fe9",
+      "3505c3b7f1c1ebd489c34e0afbe0e3cd0c262a4b75117acba9b975c25da58efe",
+      "3512041840a0c74234ba999f421c5b8aee1ca8867ddb940d47ff2bcbe20508ef",
+      "3514856051c71337a6c04af2b56aaf1a11dea4db358ae0f3c67c597d1b5071d4",
+      "365090dd650442db3766d2314fd641c88143a44b08384f047f33dcd171d46c34",
+      "36abee25ed257f3fb7ae77a8443f5086c20e310a222692a3cf742a7256b2ff0e",
+      "370aabf2cfa1715ac97773dc23715be447a417f8e9c518c110851e7059e5bc5f",
+      "376dc98b322ac802e4157886669efa7f62a14f160004182cdde6f324367060c8",
+      "379ff1a2bae2f943c077fbee260d72a3246515bd8d22549f5a877b3880cc555d",
+      "37dc839fa0ce0dd6fccac4b5827a1ba9d9285196f9de0c26a512a9ff8a517c75",
+      "386fb6cc987230af6476747abc5a0ae30f1c2f8951443504fe28e64ee9444e7a",
+      "38af212b9a9a05e26e4574237f031d3af97f56f01e426a1c4bdb6ea5f5845c15",
+      "38e015fa267355708f31b68f869a1db4d3681c16ce08084fa92ed75b2f286c6e",
+      "38fa99788176231fb0def0fce43b232721d4b8c73fe1a18acc9558b8675c7ef2",
+      "3908fd973b2bcc24cb759cb90342a21767c9c97535d1f9e75d81f96b21be7dc5",
+      "39742a050baebb7fdd5eaf11828514550eaa3c2e211aa59aa8477d5394cdf6cd",
+      "3a0edbfc960b7f92a8123a35975118310ec211bfc227fcf430b0ffc298ea67a0",
+      "3a2b9a41c1e0c5ff74b1a336c5d234f55bbc447d0ffd36ba882af527876d3c02",
+      "3b37bed671ae5047a6730ab84e7a237539f88491c9cdd4ead161b5b5b787ab66",
+      "3b5cb41d233db02756cf902eaa312ea41a81cc4f80f254055fc4f9a1c6714753",
+      "3b89d1bb1b45b13a7e6843287b2a3a58895ffe33817ba06912280de41d3f7edf",
+      "3b8dad6af31c035932ce507d952fc29231674d8abacaa5cd63389df76c80b2fd",
+      "3bd4cc199636d2b099268f497a34a7c59d4db7a40b31e181a7834ca0a5d1edc6",
+      "3bdcee80288352e93f1122df8049e967a28a6fc12495444517e5acd3ed3df19f",
+      "3c0844c841def5bf784efcfb2323c7d19a8094d81c825e287b80171ba8514612",
+      "3c185e747537b11429378298472aa2588f70ecf4dddf3ed92c7c4b86173d5095",
+      "3d139fe28a929dea2f0e30db500a5de2667191a414765e8130c7602e0c6b9236",
+      "3d5cb219ce88c85894cfc1b4dfa82546d004a71f6710a9b6f754897e1eec927a",
+      "3d810b18d76fdea237957394297eacb0e6f65b43d2f071f52415216448dd05ea",
+      "3d8256c16eed598fd24586ea8a0dd9b0c19c18ea8d595036476fc71082e74b93",
+      "3db35838af43423e097b739bb222d099541bfb53622400c52d53391470f60d1f",
+      "3e0f3fd710be0967bdd6c25030560ab9a0dec16954796019299393213d3bbbcf",
+      "3f01bacecaa793859b60728623b5274ade51749ad6cc3b862f5201d18c1e957e",
+      "4013d6817238bac128d1bd43631e206ef4ea13c11ddc3e93918bf89c153497f1",
+      "4016c6264131dcd01fe90dd185e686e9e352c0e174b87f5926792ff3afa0aa77",
+      "4070532d9c0719ae424208c097b7a402af404b7985a08e8fac8e7eae2ad2a23c",
+      "408796b438e9ea2f035f463aff88e0a48a974e29eac76178edca678df39cf123",
+      "410e29e374c6837dbcb83866d263c27215bd7b9ac3ac9239d58eb0998b954715",
+      "41d2dd854ce4289a1a6d938918ca8c1bcee6d27245673cf4497106b6bcabb056",
+      "42213dbee48bcf1642218c00e1c774549e836c76dd2f4405b045122943df548f",
+      "42680abfbbda18d3a9b4ea849d87f3174850972a3627844b9f0b55e671ad60a8",
+      "42d4cbab215337b08f5b16d0019c7ec371a7a1ec6a7201aa4f71d1ea8adef8bf",
+      "437a935e0c101d68f3372927fa592662d43d16984d5e1d564df5ff3c0e33efdc",
+      "44b15a0fbbc6ca8eb3c943ef8238099f316c88e0e95d13ed4d270d9ea1be9570",
+      "44ef5b28a34db27b48dc7226e9a268b2f94a8bba5d8cd6743c3d682e34526a85",
+      "451d274a5379f76411b9dc79cc02f3741edda066db3b066cf1a5d39a647887ed",
+      "4560d43af04d32318bb32678eed0a2d8e31de4f8840568d05a5af4de14b72aef",
+      "45a612a4c2b71f6a193eaedce6506061de24b8e79118b8008e0a62949c6de797",
+      "45fdbe925808aa729a18bc90ff7a0e44985bc0426ed6f92068cf9f7863058da0",
+      "4651b0a31ce6996e742623e885a7a218920501b50005e3c975c4b956ded38231",
+      "46862512591e62b0a743699dff83ca26ed3771a5dc8e3f94824d5b7ea3432a0c",
+      "474652ccd757e9a540bf3e5aa4ad3d3c7721ac2f06d733ef1e0d50983f3df3eb",
+      "475bdb4790eaf9947446eb99cb5f63b6241a2837b22b2bc93bf3b488bf88f398",
+      "47d7209662b9e5794055c11396b1585dcc5ca9738300d7801ff2b933e10b5b5c",
+      "487f77e88b244a8108400c81be87f58c7add8c28fa9a6324b4020bec9f2d2930",
+      "48b7ddac36fc1670be578703e94296bffaef5c872d733dcd5e3024198832db1f",
+      "48c0a250da6aa927730ddffc834d9918f2daf47c90318ea0fd681f152bdda1e3",
+      "491a28612f7940b676b1bed5b162b906c29a337a4c8c70603aca99a987f429a4",
+      "494bc93d68b8fcde6ccf7743c5697c8ef47ca3a78c055a97e2898f211228276e",
+      "49591a8e691d2beea2148d4bca6567981585dc23f3e3ec5d93577aec5d859829",
+      "496285bb67d8749918af9299a8a9940501318a4bd3b1b138f8435d82fda20a10",
+      "498a46373630b0d1243588bb79b7051f764448de03eb3c5b44f8b03030973e84",
+      "49e707d6c5253e70f4c3f72845213c570a73c8082c94d8d3fe7554d42afe38b2",
+      "49f925a828e73ddf0f6b42fefe1860869e87ac58661e283b321d5576e6ab2f37",
+      "4a2a1340385ef7501a98e636575786007a8f9775d04b9099bf34bc4d8f2d31b2",
+      "4a2d29c7035d6ade056d4cfc858fabac8d227479cbaba64b96a02692157acb16",
+      "4a2e3e8f1546727250aaa8017284afb39956e3db03fc39174c31a19766f05600",
+      "4a4e49e0c06839f606a0260e5dde1865d7ced70734ab344a4e041dec9025cb58",
+      "4a78719161183f9e69c1c4407ea541f34a8458d8ce5f251a0d59f2f944d40eec",
+      "4a7d27cebad7ac981619aab98d7e8e11440a644547a557d24656fd4e6808bd7e",
+      "4ac650655d4b6bb8bbce9368d0a28f55749d371ddb82a5227e3cae5092c869ef",
+      "4ac85f102622282e8b500856fd7cba238d3b1b0f306673ae89c9209728de2825",
+      "4b4eb55ac4038bc1e6e7ea02e063a395530917e49fb688ef63d3377386248931",
+      "4b6ff859acdf3b20b8c46167ac5090de1eff32f2607e1d92980d1a8dc21abd89",
+      "4c1a7cf48e4fd4cddd2f98db785c95e80b4e58b3d70b14b5bf541971da026791",
+      "4c4b2df9efa88264ea91d9968db00e0e902f29e2c1490d15cdb37d0c145c784f",
+      "4cc85238cb8baa2cc1473d4b05086d9ead6dd152c535f7ff319cfd0297d51802",
+      "4d104d6d9b81291ff7151bdfbab998db4894fca21808942ba7e5f0c0f62a8fe1",
+      "4d1bfb828578af7953df4f6ad2bf24455d0b27983cd4b9692e45778814301e6f",
+      "4d9938273ed9697f92309ff9057ab1fe0487d6acbcbc4e549ab8712a3f8cb166",
+      "4e2c7ee6649c43418bfd70c9f8eae6ab1a7ceb24f417ba4e0de708368e985cbe",
+      "4e592b5b7454b9c2ee3ab69b1398006150ecf00a6906ab2f5a787af5ad86490f",
+      "4e8dc323b67521edddda189ff13fb92d6530ed51976c520aa3dd5238e58ada7b",
+      "4f538937b6705ccb5a62192805e5bc08daecc4831545933e140379fb2c1956f6",
+      "4feccd4e737c4074b8fe79042ce95839919418b8d28c344de9918360e08543a2",
+      "4ff95b4c059f3bfba8cb40a1383b28c57d43831f251358e38da20bfbed4d8ac0",
+      "507c146e28fa6e4244a0ac7733ef49d533cde7b096d7ce659682f97b458910c7",
+      "5098ad0f9654372e30f485721f1c74be28d1ebe239f4029dcd1454df4c8a88cc",
+      "517446b025eef3c4e5842a2cab470b4a497f92f417ac3e8c232c2ee512f02e9f",
+      "51c94d9ea79a6186720db1e9ad12af0a1c6e1fc7b2aee0cf4241c4cec66bf932",
+      "51e666f5904f1b19d273273bef65c946e30ddea06d9bdce05831d7ab182bb6f8",
+      "51fed8d30d803136fad0b0d0293aab661b75444af83506b1663462a82e7f3960",
+      "524c9c2361b6addf101dea2adf6ca6bd1dbb967d8198666a13043565e53021d0",
+      "5252f47a43adb5f76790de6890bac72257361275fc5b1dbde53e4aa46eca4e8b",
+      "5316648a51eab67d7db531e942991c3e14f8397ca0da54ef33240e4243cab1fd",
+      "532557329887f1c5d7d7ecd317d0f545c745d4bd17c5e188ca6e81059c097f0b",
+      "533f68f913f588b524448ca7ce2a705b5cf07c46c2f05c3c71bd424875876bf2",
+      "5433d18b7371111440f65b149ce255105da0834bec5c6f6b7dd10dc5267a9434",
+      "54ea96db758613c066d54db0b6eef6b8569f5d7ddc0354440a936b7cfeaca60b",
+      "55acd02c70681e9bc01b48905a77c7632c08b2ace7943c27377bafa5afcf6279",
+      "55d31970ac81557ff221faf8e2aa03a3794bbe333e3849e908c19acdbc4fd723",
+      "5689d9f3316eb3896c63532002ccbc90d7c963e8e29f19a9282ba1e97166a632",
+      "569d68b24cc0496687477bcca7682954f3bcf0cc87e930d1084cf02611d10ab4",
+      "56d067705d7b24a99444644c320fc597a4bad2e16e9b9df3fac81e239cb41d76",
+      "56dabf865022f3f07c35bb194d047f2f276a00f27da1ff627069f20dec88280e",
+      "573ea33e30198e4d33e94987e07c722ed51df7b1de51d4c9e42ed562ceba5254",
+      "57ca8e54ea5c21de4a4e012df2bcf49f8ff28c10c3f2284de1a681f3b3e7ba4f",
+      "58b7f83873db0754f2f419646a074f669380fd6a2d292cf2393a5cf1ca088e21",
+      "58da26367cc4c3f3f47666f60ef93840123beca505c9bda73f8030bc46d66b24",
+      "594d4558290bb5967d50ae1b8a015a6b28db65591f31ff190fc10031db7f9b5d",
+      "595ade639196867296dc2bcb43251b2458839f2743d5f74eed36cca5e87c80f0",
+      "59682787765a5e6467d993e623a50719cc8f277885d66eb70d280fbd07b59d01",
+      "59cb11a1e9631b0318593985e1d427d54f741e30eb8773c46e562c0e3914646c",
+      "59db9236e1c3fa21c4d387e5962dd978d92e3a196f4df00c2eccb6f8900a16d5",
+      "5b00514fabdc5f28c3a8896baf4899cc438915443590a7c3d035611e66c6e437",
+      "5b770622599d27c07d0f0ffa4ba00aac4edaacffe40bec39c07d971952abd0e9",
+      "5ba4c694d4a3c7b05431e933828e769525579b7867fcc4bac42000962a273eb1",
+      "5bbd954d91fc83e0def704a5579f654657b73dbfc8858e62c5c1a9323f5c6e36",
+      "5c052e6fb8ffc67cdd837124a27eaa35612a34d1e5f497da1952b4a232e32b54",
+      "5c5a9d2e7193d91931e4818839f0542aa7b16a4041a10a36531dce55fc3c024f",
+      "5cfacd39b8c87cadd9755a04d4af67c40d49603dafe1663bd0954b9ce4039fc3",
+      "5cfec866f4f4a72dd965ae9e2e635596497d461ef8c1849005b7114395c88670",
+      "5d3b561b953dadd3de9add956d7fe9f1e906637eb747e0d398de182cd4e9d81e",
+      "5d6729ebff8c562409b13520bb24765345b2032288fac6f4998517f6f68dec8b",
+      "5e673a86a352470ff6e4f917c0f1a0bbfee577c8eeacb1ccc4c0c026dc607b12",
+      "5f169058e73f623b68aa9e7fbd515d68478df174963df08cae5480e739fa8625",
+      "5fb69f374b71e3f9040e665108ba1fddafa51121e680d64d52ef9a67b5efceb6",
+      "5fc4666e8cb1996cafc891c43f6abe05ab515059a6d6e25d4b5aaac2fc58c4bb",
+      "5fd7a96376b9d5879a676f87face0ce68acac92f7cf1614d892768aa3e6565c4",
+      "5fe48d46bebdbc1d1fb509e3b447d225779ae67c1fb31d4521214cd099cfc492",
+      "6006b6980bd9edff309ed3934e1bea94ddef436e7f57742b37bed4fe2ef765f2",
+      "60abbf1f3b0a1cc728e9035b9afde38aa4f44a3d9f5fe6751e04d3af44705b8a",
+      "60cb8b52bf45d36d83881576625a26c343dc3f5b2465cf67e1b74d70bfe5b787",
+      "60d82167a79f33106ceda31b8c3493c9fbf72b8ba999587ffb05df62728043f8",
+      "60fd9e52dbfc1aa6b6e21bce25655231c663b18ff2bb01587b1404ac4522852e",
+      "611174c2e81bc3c48713b45927efd123a7d4c58bd2054993eb7e1deb2e077e23",
+      "6125181dc3fc0b069603c52b4c9c4af7bf3667e27fc9780264ed6338f39ba8e5",
+      "617f9b6f560c1b251c66078e7354cee0307988d64cb2fe3a845ab5e29d0db42b",
+      "62070d36ec39fd11098a2e6e880263fec54ba52ecf31df7762c89799362bafc4",
+      "628074696172c9b1dd61d5b496fd0555ebb529fdaeac0a6a6f4f0de9ea52c3b8",
+      "629ec8fa5949baecb007dc54b59dff0e39ca1d6961fa578f942a3a2c132c1f8c",
+      "62a62b41dd6a43d7988de6865ea975a21f440452f0e98a5cecde2bde9785b635",
+      "6371d1c52426cdc651d5c5b866a494464ef76a0910ed0de6bcbd16f51b38972a",
+      "637b533ae704ea45eed220752c80c18c294af9528d784fd636691148c3113505",
+      "637d8f9b4ab066fcf24014c304d4512c80b47b6a0c815057e24593a984726447",
+      "63e64eb908db4618084d56ced21142a02f51b9cebcd72f03001d3746c8487bcc",
+      "6424b8c7c277484f06918e076dea80c6d13ede1b30ad3516ba665183c799a63b",
+      "647456d9fed17dc8076f8312e44ad599bc43e16115375868b65131a1d9433bc1",
+      "64baf9515c6c58b9797e3680a1bf5e2917f59a4c66f50457c1c00366ff17bd4e",
+      "64df7398fb7cd57c41ce9472a7d264c868d59bdbde835590429c0c7221bd70c5",
+      "65695b9ede014c3e302568455c00ce3da9d1f87e188c915043bd8e15497217e3",
+      "65a4c1657bdc3078fba7d95cff34326b2c03ed87b91fedacf9cb14535a1ba295",
+      "65cedb752a78ce71882a1385bf57391e0fea8a89fae37df896718a706e071c01",
+      "66a821e6286d1392a191ecf7aa855edb5f2aadf3cb031213418500d7ef63b7ab",
+      "66b8046a15081a978f4f5bd095b96fcc171fe246f484cda39b674b6783ea1f37",
+      "6789f358572e5fa89f9af871d582bf112338fb113f4dbf615ca6b345b909639d",
+      "67bd69dbab4525b00a59ee8e4de1382859e4777aee5e6590fc546b6688b00406",
+      "6816433e1b5eb090654dfef4302cd1b7e0181e7c36f0072489eb3cd0128fe3ec",
+      "681c82775298647cf8d697306967388f6d1c5823cd4e5b4f94c01c489727d02a",
+      "681d8026c239dbaf15372cc234b3cebd5494462d8f15eb1bb5c9f39e6f164b8d",
+      "6877383b9138731b5aa757b979d4948a3c64af4df210a91233b88e9d51c97202",
+      "68a5ca866a16ad37f419646bf73276f8e6f91e746264cf82d28e5a0dc9338b20",
+      "68e79cba63410a4280b21ee3991495f476bd208c1da657cd54f9ac32d2704052",
+      "69241d2021201d370816304d052d5cc5009280f740e0369e3e0f212c573355be",
+      "6964d1de7574d341dc5ed6ba4954d33d4b7661a528929291a34afb811bba2a4f",
+      "69a514d76d7646868bd41281b24b9543780aacfd5cd41faab6f5507119b9370b",
+      "69c1cfc033d89cad8c249be2a723685c7613ce9474c21594170a28c75dae1859",
+      "69c32f6c87bec167d5f2f1572367298ec7faaa85b31fba744b08c02c0cea9cee",
+      "69dd35a90db3b8d215cbe544375a3bc133c50eef662032874661c1010ae92dd6",
+      "6a0fa48fe739945a66ddc8fc6b10a60577295f25221047280a8a078f81e5cddf",
+      "6a173b715688e704b0f6aa7918139f2888ce5542d19022ab32166485d764667c",
+      "6b3d874874ddbace5d115cdf9cffe9d8bd8b5ec8d7c54e27ea1499e6df392240",
+      "6b407ba3190926497bc2b431f3b03f6c284b04d2b1bfca6b1a76dd19eec42656",
+      "6b6ad1a618f57035e11794bfa1b637a3cd5a52ec887722796077671a50b99045",
+      "6b756315495c670fd673abfd85f4114e77e757c833854abb6a7eef513926169c",
+      "6cbc36181e908cf19e32a9b8535a92b1fd67e26c7043f76bb3b4c982632d93c4",
+      "6ced991d0d4668565db59f28044142ba86a39862d3431b264c6f289573e200d7",
+      "6d6c71a544bfce11f9443b44c173ae9b68b099d5a925007fbf8177ed76d7c528",
+      "6e30ca026b13afc575408870658a72f91cd88a393ee3354e2730940cdc0ee152",
+      "6e8cbf88d042918dbb3747406ab92963e3b28a85ceddfdff21bc867fb690edcb",
+      "6e95b685e769e77011615bc8fc92043733d804ecce38ca3d6bb87e608f6fd573",
+      "6ecf4191a36291c44250a27423d42da4c4173b1837839ccaa225887a6cfe939f",
+      "6f1371a0f86b233f5acedb0ff096d179afc3d7201dc303a13d6392726e93c202",
+      "6f26990b7b6a3dbedbe2c7a49a85294b4531da53f92fa9e0694c51d620776f51",
+      "6f4a5be8d585f34845107f86bef0e5f37dc154aa1244ba0f34a2c57715cb3959",
+      "6f4aedbcbde8debed2c400830f6b310767a86bd6b69181ab86597f442ab2c464",
+      "7016fb152708b053db398f8cf64503a9b49e21bf83bb6dddac94c081b4e68f14",
+      "702ff2782f0f7252bbd67edf3030d8c58c7eb8ee6b067407a616115c4d40d3b3",
+      "7038ec4187642b51633ddc4dec360a83df5f553d041c8a0836c436d9c97ae3b8",
+      "70b397cd7c577485cbfd817f98892df1cc03e3969d14238e9f4bc1b27c3afe53",
+      "70c7938985c8deac6e5eccf27a4c8c86d39414f8e401b608db2bd46c8324883f",
+      "714acd2080b592f02130b5a75f061786a445191430b8182feb7fca8ff5eb8a52",
+      "7175763ae1898d09610f29329137231316cd3862e21bf7bdb4e9adcaaa6b32b5",
+      "72065c656e88d90525bd2ad194dd0c4d8c04fcc9810fc911d5a9089462281612",
+      "720e9e4b5112b5056be6013ecb64bc61c7b9f5afea917f85f4a6fb24bd0f273d",
+      "726e7f8ec5d3cf8c104b66a148aa63645d44ebe1241a00e6d49dcd2ba5dd8da8",
+      "735bc95a121afae5c5cc67badc63728a19a8fba8e28508473c64ed8c10293827",
+      "7371f9abc564ae60fe7686fadb2ca2f364c4caeffadf4186edb6c380f5de2fe2",
+      "738f6b884aaa886b8e0f3dbe79837cf9ef74374a9487c473cd31151110730f7f",
+      "73c565d4048b2aa33f3acba08e0cbbadafb5ac15e2d8dddda4916e6f39648dca",
+      "745de12e475034bbafb96d4c62766b172e05d8d9999b6e559496063ddd82fa14",
+      "746964d7d0bdc5bc03db34e9b77aab474cfec6172bd9bc34e31b6510af669d31",
+      "7477c47be76b27877f1f5e88fa69540934b85e1f6136450dc1dba3455ed7c644",
+      "753ceac4788382ae8d7aa7e42f7dde101f4296b4c83d03d0ed5198c2f9fea0d9",
+      "7585dfbe0b759836ba654ff74b892f9c6794bd7ab6647882065dc46ada5091f2",
+      "759d2a0c9fbc9ddec5c940927ba6abb6c64bd045ff9177f50626f2b68f800bea",
+      "75c11d37ce00a7d1bcb3d05361cb71414ca8db12b40a9bb536c88243d6d257e7",
+      "76fb97c6afa9e21c820d6d514d00efd8dac435669f384f8479c5346d2f00aa36",
+      "77529de8bb64b1bb09ea77f8ef46041db4276ff874eaca5bfeca4c932e942ae3",
+      "77e4ff50c93713c1508de8cb89630d071d2c364e83d5b6575aa3b2de61a8ef9f",
+      "781ae2231813c93976413535bd271b423f27e4a544d3cc2f3d78adfa72190514",
+      "78741d63fcfb63e34f32742abf45a20e8ee4226fefa54f526d803cd59d7c2838",
+      "7897b8a4acf6532ae4d9e1c287ecfe593dccd13040158752d64ec8639a2d5358",
+      "7967d23052a76ea60d0e7f68afab49d2263907fd740cd8b396282cf93d68df87",
+      "79c94a44ada0fcbdd555292090d0ff3b43bd2046eb38f485dd44da00f36d1ae8",
+      "79cffb0f90c34d18e5b227d823b6a4c99093fe004bde80223f0d6907c60f8b8b",
+      "7aa7b2569081ad269ada96bf5ab38df3e527816a5bd5db8e60e7bcd320100769",
+      "7acd35978a983d834855e08421b929041c991fca70935ffdb1bcad05bfb93983",
+      "7b9d7fa26886a3ddddba97a4ea8b9cd3c86095859d527f88a3c749781ed2a0d2",
+      "7bc2a96ca0fbde388bb2a73beb329b8fb73229716b2618a5e10fd87432214b85",
+      "7c68269a6902d4654b9cea7c03aa93e80a68aadd2e666d4b3f343f70634506f5",
+      "7d7724f6656601772cf3e52d1d24b5387140876046af39c07bea78e6768448d4",
+      "7dd808e4e52ff3dc79c58a4701c9ec3b84136d21321358ffb97ab67ef34e7d6d",
+      "7dea840a1a914212b22b3a88c057fa88ada0d5c24463d595a879951dd6344bf2",
+      "7e657d60c77a5daf80e9685c5a5b744312e249af031ceefbd52f24c2be69af0a",
+      "7e87ec5b049de6580fc33e4fe64b5ccfc90fc78003c473e9ccdcdb3b4635d5a9",
+      "7f51f5773672741d0a8f4d2e86e22140a7ff1d184bee4df3fdb136c3f7da1da1",
+      "7f79e8763011d2a4fc7b8a9e4690c74c61c56ae811dd92ea35eedf499394d02a",
+      "7ffc89353bb4a4c5b93ff3a98743889cdc80a5cf9727070aa3615eb6e417d46e",
+      "80394d458676af3add2b6874674aee075ef1b8b96f95804d27d3eaf0c270aa58",
+      "8074310959997948e44ecd7de1957cce3415b54ca061c4d204d1b9a7ff1de8b8",
+      "8107c4151716b781b8fd7289a5e6a9b06fcc95c1eec55a01d21af8ab8039c920",
+      "814064336437049a5b7ebb46bf7e803e887d36c01cedd14373ad476d2f2d3edb",
+      "81b988331936c24e97e1eecf8d9d7bafd903de71de69d097f8295abd3e97630c",
+      "81d3318538c057d4629c2814aeb4fb809f965580523e7ebf9ccbb7e0e107b54a",
+      "81e28e93732a55b6c186f1f7f46e6b61f77193905447e9df3c732480343472d2",
+      "820610438b257d12bec64871b30663f104bd7b322177b49f924cac6ae7f16758",
+      "821eddabec8e8cb88808f534dd473384a49977a0d98ad671dc33c2d3f7a11124",
+      "82711f4a7d943010ea5e6fe83f447322d9d781c7996410552496fcc4f14330da",
+      "82a67e24f7b8890cdb95b3be7edc6f624b3dda95b6f258b3ce49c80ad362be58",
+      "83223e18af623975d619d7611b063b3d6589fd574408996a09f4ae30487ea1d8",
+      "836555cef68c7f7620fc63e01c358b8ec5a32e1d890f6fa9b9c79f4c6b132e9f",
+      "8454815be2086b3747db023c5145b06dd489cd335de26c55e3a3690a4cbaf59f",
+      "848b4d592c5f4ba5492028c6356f1fb5064e314470ef85b4684b625a191d6d1c",
+      "851900ac860dc350cf19276fc13c53565e3c9340e3153f7be9f70f979a51ec31",
+      "8556e3a224e7ce2d8a74eff24004ebee94aaaf32956dcf3ee27c16c1b9e1b77c",
+      "85fca2c4325fa654c6c14c91086cfee475d0928300d4a24bc74a1d1d10f6d01f",
+      "8648eca2909aa4a316c4d6d4ce8657e9fac4057fb8547c19a097b78410796027",
+      "871c882c4b1dbca3ffb138b40329c88b812ff0632cf93ffcd7fe5f47f6190ee8",
+      "876a44cb8ac48af93a54869aa0dd96d030822693fc53d1b8ff3731bc2c665878",
+      "87b3c334fb24b49efe037b662cdefa9aadec12b1e7287f9712ba3ad2f85c9af1",
+      "887903c4fed35d95f9b137986aa839c5f59cb51376a2a6f3b1843e0baa014c92",
+      "887e865ab1b86edb3745ea316ab30aecc24547fb1843daeb14378d2e1ffe265d",
+      "88836976a6dd22eab5c03e4f1cd4ae375c514030a47f6b4fbecfc64c7cb619f9",
+      "88d29a8da3fbf1ef9d892781873df73524d5c38adfb052b9953440a3b35e7e0c",
+      "88f1200c1a0f403f1fe5cbc97badc5c1be60a77856b5c5a49cac091908ace431",
+      "8903525e6f633520b13d3fc93760261a7ff7517a40c8159758f6a193fbd2ab2f",
+      "89187c937d3e74ed9ad9b619036c3828f68e5d40e133bf4fd22f506e979e5234",
+      "8942a24a373e046faf8f333ad8d795e98799d16dc75c3ef4649536c63b8195dd",
+      "8992b4d80e0ac01a1ef4855915eaf19e1455ec6e9a2396fb35420d1f59d3a43c",
+      "89eeee0fd41e6ceb82ed11ce779aeffc91369a64f3f631a002a702553d1ea7dd",
+      "8a0d4e938e02892da023335a8f3c98d63618c01c3379f8a5a422a32a8be8be9e",
+      "8a2d58e3de6aeb2c3c22453f4749e2ca6f06f68249e4cd1eaaaed1faa889af55",
+      "8a44003e7053ab5ccd8d8ef620cb4d5e40ee72c11d292d78778751fe3ff6e434",
+      "8a4800acf228022ae1f013f4976766382d8f6ba7862c54b89a0a1e5097ee4b84",
+      "8a51fc0e61009150558f680442c74af7e0d40f095ab2c09496b5f3da66f15133",
+      "8b6f867bc595ec0f4c0aae25a65ad94418667cade081a3fe8a85831bb63921e9",
+      "8bf0e6b7cc07ab0b20d6bd538d6b3c8022edd8a5a6677ceb941338e6fe6904c2",
+      "8c4dd205638ba73f3efb9914399eb8c76f50df365052b1b48691a85c9447750c",
+      "8c69f96f25da4b9e1e6cb9935f9cdc3e6d4b5c40200738385e95fbc277b18bbe",
+      "8cfb9e52763927300f20b98228d5e9f1a5bf9b0be3a743c0b8707c1c5a7fe480",
+      "8d09e225ec3fca0b2b3df279b57d5c113a61a2afb005e68ce72cbd88aed81d15",
+      "8d0dc462d24264c633effae36cd828b5aba128851ee1ad42ae30ceaaf3bce1ab",
+      "8d46562263cbccc7425bb4380d4004b4bd7a3d8ea6c37ce817811a014ada4812",
+      "8d53c9cb8e6063236416f332deddd8f2f7b8f41abbc5b6e203f7af89e3125f2b",
+      "8d5ba5bfb95dcab9275accc519ef9ca4ea27916963c472455c6a19496978a0db",
+      "8d5ea2d8991d9b1772c037ac8de74d58d7bd7a9edecd6bd0055cba52162314dc",
+      "8d780f689c5f9575a0b213c88b759491307b7d92b1399b85c7c90f19d115989a",
+      "8db2d39340f89cd8de1ccaacbb6b4b08513029cbbe3258dc2fe8b144b00a1b21",
+      "8e382533e72001e7fa262251ff6db77409f7de149e7c7aa94c28e9b426a702ae",
+      "8eb7908aea340edc910f5444716ac19450dd1fee445fdb14cde2ceaa32e7dd07",
+      "8ec363858433ceb7f7a35ff7de505a37412712d06ea0d55f10e893a1990b1ace",
+      "8ed9320146608d311b474bd02cb8eb4a5a6ca57e88880f077f4abce63cfe51f6",
+      "8ef4b00affb5ea13ea02611b43fe00d74433f7ac35e223922f138d4e60660925",
+      "8f0879b108a625fdfe13279e1e17c6d27836b70764230b01f6322d089843fc59",
+      "8f41a2a5baf7704cdc17e17dc917845611e1e9aa688fee9c91bafe485e4cbe00",
+      "8fd76d4ca8317187bba9cec3bf82d74bf7439fd1ef0f41d4ab7998ee5cdd008f",
+      "9071d7f9d3ac8ed9f92ca482e3ba975af66d945badda67980bae8c17211f57bc",
+      "909b8413d25a94f30abdc9238411e06fc027ed4fea9985bfb4fc8622897e2e5e",
+      "91182f5794a9d7320ba9360e5b2bbee76d70b473fdfed2fc03a15310ba5187bf",
+      "91a5b2c9b5b77e2751a815167736f6c603e5879a25ff50ff5c772ec42556d74a",
+      "91cd57aef0c560fb613b27e5ed470595b8ee8753457fbab75b460c992fc5c926",
+      "9262e2a3f769daa83171b682f54b94a5b8c91b47b1065c6eb180abbe9e1a8c6e",
+      "9283a9509ec63fb116dfb298cf7baaa5ee0457af92f3eebe27722f645646918b",
+      "92c8be8e581e617b18c58b175f8733856dee74550329952e5924f2b81c1fb69a",
+      "942fd92392d71cd79c7820bae721c3e283bae3755b0a3fb0a7e5693a115a9b4a",
+      "944c64f636069f7c2980bed67d53b8195ea4c45fbe2174e5e6a3704e24a81a4d",
+      "952178349ce2d015e6f08708195b0fc827da9d3f9cf9247aa5eb2f8806d97d70",
+      "952807977fe5cf224bcec8643afc7260a4710be3e50030ed0c03eb03673f4c8d",
+      "954395b2507900e14c92f326fa174c2c7654afb549617855db3a7d3f09ab25b6",
+      "9563f3d716953ed165a66223f9b25d9b662d69f77e001f70355b14bd3a73f53b",
+      "961a022b0515f7a7b2550840ad35b6a338405f0727faeee4205fc19195225af1",
+      "9631847a0ce7de0371836064b9990656bbff17624f18d9a517c42e3f8f23ce7d",
+      "96ade627f76a246770c4581d2c7f6cc9305cd3db8048f391a974b57ec2892246",
+      "96ce26508547afa67b0adc23172e337182ba1491162d2f77e388155b8f02f0e7",
+      "96fc03826403d6e4300ec2510652c2f2df064e641461618e7ea910b0aa704046",
+      "9752620895a4eb1ab0b8b8fd689dd4e2d5a9e80cf6c7c43842ca94624731c1be",
+      "984ba08ff8637d97ba5e7500187ad82a2488ec7500d26cd2dad138bb0c0f2d67",
+      "98747da13c31ca2bdc596e9fd956a116ebe30ad8bff64907baf2e7574fd32227",
+      "99f1178190378841f8fbe08e65326c882905f291fee28cf4658112324c39ea02",
+      "9ac26f51c518016f498ebc63b2ea7fcfd66997004454b23fc26a00c29a331076",
+      "9b0fdeef9d6c7f1dfa5045051d5b1a7c781df4cd34a620f0bcc16c607ec8fd6e",
+      "9b112d3051ad671e53c98045139f293739987a9a1d7c31510a95f5e11788a47f",
+      "9b961e19fb5684b544af7c37ce7655fe1dde5cfabd51028ddb5ad8b6091d2e73",
+      "9c3718af8c1c11552aaa8e70001ed525fcf75851f13dedae88d96d7d41f1380d",
+      "9c4428c1ede6d6900ed49bf42daf169e6c5393548cd1f076993a0f6533820a3e",
+      "9c8c913a1c70a53851250c8b40278d13282267a8c665f3903538776d4aa1eb8f",
+      "9cb9bbd3886a7942eeeaf8281b362542c9112be08778b1b910a02bc168024b8c",
+      "9d01a63ca8c5250d7244e803e825ce883afce558cdf854558637f8d6844f25f5",
+      "9d052acad323ce15ed74e769eb38345a968930574d99e175b64221232d966c54",
+      "9da1d011a364ffcc64e2423bfe0db1a0017756a785c200a09ea516065fe936b4",
+      "9f326469b4282c0b846b59fa4af14c4c74e2bfc403b271c0dabe3d161ff1aebb",
+      "a00006de2d695b879931fa0e9db2a0358f5caf7479fae25c3d742fd1b27b074e",
+      "a019104d4ec5e7a7493b78fa46354e3db38d569b07d722ad1663f444731f0a7e",
+      "a02fc04183529e66f2d22e3bb749ac4321f7549fed6664df8bbc9e126190db43",
+      "a03fa475d6d60c21dbeb09216e27cb88015dfdc7d1f5a0dd875ec002364842d1",
+      "a21183eac8f5a0cf89da547bdd0ca473ceeba902df3ba65a72297ce07602fabf",
+      "a221f60960a69f631a4a0292cc00237c854d22ddb16097af19f4d74d8c2b5947",
+      "a24b433c39ddc6b2f23db74b1a438538d8449b6b42d02c46271d9975c53f26bd",
+      "a2950144ba4a259e5c03c21dc3d6a9d02b7ce60c384a3fb366e83f1bd4a0a89d",
+      "a29b290f996f1c064520e9e7c83f702a2c549e3b19dd1801517fd026026fda79",
+      "a3122c3af3960da0d1913c05147a59b82c422c00c917be1d8662cb5aeeb9f617",
+      "a3134976fed2ae8ae9b0cdfa8f4c42513389e67428c43a0d200a7fa462a628e1",
+      "a334ab99fb5f73b4966264e4cd2e5d49b50fa1e57ddc97b8b2bfae8a9a4990e8",
+      "a33d92349b1d1d035d1ba848c7ba02401cac8b89d970c652d27ada83d35a0858",
+      "a3403c413acddef81f83f6d17f25279ff5dfb8b1d8f32b95cfe8c9d513852bd7",
+      "a401463207f321118f28280e7e5af4e2c2a7bd8e872ad7853b6b2d8d6f13841a",
+      "a4afd19250c2b2e47d608cc5667445967323a3f436b4fcd8d290c294141a0770",
+      "a541354256f9402225e03275c150b9de0124f847aba43c48a47957b04fe9fe9e",
+      "a61041b1ef6f0abc2eb7a21afcfdaeba41c36ab1ad7a9a605fe3488ceb3e8ffb",
+      "a65fa05a16c373be36f84b901a5a328990a50c86723363cea96212edd3296b8c",
+      "a66d0281eed0dcd9d0258ed95f99da76210a2a7ddfb137cd4e929867c956f339",
+      "a6b3db10be55849d10ea6ec391f1bdd0cc37050bd2fb609ab3613f271b6ac867",
+      "a71ce5b7b28b278187d59ee8d75287d61fc40f0f52bdc0738696852a3847258a",
+      "a77cba0364f3f80208da11e2599687dc2cefcfd21614cd3dc0f89ba9a98ebefa",
+      "a805e1e98b0290a920e38b64d9896d917444d351203209af035390a4c4f43252",
+      "a84281efa6529d244c1cf34a303a9cb1d6e1aa91101af4d0ffa3a55986a62727",
+      "a8661cb6415113f6a224896185fbfcf7e807d14a16dff2d4d1a0bdfdf3d481aa",
+      "a8eb7694ce7c08ad3a2055767ec7db7e27518f07a012dbc9330446b19fd28d1a",
+      "a8f2cedeed0b6f0c789da3466cf76ca930ef2929efded43ab1455008fa183d3f",
+      "a93f7b6a2d1bb9a71e9f4622a119eff8bc3b475663bd1d58e1f5a20c36a27631",
+      "a94db6513f832567beb77967201b081129f687b3734def95014a86eb180801bc",
+      "a9bfaee480497975f322ade8079396aaf5aa3908e459b0ef504cede8f206fd07",
+      "aa7e194fc5b991f26ef963da4d2969c5fa903152970d7c65c2a7f860f8d7ee26",
+      "aaf58b356ea48943720c61ff333088c17c58300f6fb4d5e011c9dfd019a13631",
+      "ab12ab03e3b8779802aa8dcc54e14b1441a8d55713dfe5738f1731e668bc195a",
+      "ab85bf2b4a6fd6efc873e50a96d54f13fb182767b65d067d23a0a097bf8af354",
+      "ac383c69728560774d030cb231a526b0b19980ec57ce8ecaadaaed414ceeb821",
+      "ac55d9a816b49aaf81064ba98f3aeddd763b070908425a1e37d96548b489cc1e",
+      "ad1b8a454bef3ca43a6f5a807b32b1ab346e3380ad0d4fd4c4daca618ffcbf52",
+      "ae08dd1360116584f552e9119305a289a39259b08a0cd3e3900d4c99ab7a10cf",
+      "aef80b53d101dee0fdf9f4133916708fd546c87531057dfe581753e98b19650b",
+      "af21e14e3e89a0488a9df2e2b510ca4a1550dbf914cef87ed680c9fe75ae3aca",
+      "b07db34bfa018bc2c8d309955f2b36d3a942babb5e5e9c2986e28ef4c63e35bd",
+      "b0c99059a95afc733a411f817cc8d1176dd95cb6362c8de8cfa32b988ff02659",
+      "b0cc648f19bc65f9af4a7fb6aad4339ed82b518868bab6188e7e3fabb54fea7f",
+      "b0eaa083afe2d26637a162b181c62ebd44022367d816a35728f558c1989b7278",
+      "b0fb980be731ef96c976e3281513d389d8c8849dba4bad0b19034fbc82842d9e",
+      "b126cd07a88f13a33d3b1907807a2a5ec5c06d7b31979f16c41a51369f846950",
+      "b15779b63d6cf60a84fece44b6f020805a07acb0725417c42c8a227c57eb440a",
+      "b1fa5d366b5b18f7caf612d403274c9b1c0191cfcbeeb7f7a03fc34c05a43c71",
+      "b29ae45df365311cf6f0c0970aaf6a326f4477b9816665229f4add0e45280714",
+      "b33e2fab9e88f44ceb3dbfb33da3fd9dd98f121d54effa05f82a71c13134842b",
+      "b3dc2ba329c1fc535f185deb0ee22576f1466752912642a7ec8c0564d3d3f91d",
+      "b41858a9ae2f478c8ef14f1062510c72a27c18a667887fb4cefb33e3dde74021",
+      "b4ca518fb337a47be120143215c6af15fb3174337f42bbaf1ea58d43576ff7e6",
+      "b4d35d2a326f0f86a7e390a6f9a217ec02c18275125bbb12940df87f943e0f83",
+      "b4e0545f72c33585a1cb32f33372ea717da41a619dcb82a06ca881f2b9fa8d9e",
+      "b57789718323238050fd381f243d2388616d6893f9b197be8e1960cf4ecbb34b",
+      "b578c3d1d497f1396fe510501a6395f002f6abd64001ec9da9a5698c0ca0d566",
+      "b5f985432759995c3e374e7a5548a00e78718288344d245d74118ab0cc84d4b2",
+      "b7113ad649197c38aca73a263bb160da5ff7c2c4282f5549946aa0e84cd0599a",
+      "b719ffaaa6fa2e3a22616b5f89d127e2b03839e0cb1a0b8a12b78db12be51308",
+      "b7789bda375fddf26ac16b796a7b1461fdc73895b15d488b9c566a10c3c96c66",
+      "b7981d80472c6ff735b803ca3ce565b0530eb141547687c0a9cd6be6605c4d01",
+      "b79a082a87d0a560f29cd6591132b20718487f4088c914b54f000ad81d014bc6",
+      "b79abe02fcd83f8bb3f181d7e559ef84e76da52d6726a610ace2ddff5b48f21c",
+      "b8165cb5e6b538131d3df560c5ad0e0f828018bbe4e0822399d902c15191fa1e",
+      "b8194e1bcd945522bdc8dfcd421782852244d0c84f575752ff701b7f0752a1a4",
+      "b83b7b191169fe6b2322168d1b410274c4b540cd80de926c0957a27a939d62b3",
+      "b89829dd2729bbbc3ff075a20a8f9ba406b400df7e4b340f1bac5e8882c2c7d2",
+      "b8d5369dc5368ea20d7deeb680f085e5f02045004ba88be6650fc8e9248c34dc",
+      "b906071aa35dc6a5bf9ebddc7b5e3d54f64c3ecc05c4cf281a83d5959210077f",
+      "b920686063b974dc4d7141b29d03ba30789e1c7743393e74d7d69703bc5f6925",
+      "b93fed810cfe79c5940094dfebdf980c3c9b3e3c8e7234e66ab13782ca91acb9",
+      "b9b46ae646e90c8d7b837e70854aa484d0183c845f45d391cf885a6acc590e00",
+      "b9e686d1b93a9c53275719afc1c3ed7b42296da598c81ecb399e20fb81690a08",
+      "ba1e0bb3b4587a0d9fba3cca47a65ec37dc75fd3070438059f21c808144d7e98",
+      "baa6a366959750492e44adaa7c5df43ce2ea18cf5ed58266231be862e676ef7b",
+      "bb08eb7948670fd4de41eaf8bc422e5d20540fb5e0dd7780036da7bd4bc025b4",
+      "bb09a5106f12e13121d960bb051ce466b37259507a3a8c8be6cb79063d5e5aa8",
+      "bb50ca6259499c0b328934a0f1851bae754f14226d3ad11cc4533e931b00c7de",
+      "bb76a6e08387b65f4862c62b4c114d6d41cdad0f1ea8ee1a1551448565791bc3",
+      "bbfe3aacd359d8815650692877b244a7f5a928d2f69decb69230c645da6e9591",
+      "bc9880410c12b499e15c9715924d333ea7f6fa8f59bcec4496437c6902c5b4ee",
+      "bd580375fd44bf62612f68b9f5697661a5dbdf66415aeb750c1ea5b05289b56d",
+      "bd5c04f85e52ab2ec3db84b4827c6bd36f2ecda0a028938263456fb8ac4b9032",
+      "bd81699c03a7cd1870d24c86ca4ed6a7aaae63196b965a1ca0ac3ef0ebd46d1b",
+      "bdee70f483b87c1fb39472985b3a730956d918e7227efa5b6a35edc23f90742c",
+      "bdffb0fff3a2959b183850add3065441fd8cd1d5583adb836c23f4a8eaa8cf26",
+      "be64ecdc182fb8f6018801c1d2fc07b21332f88ba2970d835f2b3a424b578b45",
+      "bf704eaaaca0d5e447a5a2395e9102ecf13bf5169505b5d03c14b8ca1f5838a9",
+      "bfa66011c32b555d9557da83a3f4e518e070af386bfbbcb8609b7368d2348dad",
+      "bfaba02c99d9a2517684e2c4bbbcf01cbc2e01afad9129d98c08ec13a9d2c8e4",
+      "c10ce298d621d3f23c079e75e81a2dbfa4a5da9efd652fe530df4fc039017ad6",
+      "c1f43e643302480212dde6713a25b1413fb5b9fa12e2c74178f0fbaee6e22eb7",
+      "c21dfede1f4f1e69e588cd830c948c14f7eba1dc694507a37a94c0551df574d2",
+      "c2608bec507c6d8cb72e4ddc5a4f7b7c82919dad84d766ad815114de47c488dd",
+      "c278417c4f24e523eacd4ced257391668f067fdf47c3b48de4787913a56ba8eb",
+      "c303bb3f1d1f1ee46ee1d675acd53932e98e4ece3ef4890d52254b57aa641920",
+      "c3128aff28bb3fd0a48407a39b53b64bed6c9b1b11d24079f49dd278d5a77d1b",
+      "c3bcbaa5446a75e6b28c8729c6c3a61acd6c3188d6ea9e5d2f3a6caebb3c33e7",
+      "c4b1f82b5e9697f79d9fad8b135cece7970c512a10e9aee4e883719217ec02d4",
+      "c591a52cd7972e94a1ce2ff39cfde2fac8a97f08740a818dedf3a20d3a862a59",
+      "c619e7cfe3fc6fd2811cc0dc4c39695ec01d92ce66f62b43418f515415341152",
+      "c6893dd6803166da2a3544aa45204a0198a1712ea5bfa6883ecdfdca35fb6a6a",
+      "c6be128597e787da81f5eaf483513bae4a706245a991f11a6fdfb6aaec175519",
+      "c73b3058ffe36ecdc1321c63af65cc1faeab6e8aabc47e0b846ed0a4bb9c8cfb",
+      "c75bab43f36695014fcaafe6a1d97bcf7c0fc6937942975708157c85d200827a",
+      "c766bd52c98dd85daed119ba65663e98d962950367185b48ee2b553d32580250",
+      "c77fc54f875fd2005ca613fc6ee64796b345514df9ef27b4e8327b6f7bc5fccb",
+      "c7be4ddc009b29f5a29e9062da133793e872f04047fa24ff674ee2a0737d3356",
+      "c7f9396e585a1d167e9e94d4520b1af4cdca87eccea38eafb4b1d1bc2302149a",
+      "c81d9333f3516c1cecdec7d00ea7a87f6a64c5591920cf99a4e118439a0be2e7",
+      "c8a2c03e17311d9eff8fb7efb46e241a88ae4ee0a38046520344765d18e2d917",
+      "c8f79a56192ce42c48e7d9cd5a18f60cc53a2b4afe6572545fd4d4790b712582",
+      "c906f00452567ffe08737fb86805a1383012d19aa5f5b9a1fbeac9b16c29cd25",
+      "c9a71d7444559b55899db53fd8c7b0312386eb107109252ae4d39b423d37c427",
+      "c9ee029482193000e4162a637d04fa93feee9002c07aa0c7341196d2cb961cb1",
+      "c9f3fcf35a566b83c9148689baadc505d5bb60efad5774d75eb85d7d048886f1",
+      "c9fd9fa9357a37c95dabefb59d78cdce306a566e3593910a053abab6eb9c3b48",
+      "ca5ce230c538692875866cd5301e616cde12c89cba5cfaa16b56cddbc1c011a1",
+      "cad153681f849650c54a5cb9f7c6ae0b491ff03695e64bd0e460707ad6c2f125",
+      "cb3c7e4b2e14d830ebd337b37350301b447b0d47186565650c4b27755f171cb0",
+      "cb5ad61b81b2b5fca40267f9464c41ca811c4e108e003c61672a3bac55c57365",
+      "cb81a4a2fd7c0b0a349b10bd5c6ef9ebebfcefe35ee2b72395fc8ef4846d90b9",
+      "cc58d8c96518a82d6a51518f8ea101f4b47ce792b9b80ea78007627f02336604",
+      "ccb826bdfc35263eb46e8a99fca89babadfd248124f8d5ffa9d8188fb05690a9",
+      "cccb6d25f0050baf4775efab16c5899f9d14df8565f3741da4224d2a495b8d1b",
+      "cd231c18cf4f179076d763b05e29ffc8383b30a86f8dd0e5d415e58df4af8081",
+      "cd401e0a1561ac0e7cf997292cd85ff17884eb52b2f9234c8df1ea83a7f48742",
+      "cd9f8bf6d2f8477ed7f47534003269c0990bd4991262a05899b5c2fc53d9976b",
+      "ce1776b390fbfa85b923d5949cddecce89d5269e317634169819667102bb96b9",
+      "ce6c4d037374a76511d3333dcbb453d14816111cf2ee1c0c9cb99dad509b8a38",
+      "cfb7472d22f75b434ebcdf408a59f71eccda48995cd92e99b7fe934e4c2a454a",
+      "cfc5ed1287f413741882144212076db174a5d6d3e60f38d0ee5b9d7c086faba0",
+      "cfe61b7bb6bff7449382271913ae458ddadee3e5be799954be0040a49f8efe71",
+      "d02be5d33858fb176ec630a2771ca3f019adbe6ae220149ab46797202a5c2779",
+      "d05775e1cee3c3d20b2a778e3e82104f5be5c70aaf7ad4bacfb1ebc8790194b3",
+      "d05d288f3e7a35e0eef1172b45d1972485a4fb88d606c0490f027d54aabeedc4",
+      "d06df2824fae220ebc40f0dd8e591e82711df462c0c9b2a51218fdd42699f044",
+      "d078fb0eba961dd63be53c17b44cf1c1eb16ee6322803919a626d6b36bfa1ee7",
+      "d0c7ac8f215aaf25c686653548a529f5df3efb60efc7af1f2cc940ce676135d5",
+      "d1534fdb71de39f58c9f00832de9ad2b81bed8e934ea7c242baceceb5511a4f2",
+      "d171fe0d0a5372ac4938e1d290ca206d335efa7bf5d1fb34f2d1c6c3c23ce34d",
+      "d1f9029f974c88b067f71b1334e0ee76b59efc7366b328af1449a066237bdba6",
+      "d2767a352dc1082007ffb71344701e98bf9d891677ca8f09119b0ce2b2bb5c0e",
+      "d29f72b8bc8b958e7ae7193f84d1f4a56f3dfb502182f1105ab7b7aa64dc2254",
+      "d2ba1712fe5431d01e5175bd7d770fb8979d062dc17b5083ab87f6510553f482",
+      "d2c124b773f10a7035af6543233d90be4005a7715c1d66310c507331a8aa0335",
+      "d2d7b0b0eea4bd9d0c9dc346a036139edab2fa8b52cb8b8529bd0eb06cfee5f6",
+      "d32be8df1c83428f593c50332952b1b690c751f67c6301786fd0c6d31e2c7392",
+      "d3bfe0b58792b031eb5f8f5796be632347762b87ef3f68e18c8585f0f91e87d5",
+      "d3d94b58aa3da5f2215f39c19b37ba5bb485221992bac8a3b7f38da6da4b933a",
+      "d52067e34538b3e750acca395766cf09eb4c953a77d5abd8e1afe522aa5771fd",
+      "d5a858f59f46ce3c6892e6a8ea4780e1702e171c33343019b5d6966682436c5e",
+      "d5e53cb47cf71475a783adcd0c9015b868edf3705f47a16ef276971a197de6e9",
+      "d603b632bb6f026c500de22808040e2ff569da040bd8fe3b15fac0f6cf263ddf",
+      "d632fc3ff77ae3dca3b12777314cbd4666713212742ecfd1f19b33fc9a84781a",
+      "d69883607b740b33b75421f879d5b52b529c2ad81938f0aaddcceae199de6491",
+      "d82f6e8d7f14cf9977ac4dd8e4cceb7ccc578b4995fa60af5d5dd37abb2b98e1",
+      "d83870496b083b00c96d7467c8a8c88ac448386e517516bc8e64359b99c8d83c",
+      "d8720d1232865eb0059b455e526804cbb78f331004a539e1ac245c231c2b9e84",
+      "d884f8d1a5e0c37dfe0044aa88eef1e762e5d6b118ed1759682f2a8ce5196833",
+      "d95dffb58450ba1d6a79aa5d209ae754bef9c01ebe8238a743ef22a555ddefd6",
+      "d966b79a3a894ae41ec9fcdfdf68e21cb5561ee2ad4bec6dbb8392253cd6ae38",
+      "d9b86208133a0478bc5977ab0322af5610ddcf5ddcd9d6dee34fea930af4312a",
+      "da095347d52f8ca7348146d3e9ba2736f91a1760579ab07d88416405036c0792",
+      "da46c5c70ab7856c764360008647a63c73a600e8923732dfae638bac18c0bd2f",
+      "da8725e42a2465b2f6f98867f6606581c25ed91601f352189b38253970085ab2",
+      "dab5a730866bc734aa5df717ba64913facaff3109fcbabf5d63ce0640c8f5c36",
+      "dabda317b84662fafb59ebbde8738b64b6aa8297cf3ead99418c0a5a6456ee21",
+      "db677b41246e31f2604bdc62cb7fc9b2c5e0bf3e35831552aef3afbe1ec27b75",
+      "db70ec038c6dfc340a9923877e10262e370360948d7b1288a7a20fb484861617",
+      "dbd22ff036eeee75c79cb9fb436433180b6f5ec27129922b6c2ff90236b316fa",
+      "dc358892d666669f60de317863c44318e36b8464c74f3338ffa36ae316deb54c",
+      "dc3f493b2da1e8bb954b11b47cf523c97af3340642ae43e35f68bb380d708b85",
+      "dc4d9ac08483e6a78820944fba001260fca1b97a87f75668eaea9b102f44033b",
+      "dc50c4c83fd82f6e6f9a0484e0321c6b5e707b5b69dc36b07b9e6e7caa4c23c5",
+      "dd46156ad56ef8c9812d172a01dd96807a0bb303a9ae3d98f9ea0942a82c6d22",
+      "de1c92b48c7812f7e6c96cfbe067ed0cf1321dd7fc2e689bcc57fb73632aaeae",
+      "dffa36ae66a07cbcb8101617b0a1c3301b2c5ecd11622dda46fc3af1357f617e",
+      "e029d9f53c11173fd2675d19d45e30998eea44a5c0e168430d5a0b14e13749b9",
+      "e0a97fbe462f35221a86ad9a96a088b469cff87b0a869c82f37f84b67d3c1270",
+      "e16f68f08b0ea17dffcb0a0e9d5c9b99dd8b26651810fa47221d97233784a087",
+      "e1a0719f53fc60727f8273efc5957d020d945234a6e15baf58ed8e302c5cb9e4",
+      "e1aef70ece95039fe41759a95894dee0318bd47ffcd8491eefc687cc3a323067",
+      "e1cde58279c7bd71bb2eb8cb289d32335108cce54bce45b94426622a00aa92d7",
+      "e221ad48cb89b6b5e179572e66c9017898093b83b495487935cd8e160c91a804",
+      "e22d223d69cdd0b68629564e29e84c6909bd106b3c0f6cdde1b683592fc7430f",
+      "e234c07d2f084a5f9eec11935a5f88c3887255b5fb5c49fcc3d60f61649cdfcd",
+      "e26247aafb0b4c78b6b65255ffc9eec9fc668f5f55bcfe8d6b5710060721ab6f",
+      "e27e54c50d8f9bf709d399951aa2ea4769f14474693820590b2d06225662ef7f",
+      "e2816edc6ec9f770fb3502a01fe9e3ea762cfa3ee8844cb1126836b997b7319f",
+      "e2ec599783632efb93c20cfd20fc56b7a8947d6bb57cc90a4dd123134d0e19cd",
+      "e2ee7bb34f6e8243d64c2def466bc0ec22cf6f13e54d780ed3db3b034bca21cb",
+      "e2f35612d6338a1bb8c5dd6e954be0e3d9e1e906ef8d8d73769d4766c82eb5ea",
+      "e34532658c52d5cea83be58817bbc164942ef902693022ffaa8409b3a84e78ce",
+      "e35128d209de8721a1550a5681823b6ce9f49623f1d2c1daef9e90c9ba5f7cc1",
+      "e39ba7c82e19e492a359d1ff85a18437564c4b279c2d07aea1a40b91cc949385",
+      "e3bbc982f292cf589f42ad7a25a3397f098d8bbe6bab2b0e31fae774d7cd5fc7",
+      "e3d871f33857ecaa94a58ac8d3efcab20c0384d9ca6045b553a9521b4a1707ad",
+      "e439b5740a23710a3b4652c282af56c584a24b32c73769df54bdf333019e44bb",
+      "e50405e59e858167568be2a7c2ae1b9945775b07996bb17f7845a633baabbc54",
+      "e50f5e7b5528b1b303ebf70c39806c08fb415fccdf0c18cdd5ad8eb41be801b2",
+      "e5788bd5859d8cadac36644a3b0c0f2b01b392cb95a1d7a44bf0e094594ed9cf",
+      "e6307db920f94d520ed4e3beca638ed74c0bdf3bf4c31be6b3ec460e9652eeda",
+      "e67bdeaf9b31f58d5b8cf9c3955b544a9d59e93c36f31d769f9180c0a6215591",
+      "e68ac7f2fbd6d1c3ef895c9898f01ee0884a26d3658f04c268e6246b8e993562",
+      "e6c8aa72c531b3c5de4cca250788ac9b8d77d53326942933e75fa5b5c18e0c2f",
+      "e6fd1a9372df1be7cb60cee6cf29cd73386b5094e4d46c72e2ccce87f214840d",
+      "e7192d8cb3fbee75aeb67509e079b463e4d58f478b3b68badae683de8dd8a214",
+      "e7b16f76d275d38214701715634e7219af2e4ec85e7f2e8fb5aad89ec8173c87",
+      "e7dd7ee07860cd9c9685463fc982b8ac2c597b348780526f2cd712caa8de2d77",
+      "e7ff697be1df5728968b1821aabd7219fb0958dc4cf5352c80120b84d7964196",
+      "e8019c04c9a7ea88206685d378c83409b3579e24f45ce098452c0a6e6af8c0a7",
+      "e855fb8e34063821a4b2c2ac8b71b03179f674ff0d486a8ae5c1cccedc3a2cb2",
+      "e8b8286b245d49435d0fdb412b0631d0b00666b6c4babac933136de7482db506",
+      "e904b9dd82072af2cd6ad68638d349150dea86000137f66bcf596a91000473a3",
+      "e96eed83f9e403b63cb02f59ce0f66e9e62640bbb8d142844ccc267364af2d86",
+      "e9ba4444cea1b9ccb7b654c9309b052b40fbf21ecc31effd1356689f54a15716",
+      "ea1a2aad0311fb54942bb088be46befe76383ccf0e7a117a3bfaf848f8591016",
+      "ea2ed90e980cc54ad7f643962af22b2e2cb0352032e404edf3dadc5fc09871e2",
+      "ea3eaf9e6477f9526371a959bef10be3989915c78a90c8ceee4cd7707f4ddcfa",
+      "ea54c8d6ca91dcc38b5ff61b6aa4b2c0af7155b4e6090a666bef4fda8c1780fa",
+      "eac4487b9f7ea81bd7acaa5937fc29189d8c12c8bad9bc0ef28cdd97a37820bf",
+      "ec55ffd3cddbe9d44a46245c3f8aeed7be154f8af3ebc51c97e6e6cc2a375172",
+      "ecfc0606debbbdbd82f6e511feb53c036031bb18bbc64d641b1b54f50120d423",
+      "ed7cef526442ee23a3b0e90f94844bbce20dfa4ac882aa1a6d145c39ebac59d9",
+      "ed8b14b91c1f41a818bae4e6199c1c9a41e6b6e5e19c2dca79e765e186100d45",
+      "eda36c2f109d098f9c5883dba553b8feac9bc8cfb5acc51e0bbcf8c952915e30",
+      "edc37cab8919acafc81c8c48f4cb6c944ded85615f8e5f0c3a65afe51f5a0021",
+      "eea9a58a6bc54df937954c4c4852c8c0e403fc53cd7ced747fd3a65ad4b06cdf",
+      "eed9a6c2c3b63ccef61c014b0eb15a5e565812c875bc02260f47e69e2d1c8a4f",
+      "ef1dc5d48d5ee6b12ecb59ed2f80ba5a1d1c9d6d49994aad2229e4055a530083",
+      "ef8efd3afd2b5446ef3dadddc4e0f6ba4f9c064c8a430a0616d424d0e3b719e2",
+      "ef9784922d95b1182becabf78481dd29a472b9322e74b21eaf839b7d55604ebc",
+      "efdecf70512405398e2fd3435478512433ab293eedc69421f0e11eca7b857941",
+      "f00db4ba6d3fc704233acd0ef17320d0e77a2d2bceab4ec68e438fe99524e6f2",
+      "f06aeb5f64243ec2720effdec6818f57178ac995371eca8f5d0369cc9a042115",
+      "f0b4f11812d9e60c64964d291540a8f3eab37932f5a5998f6e579787ba01f37f",
+      "f0bf3fdf2ea0b06c6cc45a625ac0ef554ff779becbe90cfbf12352c61d3cf054",
+      "f0c1ad37c5d9b42a05616bc7876497534a3b847e1055616abfcec329aceafe9c",
+      "f109d60a971455f0063b19ded074ddf11b57cd8704812ef3d7b08969a35b15a1",
+      "f138c87bbdcb772792324b14c8d642ae8b1abb87adcae4d0653be5e554a673a9",
+      "f16d37203f0cc0b9ea571d7c8f69f8d9f71ad015d71c042e5d7859da234096ca",
+      "f1bbe1df2a37d7864de5f2c2cb57e41a82b2d00921ac4cfd667ee21a9f106f48",
+      "f357c3109a3c5f64d6ec841be7ea856b987e6bcfc3d3c2fc7bd37726dd8f2d34",
+      "f3b0d6a3f2dcfddaaa9fe1edb0cb8b333bea24c25113209f94f78d75180fc4f2",
+      "f5b05c044a8be2f8d9c21c945c11b57bd3d3c734488175c6fb1aaddb33999a53",
+      "f5f34612e24b1fc9dc65ed0e3b99ffcc75a55aab18fb2448c096dec6586e5ed6",
+      "f6339c2ae12b65f16446117ee5ef779ec6675834148909e90734245682abbde8",
+      "f74be382effede47489cc687515f9251089e712f7236f1dfed4e83396a2cdf0f",
+      "f7dd83d2b32f964fb66cbeca45428174a63d77446207e7c061b3ce0c21f6947e",
+      "f834af18dc42e0a262883831e3626e4fe078245dbf122ebe3baab70cf248e06d",
+      "f84e03915adb3e095fc1623120eea119aa1267a1470f5a25d78093af319f90cf",
+      "f891b577426b52f823f0fd86e7de4a827ff09ba5f75527b05a9448a86f1d7586",
+      "f89962270642b62c292fbc148486d873fbb0eda0691413d51c7534c6c22f0db1",
+      "f90d72079be5843b8391af77e79583bcded2f4291a3f3741a2a195fd2bc68ea4",
+      "f91884b89dfdfc3ef129eea9fbd5e2d34a966e5d84a9e40875b408cc186a1ef8",
+      "f9596e2f20cadae1ab2f558a54c1c28a57df620dca7e7cbdaeeebbb2b9c974f9",
+      "f988b0149a15989efcf6a56b8ef6dfe9dba0297352c0dd5ef0aa4480539f7659",
+      "f9962fb8586478743ccff0ac6927b660e74ada032316c9f1ce1b582cb0d77bcb",
+      "faa9ce321942f69db1d1738c10a9264b0b0aa7edf62c5a71a7c3b68aef59a0dd",
+      "fb1b98509f574f5d213cb296a8eb205a98c1ccb8c7b566c38989835f87abcf5c",
+      "fb6b1575044b39bda32203127a68ffdf03c2569e89c9a7fc016681db1195d960",
+      "fba4fc968e0068f916efa753b1fd074374d4ac827feac45a61cc744560bac6b0",
+      "fbdcd4e5c185a67ddae25625fbd697c764fa32eb84ce039bb174cf1626abd186",
+      "fc607caeb48731e82477b3080720db702d38f0ffa93df1be1da32af85a089c77",
+      "fce6020282044ab133a2fc824dccfbb566db5f77add71c396994050cff8f3035",
+      "fcfae22b678ec6f9b964ed94314454cb2f06d006f109f6de27f46fe46dcd3b98",
+      "fd780219a065ba9b862aebf1b5dde3b828c54b402769e838db843ccb272ad970",
+      "fe0092d6d6952da1069279543233f28160ef2d519d6a2c2e42da5839a406ed00",
+      "fe12db0837cc21707fe8277b39e1d5adce3c75ec279ae5dfa10042d71196ba0b",
+      "fe6ac4059804ef5ead8a3e6bdeaaf868da864d6741144c94b963e7ba4c5eed0e",
+      "fe8908be610e73bb0548a26a1d48bc8ab80dc8adcd4569607087403914951524",
+      "ff82b893ba7cae0254392041d11d0241019e2fea837f8cc27c12b56ac2ce4baf",
+      "ff8ab53b225d87e599a493d619a05fa1a25f911bc09abf9ff15fa3627b0c0801",
+      "ffd448c1de9e5bd254f7336547e5551981f6ece22b904319c0108f36bf5369cb",
+      "ffea2a085e430aa35ebbea9eeb84fe9bbb34f0ac0c5db24f9f56ecf971713548"
+    ],
+    "isl_dual_commit": "f8c782ebda79dea3bcf8ea28df9b2db865da4d2b",
+    "native_verifier": "unmodified SkillEvolBench tests/test.sh@9e3daa339987c3cfa624121e1be442593a53d43c",
+    "official_harbor_score": false,
+    "pilot_config": {
+      "acquisition_tasks": 3,
+      "beta_artifact": 2.0,
+      "beta_forward": 4.0,
+      "c_uct": 1.4,
+      "candidate_graphs": 8,
+      "complexity_penalty": 0.1,
+      "deployment_tasks": 3,
+      "forward_workers": 3,
+      "graphs_mutated": 2,
+      "max_graph_nodes": 12,
+      "max_plan_length": 12,
+      "max_pool": 12,
+      "mcts_budget": 8,
+      "mutants_per_graph": 3,
+      "mutation_probability": 0.3,
+      "outer_loops": 2,
+      "p_stop": 0.4,
+      "seed": 20260901,
+      "stability_penalty": 0.5,
+      "utility_threshold": 0.05
+    }
+  },
+  "scientific_metrics": {
+    "forward_correlation_advantage": -0.4225771273642583,
+    "posterior_entropy_q0": 2.07704704933996,
+    "posterior_entropy_q2": 2.2887173374331353,
+    "posterior_entropy_reduction": -0.21167028809317534,
+    "rho_forward": 0.0,
+    "rho_static": 0.4225771273642583,
+    "skill_lift": 0.027799999999999936,
+    "spurious_skill_rejection_rate": null
+  },
+  "winner": "minimal-2-6596152b0f"
+}

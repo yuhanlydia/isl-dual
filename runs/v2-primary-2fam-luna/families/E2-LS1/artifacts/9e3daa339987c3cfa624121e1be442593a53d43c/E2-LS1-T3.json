@@ -1,0 +1,16 @@
+{
+  "_replay_deleted": [],
+  "_replay_delta": {
+    "batch_import.py": "import json\nfrom pathlib import Path\n\nfrom batch_summary import build_summary\nfrom duplicate_guard import existing_usernames\nfrom mock_api import CREATED, create_account\nfrom row_projection import project_row\nfrom screening_policy import screen_candidate\n\n\ndef import_batch(path):\n    CREATED.clear()\n    rows = json.loads(Path(path).read_text(encoding=\"utf-8\"))\n    successes = []\n    failures = []\n    for index, row in enumerate(rows):\n        candidate = project_row(row, index)\n        errors = screen_candidate(candidate, existing_usernames(CREATED))\n        if errors:\n            failures.append({\"index\": index, \"errors\": errors})\n            continue\n        result = create_account(candidate)\n        successes.append(result)\n    return {\"success\": successes, \"failures\": failures, \"summary\": build_summary(rows, successes, failures)}\n"
+  },
+  "_replay_modes": {
+    "batch_import.py": 420
+  },
+  "deleted": [],
+  "delta": {
+    "batch_import.py": "import json\nfrom pathlib import Path\n\nfrom batch_summary import build_summary\nfrom duplicate_guard import existing_usernames\nfrom mock_api import CREATED, create_account\nfrom row_projection import project_row\nfrom screening_policy import screen_candidate\n\n\ndef import_batch(path):\n    CREATED.clear()\n    rows = json.loads(Path(path).read_text(encoding=\"utf-8\"))\n    successes = []\n    failures = []\n    for index, row in enumerate(rows):\n        candidate = project_row(row, index)\n        errors = screen_candidate(candidate, existing_usernames(CREATED))\n        if errors:\n            failures.append({\"index\": index, \"errors\": errors})\n            continue\n        result = create_account(candidate)\n        successes.append(result)\n    return {\"success\": successes, \"failures\": failures, \"summary\": build_summary(rows, successes, failures)}\n"
+  },
+  "modes": {
+    "batch_import.py": 420
+  }
+}

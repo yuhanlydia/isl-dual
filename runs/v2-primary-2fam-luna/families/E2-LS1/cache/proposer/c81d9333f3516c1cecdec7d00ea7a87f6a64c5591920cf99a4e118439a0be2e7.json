@@ -1,0 +1,268 @@
+[
+  {
+    "edges": [
+      [
+        "inspect_contract",
+        "define_validator"
+      ],
+      [
+        "define_validator",
+        "process_batch"
+      ],
+      [
+        "process_batch",
+        "record_failure"
+      ],
+      [
+        "process_batch",
+        "dispatch_valid"
+      ],
+      [
+        "record_failure",
+        "assemble_result"
+      ],
+      [
+        "dispatch_valid",
+        "assemble_result"
+      ]
+    ],
+    "id": "minimal-1-b47a5b21cd",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Read the existing implementation, input shape, documented rules, side-effect behavior, and required return contract.",
+        "id": "inspect_contract",
+        "inputs": [
+          "README",
+          "implementation",
+          "input data",
+          "API or domain reference"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "Validation rules",
+          "Processing contract",
+          "Side-effect boundaries"
+        ],
+        "preconditions": [
+          "Target project and input batch are available"
+        ],
+        "required": true,
+        "validator": "Rules and output requirements are identified without changing unrelated project structure."
+      },
+      {
+        "action": "Implement a reusable validator that checks every applicable field, collects all failures for one item, and emits the required structured error shape.",
+        "id": "define_validator",
+        "inputs": [
+          "Validation rules",
+          "Input schema"
+        ],
+        "name": "Define local validation",
+        "outputs": [
+          "Validation function",
+          "Complete per-item error list"
+        ],
+        "preconditions": [
+          "Validation rules are known"
+        ],
+        "required": true,
+        "validator": "Invalid items produce all applicable field-level errors before any outbound or mutating call."
+      },
+      {
+        "action": "Load the batch and process entries in original order while preserving each entry's zero-based index and original payload where required.",
+        "id": "process_batch",
+        "inputs": [
+          "Input batch",
+          "Validation function"
+        ],
+        "name": "Iterate through batch",
+        "outputs": [
+          "Per-entry validation outcomes",
+          "Ordered processing state"
+        ],
+        "preconditions": [
+          "Input batch is loadable",
+          "Local validator exists"
+        ],
+        "required": true,
+        "validator": "Every input entry is examined exactly once and order/index metadata is preserved."
+      },
+      {
+        "action": "Append a structured failure record for each invalid entry and continue processing subsequent entries.",
+        "id": "record_failure",
+        "inputs": [
+          "Entry index",
+          "Original entry",
+          "Structured errors"
+        ],
+        "name": "Record rejected entries",
+        "outputs": [
+          "Failure report"
+        ],
+        "preconditions": [
+          "An entry has validation failures"
+        ],
+        "required": true,
+        "validator": "Failure records contain the contractually required index, original data, and complete errors; invalid entries cause no side effect."
+      },
+      {
+        "action": "Invoke the existing outbound or mutation operation only for valid entries and collect successful results.",
+        "id": "dispatch_valid",
+        "inputs": [
+          "Validated entry",
+          "Existing client or mutation API"
+        ],
+        "name": "Dispatch valid entries",
+        "outputs": [
+          "Success results",
+          "Side-effect trace"
+        ],
+        "preconditions": [
+          "An entry passes local validation"
+        ],
+        "required": true,
+        "validator": "No invalid entry reaches the external API or creation operation."
+      },
+      {
+        "action": "Build the required summary/result object, then verify counts, error shapes, ordering, and absence of forbidden calls.",
+        "id": "assemble_result",
+        "inputs": [
+          "Success results",
+          "Failure report",
+          "Processing trace",
+          "Output contract"
+        ],
+        "name": "Assemble and verify result",
+        "outputs": [
+          "Contract-compliant final artifact"
+        ],
+        "preconditions": [
+          "All entries have been processed",
+          "Successes and failures are available"
+        ],
+        "required": true,
+        "validator": "Returned keys, counts, traces, and nested records satisfy the documented contract and valid/invalid dispatch invariant."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n3",
+        "n5"
+      ],
+      [
+        "n4",
+        "n5"
+      ]
+    ],
+    "id": "minimal-2-6596152b0f",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Read the batch and identify required fields, optional fields, normalization rules, and output/error schemas.",
+        "id": "n1",
+        "inputs": [
+          "batch file",
+          "local client/API contract"
+        ],
+        "name": "Load and inspect batch contract",
+        "outputs": [
+          "ordered input records",
+          "validation policy"
+        ],
+        "preconditions": [
+          "Input batch and project contract are available"
+        ],
+        "required": true,
+        "validator": "Records are retained in original order and policy requirements are explicit."
+      },
+      {
+        "action": "Convert each raw record into a validation-ready representation while preserving its original index and payload.",
+        "id": "n2",
+        "inputs": [
+          "ordered input records",
+          "validation policy"
+        ],
+        "name": "Project records for validation",
+        "outputs": [
+          "indexed candidate records"
+        ],
+        "preconditions": [
+          "n1 completed"
+        ],
+        "required": true,
+        "validator": "Every candidate has its original zero-based index and source payload."
+      },
+      {
+        "action": "Validate every candidate before dispatch, applying type, presence, range, enum, format, uniqueness, timezone, and cross-field rules as applicable; collect all failures for each record.",
+        "id": "n3",
+        "inputs": [
+          "indexed candidate records",
+          "validation policy"
+        ],
+        "name": "Accumulate local validation errors",
+        "outputs": [
+          "valid candidates",
+          "structured rejected records"
+        ],
+        "preconditions": [
+          "n2 completed"
+        ],
+        "required": true,
+        "validator": "Rejected records contain field/parameter-specific error objects with the required fields, and no candidate is dispatched during validation."
+      },
+      {
+        "action": "Send only candidates with no validation errors to the external operation, preserving batch order and recording the operation trace.",
+        "id": "n4",
+        "inputs": [
+          "valid candidates"
+        ],
+        "name": "Dispatch valid candidates",
+        "outputs": [
+          "successful results",
+          "dispatch trace"
+        ],
+        "preconditions": [
+          "n3 completed"
+        ],
+        "required": true,
+        "validator": "The number of outbound calls equals the number of valid candidates and invalid candidates cause zero calls."
+      },
+      {
+        "action": "Build the required structured return value with successes, failures or rejections, counts, original indices/payloads where required, and trace information.",
+        "id": "n5",
+        "inputs": [
+          "successful results",
+          "structured rejected records",
+          "dispatch trace",
+          "original batch"
+        ],
+        "name": "Assemble batch result",
+        "outputs": [
+          "contract-compliant batch result"
+        ],
+        "preconditions": [
+          "n3 completed",
+          "n4 completed"
+        ],
+        "required": true,
+        "validator": "Summary counts reconcile with total input, successes, and failures; all rejected records retain required structured diagnostics."
+      }
+    ],
+    "or_groups": []
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "consistency": 0.95,
+  "sufficiency": 0.95,
+  "transfer": 0.96
+}

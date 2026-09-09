@@ -1,0 +1,5 @@
+{
+  "failure": "process_report.json:test_p1_tax_rates_modified: self = <test_process.TestProcessP1RootCause object at 0x77ad83a89110>\n\n    def test_p1_tax_rates_modified(self):\n        \"\"\"The buggy lookup in tax_rates.py should be changed.\"\"\"\n        src = _read('tax_rates.py')\n>       assert _BUGGY_LOOKUP not in src, (\n            'tax_rates.py still contains the buggy _RATE_VECTOR[code] lookup'\n        )\nE       AssertionError: tax_rates.py still contains the buggy _RATE_VECTOR[code] lookup\nE       assert '_RATE_VECTOR[code]' not in '\"\"\"\\nTax ra...pty stri",
+  "reward": 0.9,
+  "task_id": "E1-LS1-T5"
+}

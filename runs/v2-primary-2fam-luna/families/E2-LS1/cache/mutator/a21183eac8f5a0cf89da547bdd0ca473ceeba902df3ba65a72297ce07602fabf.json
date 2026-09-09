@@ -1,0 +1,585 @@
+[
+  {
+    "edges": [
+      [
+        "inspect_scope",
+        "derive_validation_contract"
+      ],
+      [
+        "derive_validation_contract",
+        "define_structured_error_shape"
+      ],
+      [
+        "define_structured_error_shape",
+        "accumulate_validation_failures"
+      ],
+      [
+        "derive_validation_contract",
+        "implement_pre_dispatch_gate"
+      ],
+      [
+        "accumulate_validation_failures",
+        "implement_pre_dispatch_gate"
+      ],
+      [
+        "implement_pre_dispatch_gate",
+        "preserve_batch_accounting"
+      ],
+      [
+        "derive_validation_contract",
+        "build_boundary_checks"
+      ],
+      [
+        "implement_pre_dispatch_gate",
+        "build_boundary_checks"
+      ],
+      [
+        "preserve_batch_accounting",
+        "run_and_inspect_verification"
+      ],
+      [
+        "build_boundary_checks",
+        "run_and_inspect_verification"
+      ]
+    ],
+    "id": "verification_first-1-ebe65c0cca-m1",
+    "metadata": {
+      "mutation": "SPLIT_NODE",
+      "parent_id": "verification_first-1-ebe65c0cca"
+    },
+    "nodes": [
+      {
+        "action": "Read the project guidance, current client or importer, representative input data, and external contract before editing; identify existing side effects, return shapes, and audit hooks.",
+        "id": "inspect_scope",
+        "inputs": [
+          "README",
+          "implementation",
+          "input batch",
+          "API/reference documentation"
+        ],
+        "name": "Inspect project scope",
+        "outputs": [
+          "repository constraints",
+          "input schema",
+          "API contract",
+          "existing behavior risks"
+        ],
+        "preconditions": [
+          "Target project and stated entry points are available"
+        ],
+        "required": true,
+        "validator": "Required files are read and the expected input, output, and dispatch boundaries are documented."
+      },
+      {
+        "action": "Translate documented requirements into explicit local checks, including required/type/format/range/enum/normalization rules, cross-field or duplicate constraints, and an explicit timezone policy with UTC normalization where timestamps are accepted.",
+        "id": "derive_validation_contract",
+        "inputs": [
+          "API contract",
+          "input schema",
+          "migration or policy notes"
+        ],
+        "name": "Derive local validation rules",
+        "outputs": [
+          "ordered validation rules",
+          "normalization policy",
+          "timezone policy",
+          "cross-field invariants"
+        ],
+        "preconditions": [
+          "Project scope has been inspected"
+        ],
+        "required": true,
+        "validator": "Every documented rejection condition has a deterministic local rule, timestamps have an explicit timezone policy, and expected representations are defined."
+      },
+      {
+        "action": "Define one stable structured error object containing the field or scope, machine-readable code, human-readable message, and relevant value or context; define a per-record failure entry that preserves the original index and payload.",
+        "id": "define_structured_error_shape",
+        "inputs": [
+          "ordered validation rules",
+          "required output contract"
+        ],
+        "name": "Define structured diagnostics shape",
+        "outputs": [
+          "complete error schema",
+          "failure schema"
+        ],
+        "preconditions": [
+          "Validation rules are explicit"
+        ],
+        "required": true,
+        "validator": "Each validation failure maps to a complete structured error with field or scope, code, message, and relevant context, while original index and payload are retained."
+      },
+      {
+        "action": "Specify and implement collection behavior so every applicable field and cross-field failure is recorded for a record before dispatch eligibility is decided, without short-circuiting on the first error.",
+        "id": "accumulate_validation_failures",
+        "inputs": [
+          "complete error schema",
+          "failure schema",
+          "ordered validation rules"
+        ],
+        "name": "Accumulate validation failures",
+        "outputs": [
+          "multiple-error aggregation behavior",
+          "complete record diagnostics"
+        ],
+        "preconditions": [
+          "Structured diagnostics shape is defined"
+        ],
+        "required": true,
+        "validator": "A record with several invalid fields yields a collection containing all applicable structured errors and remains associated with its original position."
+      },
+      {
+        "action": "Update the processor to validate and normalize each record before any outbound operation, route invalid records to failures, and invoke the external operation only for records with no errors.",
+        "id": "implement_pre_dispatch_gate",
+        "inputs": [
+          "batch input",
+          "validation rules",
+          "normalization policy",
+          "timezone policy",
+          "error schema",
+          "aggregation behavior"
+        ],
+        "name": "Implement pre-dispatch gate",
+        "outputs": [
+          "validated processor",
+          "side-effect gate",
+          "ordered successes and failures"
+        ],
+        "preconditions": [
+          "Validation rules are explicit",
+          "Validation failures are accumulated"
+        ],
+        "required": true,
+        "validator": "For every record, validation precedes dispatch; records with errors produce no outbound call, while valid records retain input order."
+      },
+      {
+        "action": "Return the project\u2019s required aggregate structure with complete successes, failures, trace or audit data when applicable, and totals derived from the original batch rather than hard-coded counts.",
+        "id": "preserve_batch_accounting",
+        "inputs": [
+          "success results",
+          "failure entries",
+          "original batch"
+        ],
+        "name": "Preserve batch accounting",
+        "outputs": [
+          "contract-compliant result",
+          "reconciliation summary"
+        ],
+        "preconditions": [
+          "Pre-dispatch gate is implemented",
+          "Failure schema is defined"
+        ],
+        "required": true,
+        "validator": "Total equals succeeded plus failed, every input index appears exactly once, and failure details retain original values where required."
+      },
+      {
+        "action": "Exercise valid records, each individual invalid condition, combinations of simultaneous failures, optional fields, timezone and UTC-normalization boundaries when relevant, duplicates, and mixed batches.",
+        "id": "build_boundary_checks",
+        "inputs": [
+          "boundary cases",
+          "multi-error cases",
+          "normalization and duplicate cases"
+        ],
+        "name": "Build boundary-focused checks",
+        "outputs": [
+          "verification cases",
+          "expected call trace",
+          "expected diagnostics"
+        ],
+        "preconditions": [
+          "Derived validation rules exist",
+          "Processor behavior is implemented"
+        ],
+        "required": true,
+        "validator": "Checks cover rejection semantics, complete multi-error collection, timezone normalization policy, and absence of outbound calls for rejected records."
+      },
+      {
+        "action": "Run the focused checks and inspect returned structures plus the mock or audit trace; compare observed calls, indices, errors, normalized values, and counts against the derived contract.",
+        "id": "run_and_inspect_verification",
+        "inputs": [
+          "processor",
+          "verification cases"
+        ],
+        "name": "Run verification first",
+        "outputs": [
+          "verified artifact",
+          "verification evidence",
+          "remaining defects if any"
+        ],
+        "preconditions": [
+          "Boundary-focused checks are defined",
+          "Batch accounting is implemented"
+        ],
+        "required": true,
+        "validator": "All checks pass, invalid records have no dispatch trace, valid records are dispatched, and diagnostics are complete and contract-shaped."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "inspect_scope",
+        "derive_validation_contract"
+      ],
+      [
+        "derive_validation_contract",
+        "implement_pre_dispatch_diagnostics_gate"
+      ],
+      [
+        "implement_pre_dispatch_diagnostics_gate",
+        "preserve_batch_accounting"
+      ],
+      [
+        "derive_validation_contract",
+        "build_boundary_checks"
+      ],
+      [
+        "implement_pre_dispatch_diagnostics_gate",
+        "build_boundary_checks"
+      ],
+      [
+        "preserve_batch_accounting",
+        "run_and_inspect_verification"
+      ],
+      [
+        "build_boundary_checks",
+        "run_and_inspect_verification"
+      ]
+    ],
+    "id": "verification_first-1-ebe65c0cca-m2",
+    "metadata": {
+      "mutation": "MERGE_NODES",
+      "parent_id": "verification_first-1-ebe65c0cca"
+    },
+    "nodes": [
+      {
+        "action": "Read the project guidance, current client or importer, representative input data, and external contract before editing; identify existing side effects, return shapes, and audit hooks.",
+        "id": "inspect_scope",
+        "inputs": [
+          "README",
+          "implementation",
+          "input batch",
+          "API/reference documentation"
+        ],
+        "name": "Inspect project scope",
+        "outputs": [
+          "repository constraints",
+          "input schema",
+          "API contract",
+          "existing behavior risks"
+        ],
+        "preconditions": [
+          "Target project and stated entry points are available"
+        ],
+        "required": true,
+        "validator": "Required files are read and the expected input, output, and dispatch boundaries are documented."
+      },
+      {
+        "action": "Translate the documented requirements into explicit local checks, including required/type/format/range/enum/normalization rules, an explicit timezone policy with UTC normalization where applicable, and any cross-field or duplicate constraints.",
+        "id": "derive_validation_contract",
+        "inputs": [
+          "API contract",
+          "input schema",
+          "migration or policy notes"
+        ],
+        "name": "Derive local validation rules",
+        "outputs": [
+          "ordered validation rules",
+          "normalization policy",
+          "timezone policy",
+          "cross-field invariants"
+        ],
+        "preconditions": [
+          "Project scope has been inspected"
+        ],
+        "required": true,
+        "validator": "Every documented rejection condition has a deterministic local rule and an explicit expected representation."
+      },
+      {
+        "action": "Update the processor to validate and normalize each record before any outbound operation, accumulate all applicable field and cross-field failures in a stable structured error object, preserve the original index and payload in each failure entry, route invalid records to failures, and invoke the external operation only for records with no errors.",
+        "id": "implement_pre_dispatch_diagnostics_gate",
+        "inputs": [
+          "batch input",
+          "validation rules",
+          "normalization policy",
+          "timezone policy",
+          "error schema"
+        ],
+        "name": "Implement pre-dispatch diagnostics gate",
+        "outputs": [
+          "validated processor",
+          "structured error schema",
+          "failure schema",
+          "side-effect gate",
+          "ordered successes and failures",
+          "aggregation behavior"
+        ],
+        "preconditions": [
+          "Validation rules are explicit",
+          "Structured diagnostics are designed"
+        ],
+        "required": true,
+        "validator": "For every record, validation precedes dispatch; records with errors produce no outbound call, multiple applicable errors are retained in the contract-shaped structure, and valid records retain input order."
+      },
+      {
+        "action": "Return the project\u2019s required aggregate structure with complete successes, failures, trace or audit data when applicable, and totals derived from the original batch rather than hard-coded counts.",
+        "id": "preserve_batch_accounting",
+        "inputs": [
+          "success results",
+          "failure entries",
+          "original batch"
+        ],
+        "name": "Preserve batch accounting",
+        "outputs": [
+          "contract-compliant result",
+          "reconciliation summary"
+        ],
+        "preconditions": [
+          "Pre-dispatch gate is implemented",
+          "Failure schema is defined"
+        ],
+        "required": true,
+        "validator": "Total equals succeeded plus failed, every input index appears exactly once, and failure details retain original values where required."
+      },
+      {
+        "action": "Exercise valid records, each individual invalid condition, combinations of simultaneous failures, optional fields, timezone or normalization boundaries when relevant, duplicates, and mixed batches.",
+        "id": "build_boundary_checks",
+        "inputs": [
+          "boundary cases",
+          "multi-error cases",
+          "normalization and duplicate cases"
+        ],
+        "name": "Build boundary-focused checks",
+        "outputs": [
+          "verification cases",
+          "expected call trace",
+          "expected diagnostics"
+        ],
+        "preconditions": [
+          "Derived validation rules exist",
+          "Processor behavior is implemented"
+        ],
+        "required": true,
+        "validator": "Checks cover both rejection semantics and the absence of outbound calls for rejected records."
+      },
+      {
+        "action": "Run the focused checks and inspect returned structures plus the mock or audit trace; compare observed calls, indices, errors, normalized values, and counts against the derived contract.",
+        "id": "run_and_inspect_verification",
+        "inputs": [
+          "processor",
+          "verification cases"
+        ],
+        "name": "Run verification first",
+        "outputs": [
+          "verified artifact",
+          "verification evidence",
+          "remaining defects if any"
+        ],
+        "preconditions": [
+          "Boundary-focused checks are defined",
+          "Batch accounting is implemented"
+        ],
+        "required": true,
+        "validator": "All checks pass, invalid records have no dispatch trace, valid records are dispatched, and diagnostics are complete and contract-shaped."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "inspect_scope",
+        "derive_validation_contract"
+      ],
+      [
+        "derive_validation_contract",
+        "design_error_accumulation"
+      ],
+      [
+        "derive_validation_contract",
+        "implement_pre_dispatch_gate"
+      ],
+      [
+        "design_error_accumulation",
+        "implement_pre_dispatch_gate"
+      ],
+      [
+        "implement_pre_dispatch_gate",
+        "preserve_batch_accounting"
+      ],
+      [
+        "derive_validation_contract",
+        "build_boundary_checks"
+      ],
+      [
+        "implement_pre_dispatch_gate",
+        "build_boundary_checks"
+      ],
+      [
+        "preserve_batch_accounting",
+        "run_and_inspect_verification"
+      ],
+      [
+        "build_boundary_checks",
+        "run_and_inspect_verification"
+      ],
+      [
+        "design_error_accumulation",
+        "build_boundary_checks"
+      ]
+    ],
+    "id": "verification_first-1-ebe65c0cca-m3",
+    "metadata": {
+      "mutation": "ADD_EDGE",
+      "parent_id": "verification_first-1-ebe65c0cca"
+    },
+    "nodes": [
+      {
+        "action": "Read the project guidance, current client or importer, representative input data, and external contract before editing; identify existing side effects, return shapes, and audit hooks.",
+        "id": "inspect_scope",
+        "inputs": [
+          "README",
+          "implementation",
+          "input batch",
+          "API/reference documentation"
+        ],
+        "name": "Inspect project scope",
+        "outputs": [
+          "repository constraints",
+          "input schema",
+          "API contract",
+          "existing behavior risks"
+        ],
+        "preconditions": [
+          "Target project and stated entry points are available"
+        ],
+        "required": true,
+        "validator": "Required files are read and the expected input, output, and dispatch boundaries are documented."
+      },
+      {
+        "action": "Translate the documented requirements into explicit local checks, including required/type/format/range/enum/normalization rules and any cross-field or duplicate constraints.",
+        "id": "derive_validation_contract",
+        "inputs": [
+          "API contract",
+          "input schema",
+          "migration or policy notes"
+        ],
+        "name": "Derive local validation rules",
+        "outputs": [
+          "ordered validation rules",
+          "normalization policy",
+          "cross-field invariants"
+        ],
+        "preconditions": [
+          "Project scope has been inspected"
+        ],
+        "required": true,
+        "validator": "Every documented rejection condition has a deterministic local rule and an explicit expected representation."
+      },
+      {
+        "action": "Define one stable error object shape and a per-record failure entry that preserves the original index and payload; ensure validation accumulates all applicable field and cross-field failures before dispatch.",
+        "id": "design_error_accumulation",
+        "inputs": [
+          "ordered validation rules",
+          "required output contract"
+        ],
+        "name": "Design structured diagnostics",
+        "outputs": [
+          "error schema",
+          "failure schema",
+          "aggregation behavior"
+        ],
+        "preconditions": [
+          "Validation rules are explicit"
+        ],
+        "required": true,
+        "validator": "A malformed record can yield multiple errors without terminating validation or losing its original position."
+      },
+      {
+        "action": "Update the processor to validate and normalize each record before any outbound operation, route invalid records to failures, and invoke the external operation only for records with no errors.",
+        "id": "implement_pre_dispatch_gate",
+        "inputs": [
+          "batch input",
+          "validation rules",
+          "normalization policy",
+          "error schema"
+        ],
+        "name": "Implement pre-dispatch gate",
+        "outputs": [
+          "validated processor",
+          "side-effect gate",
+          "ordered successes and failures"
+        ],
+        "preconditions": [
+          "Validation rules are explicit",
+          "Structured diagnostics are designed"
+        ],
+        "required": true,
+        "validator": "For every record, validation precedes dispatch; records with errors produce no outbound call, while valid records retain input order."
+      },
+      {
+        "action": "Return the project\u2019s required aggregate structure with complete successes, failures, trace or audit data when applicable, and totals derived from the original batch rather than hard-coded counts.",
+        "id": "preserve_batch_accounting",
+        "inputs": [
+          "success results",
+          "failure entries",
+          "original batch"
+        ],
+        "name": "Preserve batch accounting",
+        "outputs": [
+          "contract-compliant result",
+          "reconciliation summary"
+        ],
+        "preconditions": [
+          "Pre-dispatch gate is implemented",
+          "Failure schema is defined"
+        ],
+        "required": true,
+        "validator": "Total equals succeeded plus failed, every input index appears exactly once, and failure details retain original values where required."
+      },
+      {
+        "action": "Exercise valid records, each individual invalid condition, combinations of simultaneous failures, optional fields, timezone or normalization boundaries when relevant, duplicates, and mixed batches.",
+        "id": "build_boundary_checks",
+        "inputs": [
+          "boundary cases",
+          "multi-error cases",
+          "normalization and duplicate cases"
+        ],
+        "name": "Build boundary-focused checks",
+        "outputs": [
+          "verification cases",
+          "expected call trace",
+          "expected diagnostics"
+        ],
+        "preconditions": [
+          "Derived validation rules exist",
+          "Processor behavior is implemented"
+        ],
+        "required": true,
+        "validator": "Checks cover both rejection semantics and the absence of outbound calls for rejected records."
+      },
+      {
+        "action": "Run the focused checks and inspect returned structures plus the mock or audit trace; compare observed calls, indices, errors, normalized values, and counts against the derived contract.",
+        "id": "run_and_inspect_verification",
+        "inputs": [
+          "processor",
+          "verification cases"
+        ],
+        "name": "Run verification first",
+        "outputs": [
+          "verified artifact",
+          "verification evidence",
+          "remaining defects if any"
+        ],
+        "preconditions": [
+          "Boundary-focused checks are defined",
+          "Batch accounting is implemented"
+        ],
+        "required": true,
+        "validator": "All checks pass, invalid records have no dispatch trace, valid records are dispatched, and diagnostics are complete and contract-shaped."
+      }
+    ],
+    "or_groups": []
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "config": {
+    "families": [
+      "E1-LS1",
+      "E2-LS1"
+    ],
+    "model": "gpt-5.6-luna"
+  },
+  "families": {
+    "E1-LS1": {
+      "primary": "completed"
+    },
+    "E2-LS1": {
+      "primary": "completed"
+    }
+  }
+}

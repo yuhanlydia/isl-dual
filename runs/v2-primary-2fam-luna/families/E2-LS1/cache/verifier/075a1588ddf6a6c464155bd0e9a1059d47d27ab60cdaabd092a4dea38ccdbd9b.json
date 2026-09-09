@@ -1,0 +1,5 @@
+{
+  "failure": "outcome_report.json:missing_amount_rejected_locally: missing required amount should fail local validation\nprocess_report.json:pipeline_order_present: pipeline order should be enrich -> normalize -> call\nprocess_report.json:fallback_for_null_timezone: null timezone fallback not found\nprocess_report.json:explicit_utc_present: explicit UTC fallback missing",
+  "reward": 0.5333,
+  "task_id": "E2-LS1-T6"
+}

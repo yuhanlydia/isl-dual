@@ -1,0 +1,5 @@
+{
+  "failure": "process_report.json:local_validate_exists: local validate function missing",
+  "reward": 0.75,
+  "task_id": "E2-LS1-T5"
+}

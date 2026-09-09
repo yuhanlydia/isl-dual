@@ -1,0 +1,540 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n4",
+        "n6"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ],
+      [
+        "n3",
+        "n8"
+      ],
+      [
+        "n8",
+        "n4"
+      ]
+    ],
+    "id": "failure_aware-2-11d9e6d1a4-m1",
+    "metadata": {
+      "mutation": "ADD_NODE",
+      "parent_id": "failure_aware-2-11d9e6d1a4"
+    },
+    "nodes": [
+      {
+        "action": "Read the implementation, fixtures, mock boundary, and relevant documentation to identify required fields, normalization rules, permitted values, and output shape.",
+        "id": "n1",
+        "inputs": [
+          "Project files",
+          "Documentation",
+          "Input data"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "Validation and processing contract"
+        ],
+        "preconditions": [
+          "Target project and documented input/output contract are accessible"
+        ],
+        "required": true,
+        "validator": "Confirm the contract is explicit enough to distinguish locally rejectable inputs from dispatchable inputs."
+      },
+      {
+        "action": "Separate field projection, normalization, cross-field checks, duplicate or state checks, and structured error construction into deterministic validation stages.",
+        "id": "n2",
+        "inputs": [
+          "Validation and processing contract"
+        ],
+        "name": "Define reusable validation policy",
+        "outputs": [
+          "Validation policy",
+          "Error schema"
+        ],
+        "preconditions": [
+          "Validation and processing contract is known"
+        ],
+        "required": true,
+        "validator": "Every required check has a defined error representation, and independent failures can accumulate."
+      },
+      {
+        "action": "Parse the batch and project each record into a validation candidate while retaining its original index and original payload for diagnostics.",
+        "id": "n3",
+        "inputs": [
+          "Input data",
+          "Validation policy"
+        ],
+        "name": "Load and project each record",
+        "outputs": [
+          "Indexed candidates"
+        ],
+        "preconditions": [
+          "Validation policy exists",
+          "Input data is readable"
+        ],
+        "required": true,
+        "validator": "Malformed records produce controlled local failures rather than aborting the entire batch."
+      },
+      {
+        "action": "Run all applicable independent checks for each candidate, including type, requiredness, format, range, normalization, cross-field ordering, and state-dependent constraints; collect every failure before deciding dispatchability.",
+        "id": "n4",
+        "inputs": [
+          "Indexed candidates",
+          "Validation policy",
+          "Current local state"
+        ],
+        "name": "Screen candidates without side effects",
+        "outputs": [
+          "Accepted candidates",
+          "Structured failures"
+        ],
+        "preconditions": [
+          "Indexed candidates exist",
+          "Validation policy exists"
+        ],
+        "required": true,
+        "validator": "Rejected candidates have complete field or parameter diagnostics, while accepted candidates have no unresolved validation errors."
+      },
+      {
+        "action": "Invoke the operation only for candidates that passed screening, preserving input order and updating local state after each successful operation.",
+        "id": "n5",
+        "inputs": [
+          "Accepted candidates",
+          "Mock or external operation"
+        ],
+        "name": "Dispatch accepted candidates",
+        "outputs": [
+          "Operation results",
+          "Dispatch trace"
+        ],
+        "preconditions": [
+          "Accepted candidates exist",
+          "Screening completed"
+        ],
+        "required": true,
+        "validator": "The dispatch trace contains no rejected index and successful results correspond one-to-one with accepted candidates."
+      },
+      {
+        "action": "Build the required return object with successes, failures, original indices or payload references, diagnostics, trace information, and total/succeeded/failed counts.",
+        "id": "n6",
+        "inputs": [
+          "Structured failures",
+          "Operation results",
+          "Dispatch trace",
+          "Original batch"
+        ],
+        "name": "Assemble failure-aware result",
+        "outputs": [
+          "Contract-compliant batch result"
+        ],
+        "preconditions": [
+          "Structured failures exist",
+          "Operation results and trace are available"
+        ],
+        "required": true,
+        "validator": "Counts reconcile with the input size, every input is classified exactly once, and failures use one consistent error shape."
+      },
+      {
+        "action": "Run post-processing checks for no bad dispatches, preserved valid-row progress, deterministic ordering, complete diagnostics, and compatibility with the documented API contract.",
+        "id": "n7",
+        "inputs": [
+          "Batch result",
+          "Dispatch trace",
+          "Local state"
+        ],
+        "name": "Verify safety invariants",
+        "outputs": [
+          "Verified implementation"
+        ],
+        "preconditions": [
+          "Contract-compliant batch result exists"
+        ],
+        "required": true,
+        "validator": "The implementation passes representative valid, singly invalid, multiply invalid, boundary, normalization, duplicate, and mixed-batch cases without replacing the project structure."
+      },
+      {
+        "action": "Apply the documented timezone policy by normalizing temporal values to UTC before dependent validation, and initialize a reusable per-record accumulator that preserves every independent field error with complete structured metadata.",
+        "id": "n8",
+        "inputs": [
+          "Indexed candidates",
+          "Validation policy"
+        ],
+        "name": "Canonicalize temporal fields and error accumulation",
+        "outputs": [
+          "UTC-normalized candidates",
+          "Multi-error accumulators"
+        ],
+        "preconditions": [
+          "Indexed candidates exist",
+          "Validation policy exists"
+        ],
+        "required": true,
+        "validator": "Temporal values have explicit timezone handling, and records with multiple failures retain all errors in the required structured collection."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n8"
+      ],
+      [
+        "n8",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n4",
+        "n6"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ]
+    ],
+    "id": "failure_aware-2-11d9e6d1a4-m2",
+    "metadata": {
+      "mutation": "SPLIT_NODE",
+      "parent_id": "failure_aware-2-11d9e6d1a4"
+    },
+    "nodes": [
+      {
+        "action": "Read the implementation, fixtures, mock boundary, and relevant documentation to identify required fields, normalization rules, permitted values, and output shape.",
+        "id": "n1",
+        "inputs": [
+          "Project files",
+          "Documentation",
+          "Input data"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "Validation and processing contract"
+        ],
+        "preconditions": [
+          "Target project and documented input/output contract are accessible"
+        ],
+        "required": true,
+        "validator": "Confirm the contract is explicit enough to distinguish locally rejectable inputs from dispatchable inputs."
+      },
+      {
+        "action": "Separate field projection, normalization, cross-field checks, duplicate or state checks, and dispatch gating into deterministic validation stages.",
+        "id": "n2",
+        "inputs": [
+          "Validation and processing contract"
+        ],
+        "name": "Define reusable validation stages",
+        "outputs": [
+          "Validation stages"
+        ],
+        "preconditions": [
+          "Validation and processing contract is known"
+        ],
+        "required": true,
+        "validator": "Every required check has a defined execution stage and can run before any external operation."
+      },
+      {
+        "action": "Parse the batch and project each record into a validation candidate while retaining its original index and original payload for diagnostics.",
+        "id": "n3",
+        "inputs": [
+          "Input data",
+          "Validation stages"
+        ],
+        "name": "Load and project each record",
+        "outputs": [
+          "Indexed candidates"
+        ],
+        "preconditions": [
+          "Validation stages exist",
+          "Input data is readable"
+        ],
+        "required": true,
+        "validator": "Malformed records produce controlled local failures rather than aborting the entire batch."
+      },
+      {
+        "action": "Run all applicable independent checks for each candidate, including type, requiredness, format, range, normalization, cross-field ordering, and state-dependent constraints; collect every failure before deciding dispatchability.",
+        "id": "n4",
+        "inputs": [
+          "Indexed candidates",
+          "Validation stages",
+          "Diagnostic policy",
+          "Current local state"
+        ],
+        "name": "Screen candidates without side effects",
+        "outputs": [
+          "Accepted candidates",
+          "Structured failures"
+        ],
+        "preconditions": [
+          "Indexed candidates exist",
+          "Validation stages and diagnostic policy exist"
+        ],
+        "required": true,
+        "validator": "Rejected candidates have complete field or parameter diagnostics, while accepted candidates have no unresolved validation errors."
+      },
+      {
+        "action": "Invoke the operation only for candidates that passed screening, preserving input order and updating local state after each successful operation.",
+        "id": "n5",
+        "inputs": [
+          "Accepted candidates",
+          "Mock or external operation"
+        ],
+        "name": "Dispatch accepted candidates",
+        "outputs": [
+          "Operation results",
+          "Dispatch trace"
+        ],
+        "preconditions": [
+          "Accepted candidates exist",
+          "Screening completed"
+        ],
+        "required": true,
+        "validator": "The dispatch trace contains no rejected index and successful results correspond one-to-one with accepted candidates."
+      },
+      {
+        "action": "Build the required return object with successes, failures, original indices or payload references, diagnostics, trace information, and total/succeeded/failed counts.",
+        "id": "n6",
+        "inputs": [
+          "Structured failures",
+          "Operation results",
+          "Dispatch trace",
+          "Original batch"
+        ],
+        "name": "Assemble failure-aware result",
+        "outputs": [
+          "Contract-compliant batch result"
+        ],
+        "preconditions": [
+          "Structured failures exist",
+          "Operation results and trace are available"
+        ],
+        "required": true,
+        "validator": "Counts reconcile with the input size, every input is classified exactly once, and failures use one consistent error shape."
+      },
+      {
+        "action": "Run post-processing checks for no bad dispatches, preserved valid-row progress, deterministic ordering, complete diagnostics, and compatibility with the documented API contract.",
+        "id": "n7",
+        "inputs": [
+          "Batch result",
+          "Dispatch trace",
+          "Local state"
+        ],
+        "name": "Verify safety invariants",
+        "outputs": [
+          "Verified implementation"
+        ],
+        "preconditions": [
+          "Contract-compliant batch result exists"
+        ],
+        "required": true,
+        "validator": "The implementation passes representative valid, invalid, boundary, normalization, duplicate, and mixed-batch cases while preserving the project structure."
+      },
+      {
+        "action": "Define a complete reusable structured-error schema, support accumulation of independent failures, and specify explicit timezone handling with canonical temporal normalization before comparisons.",
+        "id": "n8",
+        "inputs": [
+          "Validation stages",
+          "Validation and processing contract"
+        ],
+        "name": "Define diagnostic and temporal policy",
+        "outputs": [
+          "Diagnostic policy",
+          "Canonical temporal policy"
+        ],
+        "preconditions": [
+          "Validation stages exist",
+          "Validation and processing contract is known"
+        ],
+        "required": true,
+        "validator": "Each failure can represent its location, category, message, and relevant value or parameter; multiple independent failures are retained, and temporal comparisons use an explicit canonical timezone policy."
+      }
+    ],
+    "or_groups": []
+  },
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3_n4"
+      ],
+      [
+        "n3_n4",
+        "n5"
+      ],
+      [
+        "n3_n4",
+        "n6"
+      ],
+      [
+        "n5",
+        "n6"
+      ],
+      [
+        "n6",
+        "n7"
+      ]
+    ],
+    "id": "failure_aware-2-11d9e6d1a4-m3",
+    "metadata": {
+      "mutation": "MERGE_NODES",
+      "parent_id": "failure_aware-2-11d9e6d1a4"
+    },
+    "nodes": [
+      {
+        "action": "Read the implementation, fixtures, mock boundary, and relevant documentation to identify required fields, normalization rules, permitted values, and output shape.",
+        "id": "n1",
+        "inputs": [
+          "Project files",
+          "Documentation",
+          "Input data"
+        ],
+        "name": "Inspect project contract",
+        "outputs": [
+          "Validation and processing contract"
+        ],
+        "preconditions": [
+          "Target project and documented input/output contract are accessible"
+        ],
+        "required": true,
+        "validator": "Confirm the contract is explicit enough to distinguish locally rejectable inputs from dispatchable inputs."
+      },
+      {
+        "action": "Separate field projection, normalization, cross-field checks, duplicate or state checks, pre-fetch validation, and structured error construction into deterministic validation stages; define explicit timezone handling and UTC normalization where temporal values are accepted.",
+        "id": "n2",
+        "inputs": [
+          "Validation and processing contract"
+        ],
+        "name": "Define reusable validation policy",
+        "outputs": [
+          "Validation policy",
+          "Error schema"
+        ],
+        "preconditions": [
+          "Validation and processing contract is known"
+        ],
+        "required": true,
+        "validator": "Every required check has a defined error representation, including complete structured fields, and independent failures can accumulate."
+      },
+      {
+        "action": "Parse the batch and project each record into an indexed validation candidate while retaining its original index and payload. Before any fetch or external operation, run all applicable independent checks without side effects, including type, requiredness, format, range, normalization, UTC conversion, explicit timezone policy, cross-field ordering, duplicate, and state-dependent constraints; collect every failure and construct complete structured diagnostics before deciding dispatchability.",
+        "id": "n3_n4",
+        "inputs": [
+          "Input data",
+          "Validation policy",
+          "Current local state"
+        ],
+        "name": "Load and screen each record",
+        "outputs": [
+          "Accepted candidates",
+          "Structured failures"
+        ],
+        "preconditions": [
+          "Validation policy exists",
+          "Input data is readable"
+        ],
+        "required": true,
+        "validator": "Malformed records produce controlled local failures rather than aborting the batch; rejected candidates contain complete structured error fields and all applicable independent field errors, while accepted candidates have no unresolved validation errors and no external operation was attempted."
+      },
+      {
+        "action": "Invoke the operation only for candidates that passed screening, preserving input order and updating local state after each successful operation.",
+        "id": "n5",
+        "inputs": [
+          "Accepted candidates",
+          "Mock or external operation"
+        ],
+        "name": "Dispatch accepted candidates",
+        "outputs": [
+          "Operation results",
+          "Dispatch trace"
+        ],
+        "preconditions": [
+          "Accepted candidates exist",
+          "Screening completed"
+        ],
+        "required": true,
+        "validator": "The dispatch trace contains no rejected index and successful results correspond one-to-one with accepted candidates."
+      },
+      {
+        "action": "Build the required return object with successes, failures, original indices or payload references, diagnostics, trace information, and total/succeeded/failed counts.",
+        "id": "n6",
+        "inputs": [
+          "Structured failures",
+          "Operation results",
+          "Dispatch trace",
+          "Original batch"
+        ],
+        "name": "Assemble failure-aware result",
+        "outputs": [
+          "Contract-compliant batch result"
+        ],
+        "preconditions": [
+          "Structured failures exist",
+          "Operation results and trace are available"
+        ],
+        "required": true,
+        "validator": "Counts reconcile with the input size, every input is classified exactly once, and failures use one consistent error shape."
+      },
+      {
+        "action": "Run post-processing checks for no bad dispatches, preserved valid-row progress, deterministic ordering, complete diagnostics, and compatibility with the documented API contract.",
+        "id": "n7",
+        "inputs": [
+          "Batch result",
+          "Dispatch trace",
+          "Local state"
+        ],
+        "name": "Verify safety invariants",
+        "outputs": [
+          "Verified implementation"
+        ],
+        "preconditions": [
+          "Contract-compliant batch result exists"
+        ],
+        "required": true,
+        "validator": "The implementation passes representative valid, singly invalid, multiply invalid, boundary, normalization, duplicate, and mixed-batch cases without replacing the project structure."
+      }
+    ],
+    "or_groups": []
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "failure": "process_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+  "reward": 0.6667,
+  "task_id": "E2-LS1-T1"
+}

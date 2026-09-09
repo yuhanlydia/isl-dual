@@ -1,0 +1,5 @@
+{
+  "failure": "outcome_report.json:four_successes: expected 4 successful requests\noutcome_report.json:double_fault_reports_two_errors: request #10 should report 2 errors\noutcome_report.json:boundary_values_accepted: days=1 and days=14 should be accepted\noutcome_report.json:trace_contains_only_valid_calls: trace should contain only 4 valid calls\noutcome_report.json:exactly_six_failures: expected 6 failures, got 7\nprocess_report.json:validation_before_fetch: ValueError: substring not found\nprocess_report.json:structured_error_shape: structured error fields incomplete\nprocess_report.json:multiple_error_collection: expected collection of multiple field errors",
+  "reward": 0.2583,
+  "task_id": "E2-LS1-T1"
+}

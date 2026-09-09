@@ -1,0 +1,5 @@
+{
+  "failure": "outcome_report.json:utc_error_reported: expected a rejection to reference UTC-normalized comparison\nprocess_report.json:explicit_timezone_policy: missing explicit timezone policy",
+  "reward": 0.825,
+  "task_id": "E2-LS1-T2"
+}
