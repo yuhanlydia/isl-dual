@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,10 @@ from .subprocesses import run_process_group
 
 
 class CodexExecutionError(RuntimeError):
+    pass
+
+
+class _TransientCodexError(RuntimeError):
     pass
 
 
@@ -31,15 +36,31 @@ class CodexExecutor:
 
     _python_install_lock = threading.RLock()
     _installed_python_requirements: set[str] = set()
+    _transient_markers = (
+        "429",
+        "rate limit",
+        "rate_limit",
+        "too many requests",
+        "temporarily unavailable",
+        "service unavailable",
+        "overloaded",
+        "connection reset",
+        "connection refused",
+        "connection error",
+        "network error",
+        "try again",
+    )
 
     def __init__(
         self,
         timeout_seconds: int = 900,
         model: str | None = None,
         dependency_cache: Path | None = None,
+        max_retries: int = 2,
     ):
         self.timeout_seconds = timeout_seconds
         self.model = model
+        self.max_retries = max(0, int(max_retries))
         self.dependency_cache = Path(
             dependency_cache
             or os.environ.get(
@@ -54,6 +75,33 @@ class CodexExecutor:
         self._npm_cache.mkdir(parents=True, exist_ok=True)
 
     def execute(
+        self,
+        task: AcquisitionTask | DeploymentTask,
+        graph: Graph,
+        plan: tuple[str, ...],
+    ) -> dict[str, Any]:
+        """Run one rollout, retrying only infrastructure-like Codex failures.
+
+        Every retry recreates the temporary workspace from the original task source,
+        so a partially failed attempt can never leak filesystem state into the next
+        attempt.  Scientific/model failures returned by the native verifier are not
+        retried here.
+        """
+        last_error: Exception | None = None
+        for attempt in range(self.max_retries + 1):
+            try:
+                return self._execute_once(task, graph, plan)
+            except _TransientCodexError as error:
+                last_error = error
+                if attempt >= self.max_retries:
+                    break
+                time.sleep(min(8.0, 2.0 * (2 ** attempt)))
+        raise CodexExecutionError(
+            f"transient Codex execution failed after {self.max_retries + 1} attempts: "
+            f"{last_error}"
+        ) from last_error
+
+    def _execute_once(
         self,
         task: AcquisitionTask | DeploymentTask,
         graph: Graph,
@@ -119,11 +167,14 @@ class CodexExecutor:
                     input_text=prompt,
                 )
             except subprocess.TimeoutExpired as error:
-                raise CodexExecutionError(
+                raise _TransientCodexError(
                     f"ephemeral Codex execution timed out after {self.timeout_seconds}s"
                 ) from error
             if completed.returncode != 0:
-                raise CodexExecutionError(completed.stderr[-4000:])
+                stderr = completed.stderr[-4000:]
+                if self._is_transient_failure(stderr):
+                    raise _TransientCodexError(stderr)
+                raise CodexExecutionError(stderr)
             files = [
                 p
                 for p in workspace.rglob("*")
@@ -149,6 +200,11 @@ class CodexExecutor:
                 if output_file.exists()
                 else "",
             }
+
+    @classmethod
+    def _is_transient_failure(cls, message: str) -> bool:
+        lowered = message.lower()
+        return any(marker in lowered for marker in cls._transient_markers)
 
     @staticmethod
     def _read_artifact(path: Path) -> Any:
