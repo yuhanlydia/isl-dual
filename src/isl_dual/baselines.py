@@ -45,13 +45,7 @@ DIRECT_SKILL_SCHEMA = {
 
 
 def selected_from_training(baseline: Baseline, result: TrainingResult) -> SelectedSkill:
-    """Materialize nested B3/B5 ablations from the full run's shared states.
-
-    B3 is exactly the q0 winner before execution evidence, and B5 is exactly
-    the q1 winner after the first MCTS forward loop but before mutation. Sharing
-    the same candidate pool and first-loop evidence makes these ablations paired
-    with B6 and avoids paying for a second stochastic copy of identical rollouts.
-    """
+    """Materialize nested B3/B5 ablations from the full run's shared states."""
     if baseline == Baseline.STATIC_CRITIC:
         posterior = result.q0
     elif baseline == Baseline.MCTS_FORWARD:
@@ -211,25 +205,27 @@ def select_dag_baseline(
                 score = top2_mean(result.rewards)
             return graph.id, task_index, score
 
-        work = [
-            (graph_index, graph, task_index, task)
-            for graph_index, graph in enumerate(graphs)
-            for task_index, task in enumerate(tasks)
-        ]
-        if config.forward_workers == 1 or len(work) <= 1:
-            completed = [run_pair(*item) for item in work]
+        def store(result_tuple: tuple[str, int, float]) -> None:
+            graph_id, task_index, score = result_tuple
+            scores_by_graph[graph_id][task_index] = float(score)
+
+        if config.forward_workers == 1 or len(graphs) <= 1:
+            for task_index, task in enumerate(tasks):
+                for graph_index, graph in enumerate(graphs):
+                    store(run_pair(graph_index, graph, task_index, task))
         else:
-            completed = []
             with ThreadPoolExecutor(
-                max_workers=min(config.forward_workers, len(work)),
+                max_workers=min(config.forward_workers, len(graphs)),
                 thread_name_prefix=f"isl-dual-{baseline.value}",
             ) as pool:
-                futures = [pool.submit(run_pair, *item) for item in work]
-                for future in as_completed(futures):
-                    completed.append(future.result())
-
-        for graph_id, task_index, score in completed:
-            scores_by_graph[graph_id][task_index] = float(score)
+                # Keep different task dependency environments in separate waves.
+                for task_index, task in enumerate(tasks):
+                    futures = [
+                        pool.submit(run_pair, graph_index, graph, task_index, task)
+                        for graph_index, graph in enumerate(graphs)
+                    ]
+                    for future in as_completed(futures):
+                        store(future.result())
 
         for graph in graphs:
             raw_scores = scores_by_graph[graph.id]
