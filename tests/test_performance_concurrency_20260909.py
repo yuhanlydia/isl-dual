@@ -10,6 +10,7 @@ import pytest
 
 import isl_dual.baselines as baselines_module
 import isl_dual.executor as executor_module
+import isl_dual.mcts as mcts_module
 import isl_dual.pipeline as pipeline_module
 from isl_dual.baselines import Baseline
 from isl_dual.config import PilotConfig
@@ -219,3 +220,19 @@ def test_transient_codex_rate_limit_is_retried_not_scored_as_model_failure(
 
     assert attempts == 2
     assert result["workspace"] == {}
+
+
+def test_persistent_codex_infrastructure_failure_is_not_converted_to_zero_reward() -> None:
+    infrastructure_error = getattr(executor_module, "CodexInfrastructureError")
+
+    class BrokenExecutor:
+        def execute(self, task, graph, plan):
+            raise infrastructure_error("persistent 429")
+
+    with pytest.raises(infrastructure_error):
+        mcts_module.mcts(
+            _graph("g-infra"),
+            _task("t-infra"),
+            BrokenExecutor(),
+            budget=1,
+        )
