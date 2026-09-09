@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import statistics
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any
@@ -44,13 +45,7 @@ DIRECT_SKILL_SCHEMA = {
 
 
 def selected_from_training(baseline: Baseline, result: TrainingResult) -> SelectedSkill:
-    """Materialize nested B3/B5 ablations from the full run's shared states.
-
-    B3 is exactly the q0 winner before execution evidence, and B5 is exactly
-    the q1 winner after the first MCTS forward loop but before mutation. Sharing
-    the same candidate pool and first-loop evidence makes these ablations paired
-    with B6 and avoids paying for a second stochastic copy of identical rollouts.
-    """
+    """Materialize nested B3/B5 ablations from the full run's shared states."""
     if baseline == Baseline.STATIC_CRITIC:
         posterior = result.q0
     elif baseline == Baseline.MCTS_FORWARD:
@@ -76,8 +71,20 @@ def selected_from_training(baseline: Baseline, result: TrainingResult) -> Select
 
 def direct_text_skill(tasks: list[AcquisitionTask], client: CodexJSON) -> SelectedSkill:
     import json
-    observed = [{"task": task.x, "successful_final_artifact": observable_artifact(task.expert_artifact)} for task in tasks]
-    prompt = "Write a portable SKILL.md containing only reusable procedural knowledge inferred from these outcome-only examples. Do not infer chain-of-thought and do not copy case-specific answers, filenames, constants, or output content. Include Preconditions, Procedure, Failure checks, and Stop condition.\n" + json.dumps(observed)
+    observed = [
+        {
+            "task": task.x,
+            "successful_final_artifact": observable_artifact(task.expert_artifact),
+        }
+        for task in tasks
+    ]
+    prompt = (
+        "Write a portable SKILL.md containing only reusable procedural knowledge "
+        "inferred from these outcome-only examples. Do not infer chain-of-thought "
+        "and do not copy case-specific answers, filenames, constants, or output "
+        "content. Include Preconditions, Procedure, Failure checks, and Stop condition.\n"
+        + json.dumps(observed)
+    )
     value = client.call(prompt, DIRECT_SKILL_SCHEMA)
     return SelectedSkill(Baseline.DIRECT_TEXT, str(value["skill"]), None, {}, {})
 
@@ -108,16 +115,26 @@ def _candidate_graphs(tasks: list[AcquisitionTask], proposer: Proposer, config: 
     attempts = 0
     while len(graphs) < config.candidate_graphs and attempts < 4:
         count = 2 + attempts
-        graphs.extend(graph for mode in PROPOSAL_MODES for graph in proposer.propose(tasks, mode, count))
+        graphs.extend(
+            graph
+            for mode in PROPOSAL_MODES
+            for graph in proposer.propose(tasks, mode, count)
+        )
         graphs = validate_dedupe(graphs, config.max_graph_nodes)
         attempts += 1
     if len(graphs) < config.candidate_graphs:
-        raise RuntimeError(f"expected {config.candidate_graphs} valid distinct candidates, got {len(graphs)}")
+        raise RuntimeError(
+            f"expected {config.candidate_graphs} valid distinct candidates, got {len(graphs)}"
+        )
     return graphs[:config.candidate_graphs]
 
 
 def _static(graphs: list[Graph], tasks: list[AcquisitionTask], critic: Critic, config: PilotConfig) -> dict[str, float]:
-    return {graph.id: config.beta_artifact * critic.score(graph, tasks).artifact_score - config.complexity_penalty * complexity(graph) for graph in graphs}
+    return {
+        graph.id: config.beta_artifact * critic.score(graph, tasks).artifact_score
+        - config.complexity_penalty * complexity(graph)
+        for graph in graphs
+    }
 
 
 def deterministic_plan(graph: Graph) -> tuple[str, ...]:
@@ -145,29 +162,92 @@ def select_dag_baseline(
     config = config or PilotConfig()
     if baseline == Baseline.ONE_SHOT_DAG:
         graph = proposer.propose(tasks, "minimal", 1)[0]
-        return SelectedSkill(baseline, compile_graph_to_skill(graph), graph, {graph.id: 1.0}, {})
-    if baseline not in {Baseline.STATIC_CRITIC, Baseline.GREEDY_FORWARD, Baseline.MCTS_FORWARD}:
+        return SelectedSkill(
+            baseline, compile_graph_to_skill(graph), graph, {graph.id: 1.0}, {}
+        )
+    if baseline not in {
+        Baseline.STATIC_CRITIC,
+        Baseline.GREEDY_FORWARD,
+        Baseline.MCTS_FORWARD,
+    }:
         raise ValueError(f"unsupported DAG selection baseline: {baseline}")
     graphs = _candidate_graphs(tasks, proposer, config)
     weights = _static(graphs, tasks, critic, config)
     forward: dict[str, float] = {}
+
     if baseline != Baseline.STATIC_CRITIC:
-        for graph_index, graph in enumerate(graphs):
-            task_scores = []
+        if config.forward_workers < 1:
+            raise ValueError("forward_workers must be >= 1")
+        scores_by_graph: dict[str, list[float | None]] = {
+            graph.id: [None] * len(tasks) for graph in graphs
+        }
+        greedy_plans = (
+            {graph.id: deterministic_plan(graph) for graph in graphs}
+            if baseline == Baseline.GREEDY_FORWARD
+            else {}
+        )
+
+        def run_pair(graph_index: int, graph: Graph, task_index: int, task: AcquisitionTask):
+            if baseline == Baseline.GREEDY_FORWARD:
+                output = executor.execute(task, graph, greedy_plans[graph.id])
+                score = float(task.verifier(output))
+            else:
+                result = mcts(
+                    graph,
+                    task,
+                    executor,
+                    config.mcts_budget,
+                    config.c_uct,
+                    config.max_plan_length,
+                    config.p_stop,
+                    config.seed + graph_index * 101 + task_index,
+                )
+                score = top2_mean(result.rewards)
+            return graph.id, task_index, score
+
+        def store(result_tuple: tuple[str, int, float]) -> None:
+            graph_id, task_index, score = result_tuple
+            scores_by_graph[graph_id][task_index] = float(score)
+
+        if config.forward_workers == 1 or len(graphs) <= 1:
             for task_index, task in enumerate(tasks):
-                if baseline == Baseline.GREEDY_FORWARD:
-                    output = executor.execute(task, graph, deterministic_plan(graph))
-                    score = float(task.verifier(output))
-                else:
-                    result = mcts(graph, task, executor, config.mcts_budget, config.c_uct, config.max_plan_length, config.p_stop, config.seed + graph_index * 101 + task_index)
-                    score = top2_mean(result.rewards)
-                task_scores.append(score)
+                for graph_index, graph in enumerate(graphs):
+                    store(run_pair(graph_index, graph, task_index, task))
+        else:
+            with ThreadPoolExecutor(
+                max_workers=min(config.forward_workers, len(graphs)),
+                thread_name_prefix=f"isl-dual-{baseline.value}",
+            ) as pool:
+                # Keep different task dependency environments in separate waves.
+                for task_index, task in enumerate(tasks):
+                    futures = [
+                        pool.submit(run_pair, graph_index, graph, task_index, task)
+                        for graph_index, graph in enumerate(graphs)
+                    ]
+                    for future in as_completed(futures):
+                        store(future.result())
+
+        for graph in graphs:
+            raw_scores = scores_by_graph[graph.id]
+            if any(score is None for score in raw_scores):
+                raise RuntimeError(f"missing baseline score for graph {graph.id}")
+            task_scores = [float(score) for score in raw_scores if score is not None]
             forward[graph.id] = statistics.fmean(task_scores)
             stability = statistics.pstdev(task_scores)
-            weights[graph.id] += config.beta_forward * forward[graph.id] - config.stability_penalty * stability
+            weights[graph.id] += (
+                config.beta_forward * forward[graph.id]
+                - config.stability_penalty * stability
+            )
+
     posterior = softmax(weights)
     winner = max(graphs, key=lambda graph: posterior[graph.id])
-    return SelectedSkill(baseline, compile_graph_to_skill(winner), winner, posterior, forward)
+    return SelectedSkill(
+        baseline,
+        compile_graph_to_skill(winner),
+        winner,
+        posterior,
+        forward,
+    )
 
 
 def upper_information_skill(baseline: Baseline, skill_text: str) -> SelectedSkill:

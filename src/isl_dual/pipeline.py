@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from .compile import compile_graph_to_skill, operational_pruning
 from .config import PilotConfig
@@ -67,24 +68,74 @@ def _forward_loop(
     seed_offset: int,
     journal: EvidenceJournal | None = None,
 ) -> tuple[dict[str, float], dict[str, float], dict[tuple[str, str], MCTSResult]]:
+    """Evaluate independent graph MCTS trees concurrently within each task.
+
+    UCT remains strictly sequential inside each tree. Graphs for the same task
+    are independent and may run concurrently, while different tasks are kept in
+    separate waves. This preserves the original task-level dependency environment
+    even if two tasks declare incompatible Python packages. Seeds, rollout budget,
+    verifier semantics, and posterior math are unchanged.
+    """
+    if config.forward_workers < 1:
+        raise ValueError("forward_workers must be >= 1")
+
+    phase = "round1" if seed_offset == 0 else "round2"
+    evidence: dict[tuple[str, str], MCTSResult] = {}
+    scores_by_graph: dict[str, list[float | None]] = {
+        graph.id: [None] * len(tasks) for graph in graphs
+    }
+
+    def run_tree(
+        graph_index: int,
+        graph: Graph,
+        task_index: int,
+        task: AcquisitionTask,
+    ) -> tuple[str, str, int, MCTSResult]:
+        result = mcts(
+            graph,
+            task,
+            executor,
+            budget=config.mcts_budget,
+            c_uct=config.c_uct,
+            max_plan_length=config.max_plan_length,
+            p_stop=config.p_stop,
+            seed=config.seed + seed_offset + graph_index * 101 + task_index,
+            journal=journal,
+            journal_prefix=f"{phase}:{graph.id}:{task.id}",
+        )
+        return graph.id, task.id, task_index, result
+
+    def store(result_tuple: tuple[str, str, int, MCTSResult]) -> None:
+        graph_id, task_id, task_index, result = result_tuple
+        evidence[(graph_id, task_id)] = result
+        scores_by_graph[graph_id][task_index] = top2_mean(result.rewards)
+
+    if config.forward_workers == 1 or len(graphs) <= 1:
+        for task_index, task in enumerate(tasks):
+            for graph_index, graph in enumerate(graphs):
+                store(run_tree(graph_index, graph, task_index, task))
+    else:
+        with ThreadPoolExecutor(
+            max_workers=min(config.forward_workers, len(graphs)),
+            thread_name_prefix=f"isl-dual-{phase}",
+        ) as pool:
+            # Finish one task wave before the next so task-specific dependency
+            # environments can never race each other.
+            for task_index, task in enumerate(tasks):
+                futures = [
+                    pool.submit(run_tree, graph_index, graph, task_index, task)
+                    for graph_index, graph in enumerate(graphs)
+                ]
+                for future in as_completed(futures):
+                    store(future.result())
+
     forward: dict[str, float] = {}
     stability: dict[str, float] = {}
-    evidence: dict[tuple[str, str], MCTSResult] = {}
-    for graph_index, graph in enumerate(graphs):
-        scores: list[float] = []
-        for task_index, task in enumerate(tasks):
-            result = mcts(
-                graph, task, executor,
-                budget=config.mcts_budget,
-                c_uct=config.c_uct,
-                max_plan_length=config.max_plan_length,
-                p_stop=config.p_stop,
-                seed=config.seed + seed_offset + graph_index * 101 + task_index,
-                journal=journal,
-                journal_prefix=f"{'round1' if seed_offset == 0 else 'round2'}:{graph.id}:{task.id}",
-            )
-            evidence[(graph.id, task.id)] = result
-            scores.append(top2_mean(result.rewards))
+    for graph in graphs:
+        raw_scores = scores_by_graph[graph.id]
+        if any(score is None for score in raw_scores):
+            raise RuntimeError(f"missing forward score for graph {graph.id}")
+        scores = [float(score) for score in raw_scores if score is not None]
         forward[graph.id], stability[graph.id] = summarize_forward(scores)
     return forward, stability, evidence
 
@@ -159,10 +210,6 @@ def train_inverse_skill(
 
     mutation_priors = _mutation_prior(q1, pool, config.mutation_probability)
 
-    # Round two evaluates only genuinely new graph structures. Re-running the
-    # unchanged parent DAGs burns the dominant rollout budget and double-counts
-    # the same acquisition evidence. Parents retain q1 as their prior; a mutant
-    # receives an incremental likelihood based on improvement over its parent.
     retained_mutants = [
         graph for graph in pool
         if str(graph.metadata.get("parent_id", graph.id)) != graph.id

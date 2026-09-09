@@ -4,33 +4,43 @@ import json
 import math
 import os
 import random
+import threading
 from dataclasses import dataclass, field
 
+from .executor import CodexInfrastructureError
 from .models import AcquisitionTask, Executor, Graph, MCTSResult, Rollout
 
 STOP = "__STOP__"
 
 
 class EvidenceJournal:
-    """Atomic, artifact-free checkpoint of rollout evidence by stable occurrence ID."""
+    """Atomic, artifact-free checkpoint of rollout evidence by stable occurrence ID.
+
+    Independent graph-task MCTS trees may finish concurrently. The in-memory
+    record update and atomic file replacement therefore have to be one critical
+    section; otherwise concurrent writers can race on the same .tmp path and
+    either lose evidence or raise FileNotFoundError.
+    """
 
     def __init__(self, path):
         self.path = path
+        self._lock = threading.RLock()
         try:
             self.records = json.loads(path.read_text()) if path.exists() else {}
         except (OSError, json.JSONDecodeError):
             self.records = {}
 
     def record(self, record_id: str, *, graph_id: str, task_id: str, phase: str, rollout_id: int, plan: tuple[str, ...], reward: float, failure: str | None) -> None:
-        self.records[record_id] = {
-            "graph_id": graph_id, "task_id": task_id, "phase": phase,
-            "rollout_id": rollout_id, "plan": list(plan), "reward": reward,
-            "failure": failure,
-        }
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        temporary = self.path.with_suffix(".tmp")
-        temporary.write_text(json.dumps(self.records, indent=2, sort_keys=True))
-        os.replace(temporary, self.path)
+        with self._lock:
+            self.records[record_id] = {
+                "graph_id": graph_id, "task_id": task_id, "phase": phase,
+                "rollout_id": rollout_id, "plan": list(plan), "reward": reward,
+                "failure": failure,
+            }
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            temporary = self.path.with_suffix(".tmp")
+            temporary.write_text(json.dumps(self.records, indent=2, sort_keys=True))
+            os.replace(temporary, self.path)
 
 
 @dataclass
@@ -140,10 +150,6 @@ def mcts(
                 path.append((state, STOP))
                 selected_stop = True
                 break
-            # STOP is a real terminal action.  It must be eligible for first
-            # expansion even while optional node actions remain unexplored.
-            # Track it through action_visits rather than traversing it as a
-            # prefix element, since STOP is not a graph node.
             unvisited = [
                 a for a in actions
                 if (a != STOP and a not in state.children)
@@ -163,19 +169,15 @@ def mcts(
                 break
             action = max(actions, key=lambda a: _uct(state, a, c_uct))
             if action == STOP:
-                # STOP is a real MCTS action. It must receive the terminal reward;
-                # otherwise its UCT exploration term never decays and it remains
-                # spuriously attractive on every later visit to this state.
                 path.append((state, STOP))
                 selected_stop = True
                 break
             path.append((state, action))
             state = state.children[action]
 
-        # A selected STOP must evaluate exactly the current prefix.  Completing
-        # optional nodes after STOP would assign their reward to the wrong
-        # terminal action and bias MCTS toward unnecessarily long procedures.
-        plan = state.prefix if selected_stop else _complete_plan(graph, state.prefix, rng, max_plan_length, p_stop)
+        plan = state.prefix if selected_stop else _complete_plan(
+            graph, state.prefix, rng, max_plan_length, p_stop
+        )
         try:
             output = executor.execute(task, graph, plan)
             evaluator = getattr(task.verifier, "evaluate", None)
@@ -184,10 +186,17 @@ def mcts(
             else:
                 raw_reward, failure = task.verifier(output), None
             reward = max(0.0, min(1.0, float(raw_reward)))
+        except CodexInfrastructureError:
+            # Infrastructure availability is not agent competence. Propagate so
+            # the caller can checkpoint/retry the family instead of biasing q1/q2.
+            raise
         except Exception as error:
             output = None
             reward = 0.0
-            failure = f"rollout execution failed: {type(error).__name__}: {str(error)[:1000]}"
+            failure = (
+                f"rollout execution failed: {type(error).__name__}: "
+                f"{str(error)[:1000]}"
+            )
         rollouts.append(Rollout(plan=plan, reward=reward, output=output, failure=failure))
         if journal is not None:
             journal.record(
