@@ -400,6 +400,48 @@
     "rollout_id": 3,
     "task_id": "E1-LS1-T2"
   },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T2:4": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [
+      "n1"
+    ],
+    "reward": 0.85,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T2:5": {
+    "failure": null,
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [],
+    "reward": 1.0,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T2:6": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3"
+    ],
+    "reward": 0.85,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:failure_aware-2-523d40bc4a:E1-LS1-T2:7": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "failure_aware-2-523d40bc4a",
+    "phase": "round1",
+    "plan": [],
+    "reward": 0.85,
+    "rollout_id": 7,
+    "task_id": "E1-LS1-T2"
+  },
   "round1:minimal-1-7ce8261b0f:E1-LS1-T1:0": {
     "failure": null,
     "graph_id": "minimal-1-7ce8261b0f",
@@ -1390,6 +1432,78 @@
     "rollout_id": 2,
     "task_id": "E1-LS1-T2"
   },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T2:3": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 3,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T2:4": {
+    "failure": "outcome_report.json:test_p1_valid_admin_token_returns_200: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:239:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:237:5)\noutcome_report.json:test_h4_viewer_cannot_access_admin: Error: expected 403, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:278:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:276:5)\noutcome_report.json:test_h5_viewer_response_has_no_pii: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:284:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:282:5)\noutcome_report.json:test_h6b_analyst_gets_email_but_not_admin: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:299:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:297:5)\noutcome_report.json:test_h8_rate_limiter_still_works: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:322:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:320:5)\nprocess_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.6625,
+    "rollout_id": 4,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T2:5": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6",
+      "n7",
+      "n8"
+    ],
+    "reward": 0.85,
+    "rollout_id": 5,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:transfer_first-1-a3bba1f17b:E1-LS1-T2:6": {
+    "failure": "outcome_report.json:test_p1_valid_admin_token_returns_200: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:239:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:237:5)\noutcome_report.json:test_h4_viewer_cannot_access_admin: Error: expected 403, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:278:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:276:5)\noutcome_report.json:test_h5_viewer_response_has_no_pii: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:284:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:282:5)\noutcome_report.json:test_h6b_analyst_gets_email_but_not_admin: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:299:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:297:5)\noutcome_report.json:test_h8_rate_limiter_still_works: Error: expected 200, got 401\n    at assert ([stdin]:71:25)\n    at [stdin]:322:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async runTest ([stdin]:76:5)\n    at async main ([stdin]:320:5)",
+    "graph_id": "transfer_first-1-a3bba1f17b",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n7",
+      "n6",
+      "n8"
+    ],
+    "reward": 0.8125,
+    "rollout_id": 6,
+    "task_id": "E1-LS1-T2"
+  },
   "round1:transfer_first-2-2101334119:E1-LS1-T1:0": {
     "failure": null,
     "graph_id": "transfer_first-2-2101334119",
@@ -1532,6 +1646,54 @@
     ],
     "reward": 0.85,
     "rollout_id": 0,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T2:1": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 1,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T2:2": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n3",
+      "n2",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 2,
+    "task_id": "E1-LS1-T2"
+  },
+  "round1:transfer_first-2-2101334119:E1-LS1-T2:3": {
+    "failure": "process_report.json:test_p2_catch_sends_rejection: Error: has 401: false, fallthrough removed: true\n    at assert ([stdin]:71:25)\n    at [stdin]:368:5\n    at runTest ([stdin]:76:11)\n    at main ([stdin]:364:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+    "graph_id": "transfer_first-2-2101334119",
+    "phase": "round1",
+    "plan": [
+      "n1",
+      "n2",
+      "n3",
+      "n4",
+      "n5",
+      "n6"
+    ],
+    "reward": 0.85,
+    "rollout_id": 3,
     "task_id": "E1-LS1-T2"
   },
   "round1:verification_first-1-be6e9402f8:E1-LS1-T1:0": {
