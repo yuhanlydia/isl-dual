@@ -1,0 +1,149 @@
+[
+  {
+    "edges": [
+      [
+        "n1",
+        "n2"
+      ],
+      [
+        "n2",
+        "n3"
+      ],
+      [
+        "n3",
+        "n4"
+      ],
+      [
+        "n4",
+        "n5"
+      ],
+      [
+        "n5",
+        "n6"
+      ]
+    ],
+    "id": "minimal-1-94eb72ae5e",
+    "metadata": {},
+    "nodes": [
+      {
+        "action": "Identify the affected component, preserved behavior, required failure semantics, and relevant validation boundaries.",
+        "id": "n1",
+        "inputs": [
+          "Task description",
+          "Existing project structure",
+          "Public API or output contract"
+        ],
+        "name": "Establish scope and contracts",
+        "outputs": [
+          "Scoped change target",
+          "Explicit behavioral invariants",
+          "Verification checklist"
+        ],
+        "preconditions": [
+          "The target project and stated success criteria are available"
+        ],
+        "required": false,
+        "validator": "The scope names the target artifact and distinguishes required behavior from implementation details."
+      },
+      {
+        "action": "Read the failure evidence and trace the affected execution path through the existing implementation, data flow, and state transitions.",
+        "id": "n2",
+        "inputs": [
+          "Error logs or observed failures",
+          "Relevant source files",
+          "Adjacent types, configuration, and helpers"
+        ],
+        "name": "Inspect evidence and implementation",
+        "outputs": [
+          "Root-cause hypothesis",
+          "Relevant code locations",
+          "Potential compatibility constraints"
+        ],
+        "preconditions": [
+          "A scoped target exists"
+        ],
+        "required": false,
+        "validator": "The hypothesis explains the observed failure without relying on case-specific guesses."
+      },
+      {
+        "action": "Choose the smallest reusable invariant that prevents the root cause while preserving successful behavior, including explicit handling for invalid, failed, or concurrent states.",
+        "id": "n3",
+        "inputs": [
+          "Root-cause hypothesis",
+          "Behavioral invariants",
+          "Failure-mode requirements"
+        ],
+        "name": "Define the corrective invariant",
+        "outputs": [
+          "Correction design",
+          "Preserved-success behavior",
+          "Explicit failure/concurrency policy"
+        ],
+        "preconditions": [
+          "The execution path and likely root cause are understood"
+        ],
+        "required": false,
+        "validator": "The design addresses the root cause directly and does not merely suppress errors or replace meaningful failures with defaults."
+      },
+      {
+        "action": "Edit the existing project files to enforce the corrective invariant, preserving public shapes, normal-path behavior, and reasonable throughput or execution characteristics.",
+        "id": "n4",
+        "inputs": [
+          "Correction design",
+          "Existing code",
+          "Compatibility constraints"
+        ],
+        "name": "Implement the fix in place",
+        "outputs": [
+          "Updated implementation"
+        ],
+        "preconditions": [
+          "A correction design exists",
+          "The target files are identified"
+        ],
+        "required": false,
+        "validator": "The implementation remains integrated with the existing project and satisfies the declared contract on the normal path."
+      },
+      {
+        "action": "Run focused checks for the reported failure, malformed inputs, partial failures, repeated or overlapping work, and any security or observability requirements relevant to the contract.",
+        "id": "n5",
+        "inputs": [
+          "Updated implementation",
+          "Malformed or rejected inputs",
+          "Timeout, authorization, or concurrent scenarios as applicable"
+        ],
+        "name": "Exercise failure and edge paths",
+        "outputs": [
+          "Failure-path results",
+          "Evidence that failures remain explicit",
+          "Evidence that protected or shared state is safe"
+        ],
+        "preconditions": [
+          "The updated implementation exists"
+        ],
+        "required": false,
+        "validator": "Reported failure cases produce the required non-success semantics without leaking data, hiding exceptions, or introducing unnecessary serialization."
+      },
+      {
+        "action": "Confirm required files remain in the target project, outputs have the expected schema and statuses, successful behavior is preserved, and no unrelated replacement or artifact omission occurred.",
+        "id": "n6",
+        "inputs": [
+          "Updated files",
+          "Verification results",
+          "Public contract"
+        ],
+        "name": "Validate final artifacts and compatibility",
+        "outputs": [
+          "Validated final artifact set",
+          "Contract-compliance assessment"
+        ],
+        "preconditions": [
+          "Normal-path and failure-path checks have been performed"
+        ],
+        "required": false,
+        "validator": "All required artifacts are present, the public contract is intact, and the root-cause fix is demonstrated by focused checks."
+      }
+    ],
+    "or_groups": []
+  }
+]
