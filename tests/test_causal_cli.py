@@ -17,11 +17,13 @@ from isl_dual.causal_runner import (
 
 
 def _package(root: Path, config: str, task: str) -> None:
-    skill = root / "skills" / config / task / "workflow"
-    skill.mkdir(parents=True, exist_ok=True)
-    (skill / "SKILL.md").write_text(
-        """---\nname: workflow\ndescription: workflow\n---\n# Workflow\n\n## Inspect\nInspect inputs.\n\n## Execute\nExecute procedure.\n\n## Verify\nVerify result.\n"""
-    )
+    task_root = root / "skills" / config / task
+    for name in ("inspect-skill", "execute-skill", "verify-skill"):
+        skill = task_root / name
+        skill.mkdir(parents=True, exist_ok=True)
+        (skill / "SKILL.md").write_text(
+            f"---\nname: {name}\ndescription: {name}\n---\n# {name}\n\n## Procedure\nUse the {name} procedure.\n"
+        )
 
 
 def _root(root: Path) -> Path:
