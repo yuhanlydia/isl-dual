@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:  # pragma: no cover
+    import tomli as tomllib
 
 from isl_dual.causal_runner import (
     DEFAULT_TASKS,
@@ -29,6 +35,13 @@ def _root(root: Path) -> Path:
         _package(root, "b1-one-shot-claude-sonnet-4-6", task)
         _package(root, "human_authored", task)
     return root
+
+
+def test_console_script_is_registered() -> None:
+    pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
+    data = tomllib.loads(pyproject.read_text())
+
+    assert data["project"]["scripts"]["isl-causal-skill"] == "isl_dual.causal_runner:main"
 
 
 def test_pilot_parser_has_canonical_defaults() -> None:
