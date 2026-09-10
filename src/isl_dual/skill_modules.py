@@ -4,6 +4,10 @@ import hashlib
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
+
+
+Granularity = Literal["section", "skill"]
 
 
 @dataclass(frozen=True)
@@ -27,6 +31,7 @@ class SkillMarkdown:
 class SkillPackage:
     root: Path
     markdown_files: tuple[SkillMarkdown, ...]
+    granularity: Granularity = "section"
 
     @property
     def modules(self) -> tuple[SkillModule, ...]:
@@ -48,7 +53,7 @@ def _module_id(relative_path: Path, title: str, body: str) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 
-def _parse_markdown(relative_path: Path, text: str) -> SkillMarkdown:
+def _parse_markdown_sections(relative_path: Path, text: str) -> SkillMarkdown:
     frontmatter, remainder = _split_frontmatter(text)
     lines = remainder.splitlines(keepends=True)
     starts = [index for index, line in enumerate(lines) if line.startswith("## ")]
@@ -73,18 +78,39 @@ def _parse_markdown(relative_path: Path, text: str) -> SkillMarkdown:
     return SkillMarkdown(relative_path, frontmatter, prefix, tuple(modules))
 
 
-def load_skill_package(root: Path) -> SkillPackage:
+def _parse_native_skill(relative_path: Path, text: str) -> SkillMarkdown:
+    frontmatter, remainder = _split_frontmatter(text)
+    title = relative_path.parent.name or relative_path.stem
+    module = SkillModule(
+        id=_module_id(relative_path, title, text),
+        title=title,
+        body=text,
+        removable=True,
+        relative_path=relative_path,
+    )
+    return SkillMarkdown(relative_path, frontmatter, remainder, (module,))
+
+
+def load_skill_package(
+    root: Path,
+    *,
+    granularity: Granularity = "section",
+) -> SkillPackage:
     root = Path(root)
     if not root.is_dir():
         raise FileNotFoundError(f"skill package root does not exist: {root}")
+    if granularity not in {"section", "skill"}:
+        raise ValueError(f"unsupported skill granularity: {granularity}")
+
+    parser = _parse_markdown_sections if granularity == "section" else _parse_native_skill
     markdown_files = tuple(
-        _parse_markdown(path.relative_to(root), path.read_text())
+        parser(path.relative_to(root), path.read_text())
         for path in sorted(root.rglob("SKILL.md"))
         if path.is_file()
     )
     if not markdown_files:
         raise ValueError(f"skill package contains no SKILL.md: {root}")
-    return SkillPackage(root=root, markdown_files=markdown_files)
+    return SkillPackage(root=root, markdown_files=markdown_files, granularity=granularity)
 
 
 def render_skill_package(
@@ -102,6 +128,17 @@ def render_skill_package(
     if destination.exists():
         shutil.rmtree(destination)
     shutil.copytree(package.root, destination)
+
+    if package.granularity == "skill":
+        for module in package.modules:
+            if module.id in retained:
+                continue
+            skill_dir = destination / module.relative_path.parent
+            if skill_dir == destination:
+                raise ValueError("skill-directory pruning requires SKILL.md below the task root")
+            if skill_dir.exists():
+                shutil.rmtree(skill_dir)
+        return destination
 
     for markdown in package.markdown_files:
         body = markdown.frontmatter + markdown.prefix
