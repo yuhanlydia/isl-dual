@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from isl_dual.causal_pruning import causal_prune
 
 
@@ -16,12 +18,12 @@ def test_causal_prune_keeps_helpful_and_removes_harmful_or_neutral_modules() -> 
 
     result = causal_prune(modules, score, min_modules=1)
 
-    assert result.full_score == 0.6
-    assert result.final_score == 0.8
+    assert result.full_score == pytest.approx(0.6)
+    assert result.final_score == pytest.approx(0.8)
     assert result.retained_ids == ("helpful",)
     effects = {effect.module_id: effect.delta for effect in result.effects}
     assert effects["helpful"] > 0
-    assert effects["neutral"] == 0
+    assert effects["neutral"] == pytest.approx(0.0)
     assert effects["harmful"] < 0
 
 
@@ -32,7 +34,6 @@ def test_causal_prune_uses_current_score_for_conservative_greedy_deletions() -> 
         frozenset({"b", "c"}): 0.70,  # a is clearly helpful
         frozenset({"a", "c"}): 0.90,  # b initially neutral
         frozenset({"a", "b"}): 0.89,  # c slightly helpful but within tolerance
-        frozenset({"a", "c"}): 0.90,
         frozenset({"a"}): 0.86,       # after b is removed, removing c would exceed tolerance
     }
 
@@ -44,7 +45,7 @@ def test_causal_prune_uses_current_score_for_conservative_greedy_deletions() -> 
     )
 
     assert result.retained_ids == ("a", "c")
-    assert result.final_score == 0.90
+    assert result.final_score == pytest.approx(0.90)
 
 
 def test_causal_prune_is_deterministic_on_ties() -> None:
