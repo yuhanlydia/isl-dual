@@ -40,11 +40,28 @@ Check the final result against the contract.
     return task
 
 
+def _write_multi_skill(root: Path) -> Path:
+    task = root / "task"
+    for name, body in (
+        ("helpful-skill", "Use the reusable helpful procedure."),
+        ("harmful-skill", "Take an unnecessary harmful detour."),
+        ("neutral-skill", "Optional neutral context."),
+    ):
+        skill = task / name
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(
+            f"---\nname: {name}\ndescription: {name}\n---\n\n# {name}\n\n## Procedure\n{body}\n"
+        )
+        (skill / "resource.txt").write_text(f"resource:{name}\n")
+    return task
+
+
 def test_load_skill_package_preserves_frontmatter_and_extracts_h2_modules(tmp_path: Path) -> None:
     task = _write_skill(tmp_path)
 
     package = load_skill_package(task)
 
+    assert package.granularity == "section"
     assert len(package.markdown_files) == 1
     markdown = package.markdown_files[0]
     assert markdown.relative_path == Path("workflow/SKILL.md")
@@ -87,6 +104,39 @@ def test_render_skill_package_keeps_selected_modules_in_original_order_and_resou
     assert "## Execute procedure" not in rendered
     assert rendered.index("## Inspect inputs") < rendered.index("## Verify output")
     assert (destination / "workflow" / "references" / "formula.txt").read_bytes() == b"alpha\x00beta\n"
+
+
+def test_skill_granularity_treats_each_native_skill_directory_as_one_module(tmp_path: Path) -> None:
+    task = _write_multi_skill(tmp_path)
+
+    package = load_skill_package(task, granularity="skill")
+
+    assert package.granularity == "skill"
+    assert [module.title for module in package.modules] == [
+        "harmful-skill",
+        "helpful-skill",
+        "neutral-skill",
+    ]
+    assert [module.relative_path for module in package.modules] == [
+        Path("harmful-skill/SKILL.md"),
+        Path("helpful-skill/SKILL.md"),
+        Path("neutral-skill/SKILL.md"),
+    ]
+    assert all(module.body.startswith("---\nname:") for module in package.modules)
+
+
+def test_skill_granularity_removes_entire_unretained_skill_directory(tmp_path: Path) -> None:
+    task = _write_multi_skill(tmp_path / "source")
+    package = load_skill_package(task, granularity="skill")
+    helpful = next(module for module in package.modules if module.title == "helpful-skill")
+    destination = tmp_path / "rendered"
+
+    render_skill_package(package, {helpful.id}, destination)
+
+    assert (destination / "helpful-skill" / "SKILL.md").is_file()
+    assert (destination / "helpful-skill" / "resource.txt").read_text() == "resource:helpful-skill\n"
+    assert not (destination / "harmful-skill").exists()
+    assert not (destination / "neutral-skill").exists()
 
 
 def test_render_rejects_unknown_module_id(tmp_path: Path) -> None:
