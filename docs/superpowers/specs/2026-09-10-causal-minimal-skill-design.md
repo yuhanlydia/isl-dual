@@ -2,204 +2,202 @@
 
 ## Goal
 
-Pivot the primary research direction from full ISL-Dual search to the empirically successful mechanism already observed in E2-LS1: **operational pruning of procedural knowledge**. The new method studies whether an initially useful but over-complete skill can be decomposed into modules and compressed to a smaller subset whose causal contribution is validated by execution.
+Pivot the primary research direction from full ISL-Dual search to the empirically supported mechanism observed in E2-LS1: **operational pruning of procedural knowledge**. The method asks whether an over-complete native skill set can be reduced to a smaller subset whose members have execution-grounded causal value and whose frozen held-out transfer is better.
 
-The new primary claim is deliberately narrower than the legacy ISL-Dual claim:
+Primary claim under test:
 
-> A skill should contain only procedural modules that causally improve execution. Removing neutral or harmful modules can improve held-out task performance while reducing skill size.
+> A reusable skill set should contain only native procedural skills that causally improve execution. Removing neutral or harmful skills can improve held-out performance while reducing procedural complexity.
 
-Legacy ISL-Dual code and results remain in the repository for provenance and ablation; they are no longer the default next experiment.
+Legacy ISL-Dual code/results stay in the repository for provenance and future ablation; they are not the default next experiment.
 
-## Method
+## Method: Causal Minimal Skill (CMS)
 
-Call the method **Causal Minimal Skill (CMS)**.
+Given a seed SkillLearnBench task skill set:
 
-Given a seed skill package `S`, deterministically decompose text skills into modules `M = {m_1, ..., m_K}`. A module is a top-level reusable procedural section (Markdown H2 by default); YAML frontmatter, skill description, scripts, references, and non-Markdown resources are preserved and are never deleted by the first pilot.
+```text
+<task>/
+  skill-a/SKILL.md
+  skill-b/SKILL.md
+  skill-c/SKILL.md
+```
 
-For a selection set of task instances `D_sel`, measure the full-skill score:
+CMS treats each independently registered native skill directory as one causal unit:
 
-`R(S) = mean_{x in D_sel} reward(S, x)`.
+```text
+S = {s_1, ..., s_K}
+```
 
-For each removable module, construct a knockout skill `S \ {m_j}` and measure:
+The v1 pilot does **not** flatten or rewrite the retained skills. Removing `s_j` deletes its whole directory; retaining it preserves its `SKILL.md` and bundled resources byte-for-byte.
 
-`Delta_j = R(S) - R(S \ {m_j})`.
+For selection instances `D_sel`:
 
-Interpretation:
+```text
+R(S) = mean_{x in D_sel} reward(S, x)
+Delta_j = R(S) - R(S \ {s_j})
+```
 
-- `Delta_j > tau_keep`: module is causally helpful; keep it.
-- `Delta_j < -tau_drop`: removing it improves execution; drop it.
-- otherwise: module is empirically neutral. Drop neutral modules only when the reduced candidate does not decrease the selection score.
+A positive `Delta_j` means that removing the skill hurts execution; a negative value means its removal improves execution. Neutral skills may be removed only if the current reduced set keeps the selection score within a fixed tolerance.
 
-After the one-at-a-time screen, run a deterministic greedy compression pass. Starting from the full skill, consider modules from least useful to most useful; accept a deletion only when the candidate selection score is at least the current score minus `selection_tolerance`. Stop when no deletion is acceptable or `min_modules` is reached.
+After the leave-one-skill-out screen, CMS runs a deterministic conservative greedy pass. Starting from the full set, it considers skills from least useful to most useful and accepts a deletion only when:
 
-Primary objective:
+```text
+R(current \ {s_j}) >= R(current) - selection_tolerance
+```
 
-`S* = argmax_{S' subseteq S} [ R_sel(S') - lambda_size * |S'| ]`
+and `min_modules` is respected.
 
-implemented through the conservative knockout/greedy approximation above rather than combinatorial exhaustive search.
+Held-out instances never enter these decisions.
 
-The held-out instances are never used for pruning decisions.
+The implementation also supports Markdown-H2 section parsing for a future granularity ablation, but **native skill-directory granularity is the v1 default and the paper's first causal unit**.
 
-## Why this is the new primary direction
+## Why this is the supported branch
 
-The completed E2-LS1 result showed the only clear positive mechanism in the current repository: B6 reached 0.7889 while the unpruned `minimal-2` candidate corresponding to the winner had 0.7611 held-out performance. MCTS/static selection did not differentiate B3/B4/B5, so the search machinery is not the part currently supported by evidence. CMS isolates the supported mechanism instead of increasing search complexity.
+The completed E2-LS1 exploratory result reached `B6=0.7889`, while the corresponding unpruned `minimal-2` candidate was `0.7611`. Static/greedy/MCTS selectors did not separate B3/B4/B5. The positive evidence therefore points to pruning/compact procedural guidance rather than larger search. CMS isolates that mechanism.
 
-## Benchmark strategy
+## Benchmarks
 
-### Gate A: SWE-Skills-Bench headroom/interface check
+### Main: SkillLearnBench
 
-SWE-Skills-Bench is used only as a cheap external sanity gate because its published results already identify a small set of skills with positive treatment effect. It is not the main continual-learning benchmark because the released dataset is one benchmark task per skill (49 rows), with pass rate computed over verifier tests rather than reusable cross-instance learning splits.
+SkillLearnBench is the primary CMS benchmark because it provides skill-dependent tasks with multiple verified instances and accepts arbitrary skill-set directories through its upstream evaluator.
 
-Default positive skills:
+Canonical pilot:
 
-- `risk-metrics-calculation`
-- `gitlab-ci-patterns`
-- `tdd-workflow`
+```text
+weighted-gdp-calculation
+financial-analysis
+github-repo-analytics
+```
 
-The orchestration command runs the upstream benchmark's own paired `--use-skill` / `--no-use-skill` evaluation for these IDs and records the upstream comparison report. This gate asks only whether the local model/runtime can reproduce positive skill headroom.
+The committed `b1-one-shot-claude-sonnet-4-6` seed for each of these tasks currently contains exactly three native subskills, so the first screen is small and interpretable.
 
-Gate A passes when at least 2 of the 3 selected skills have positive local skill lift and their aggregate lift is positive. If Gate A fails, do not interpret CMS results from that runtime as evidence about skill quality; fix the execution/injection protocol or stop.
+Per task:
 
-### Gate B: SkillLearnBench causal-pruning pilot
+- dynamically discover `tasks/<task>/<task>-N/`;
+- first 2 numeric instances: selection;
+- all remaining instances: held-out;
+- seed: `skills/b1-one-shot-claude-sonnet-4-6/<task>/`;
+- human diagnostic: `skills/human_authored/<task>/`;
+- evaluation: upstream SkillLearnBench Docker/agent/verifier through `hyper_eval()`;
+- CMS only consumes scalar upstream pass/fail outcomes; verifier source is never provided to pruning.
 
-SkillLearnBench is the primary benchmark because it provides 20 skill-dependent tasks with 100 verified instances and accepts arbitrary generated skill directories through `evaluate_skills.py --skill-path`.
+### Optional: SWE-Skills-Bench headroom gate
 
-Default pilot tasks are chosen for clear reusable workflows and deterministic evaluation:
+SWE-Skills-Bench is not the main continual-learning benchmark because its released rows are skill-level tasks rather than repeated learning instances. It is supported only as a known-positive skill-interface sanity check on:
 
-- `weighted-gdp-calculation` (6 instances)
-- `financial-analysis` (6 instances)
-- `github-repo-analytics` (5 instances)
+```text
+risk-metrics-calculation
+gitlab-ci-patterns
+tdd-workflow
+```
 
-The runner must discover the actual number of instances from `tasks/<task>/<task>-N/`; it must not hard-code counts.
-
-For each task:
-
-- selection instances: first `selection_instances=2` instances by numeric suffix;
-- held-out instances: all remaining instances;
-- seed skill: default `skills/b1-one-shot-claude-sonnet-4-6/<task>/`, with `skills/human_authored/<task>/` supported as an upper-bound diagnostic;
-- execution: call the upstream `evaluate_skills.py` using the requested `agent`, `model`, `--skip-metrics`, and generated skill paths;
-- no verifier source code is provided to the skill author/pruner. CMS only consumes scalar pass/fail outcomes produced by upstream evaluation.
-
-Gate B passes when CMS beats the unpruned seed on held-out accuracy in at least 2/3 pilot tasks and the aggregate held-out lift is positive. A stronger paper-level target is positive held-out lift with fewer modules/tokens on most tasks.
+using the upstream paired skill/no-skill commands.
 
 ## Baselines
 
-The pilot reports:
+The first SkillLearnBench pilot reports:
 
-- `B0 no_skill`: upstream no-skill condition.
-- `B1 seed`: unmodified one-shot seed skill.
-- `B2 random_prune`: same number of modules as CMS, randomly retained with a fixed seed; run only after CMS has produced a smaller skill.
-- `B3 causal_minimal (ours)`: CMS knockout + conservative greedy deletion.
-- `B4 human_authored`: upstream human skill, diagnostic upper bound.
+- `B0 no_skill` — upstream no-skill condition.
+- `B1 seed` — committed unpruned one-shot native skill set.
+- `B2 random_prune` — same number of retained native skills as CMS, fixed random seed.
+- `B3 causal_minimal` — CMS knockout + conservative greedy deletion.
+- `B4 human_authored` — upstream human-authored skill set, diagnostic upper bound.
 
-SkillOpt and SkillRevise are required for a full paper but are not blockers for the first GO/STOP gate. The experiment plan records exact commands for adding their produced skill paths later.
+SkillOpt and SkillRevise are required for a full paper if the pilot passes, but are not blockers for the initial GO/STOP experiment.
 
-## Skill package model
+The first pilot intentionally starts from an existing one-shot seed and therefore does **not** claim outcome-only induction. If CMS succeeds, the next stage restores outcome-only seed induction as a separate experimental factor.
 
-Create focused units:
+## Components
 
-- `skill_modules.py`: parse/render skill Markdown while preserving frontmatter and non-removable material.
-- `benchmark_adapters.py`: validate external benchmark roots and construct upstream commands; no benchmark source is vendored.
-- `causal_pruning.py`: pure pruning logic independent of subprocess execution.
-- `causal_runner.py`: orchestration, caching, reports, CLI.
-
-A `SkillModule` has:
-
-- stable `id`
-- `title`
-- complete markdown `body`
-- `removable: bool`
-- source relative path.
-
-A `SkillPackage` owns all files under one task's skill directory plus parsed modules. Rendering a subset writes a complete upstream-compatible skill directory, preserving scripts/resources byte-for-byte.
+- `skill_modules.py` — native skill-directory parser/renderer; optional section granularity.
+- `causal_pruning.py` — pure leave-one-out treatment effects and conservative greedy reduction.
+- `benchmark_adapters.py` — thin external benchmark command/result adapters.
+- `skilllearn_bridge.py` — calls upstream SkillLearnBench `hyper_eval()` while bypassing only its unrelated unconditional Anthropic top-level CLI guard.
+- `causal_runner.py` — split discipline, content-addressed evaluation cache, controls, report, and CLI.
 
 ## Evaluation cache
 
-Every external evaluation is expensive. Cache by a stable key containing:
+Every external execution is cached using a stable key containing:
 
-- benchmark root git commit when available;
-- task instance IDs;
-- agent and model;
-- seed package digest;
-- retained module IDs;
+- benchmark git commit (or fallback evaluator digest);
+- exact query instance IDs;
+- agent/model;
+- full rendered skill-set content digest;
 - repeats;
-- max steps.
+- max workers/steps;
+- metric mode.
 
-A completed cache entry stores command, return code, parsed pass counts, raw stdout/stderr tail, and source report paths. Incomplete/failed calls are not treated as zero reward.
+A completed cache record stores command, pass count, total count, scalar score, and stdout/stderr. Non-zero infrastructure failures raise and are never converted to reward zero.
 
-## External-run contract
+## Runtime contract
 
-For SkillLearnBench, the adapter invokes upstream `evaluate_skills.py` rather than reimplementing Docker/agent logic. Generated CMS skill configurations live under the ISL-Dual output root and are passed through `--skill-path`.
+No local GPU is required. The main benchmark runs Docker agents against remote APIs.
 
-The adapter must support `--dry-run` and print exact upstream commands without execution.
+Protocol-faithful default:
 
-The runner must fail fast when:
+```text
+agent = claude-code
+model = claude-sonnet-4-6
+```
 
-- benchmark root is missing required scripts;
-- task directories or seed skills are missing;
-- Docker is unavailable for live runs;
-- the selected agent's required credentials are missing according to upstream preflight;
-- an upstream evaluation exits non-zero;
-- expected result artifacts cannot be parsed.
+The canonical default requires `ANTHROPIC_API_KEY`; `github-repo-analytics` also requires `GH_TOKEN`. Codex can be selected explicitly when `OPENAI_API_KEY` is available. Host ChatGPT/Codex login state is not assumed to propagate inside benchmark Docker.
 
-Infrastructure failure is never converted into model reward 0.
+SkillLearnBench's current top-level CLI checks an Anthropic key before parsing the selected agent. CMS therefore imports the upstream evaluator and calls `hyper_eval()` through a thin bridge. Live bridge execution still invokes upstream Docker readiness, per-agent/per-task credential validation, skill-path validation, agent execution, and verifier logic.
 
 ## CLI
 
-Add console script:
+Console script:
 
-`isl-causal-skill = isl_dual.causal_runner:main`
+```text
+isl-causal-skill = isl_dual.causal_runner:main
+```
 
 Subcommands:
 
-### `preflight`
+- `preflight` — file/layout/skill checks only; no Docker or API.
+- `pilot` — canonical three-task CMS GO/STOP experiment; supports mandatory `--dry-run`.
+- `prune` — same CMS engine for an explicit task list.
+- `skilllearn-headroom` — no-skill vs seed vs human on all instances.
+- `swe-headroom` — optional known-positive SWE-Skills-Bench paired protocol gate.
 
-Validate benchmark layout and selected task/seed availability.
-
-### `swe-headroom`
-
-Run or dry-run the three known-positive SWE-Skills-Bench paired conditions using the upstream scripts.
-
-### `skilllearn-headroom`
-
-Evaluate `none`, seed, and human-authored on all instances of the selected SkillLearnBench tasks before optimization.
-
-### `prune`
-
-Run CMS on selection instances, materialize final skills, then evaluate `none`, seed, random-prune, CMS, and human-authored on held-out instances.
-
-### `pilot`
-
-Canonical one-command sequence: preflight -> SkillLearnBench headroom -> CMS prune -> held-out comparison -> GO/STOP report. SWE headroom remains a separate optional protocol check because it uses a different upstream harness/provider.
-
-## Default pilot command
+Canonical sequence:
 
 ```bash
+isl-causal-skill preflight \
+  --skilllearn-root /path/to/SkillLearnBench
+
 isl-causal-skill pilot \
   --skilllearn-root /path/to/SkillLearnBench \
   --output runs/cms-v1-pilot \
-  --tasks weighted-gdp-calculation financial-analysis github-repo-analytics \
-  --seed-config b1-one-shot-claude-sonnet-4-6 \
-  --agent codex \
-  --model gpt-5.6-luna \
-  --selection-instances 2 \
-  --max-workers 3 \
-  --skip-metrics
-```
+  --dry-run
 
-The user may substitute an upstream-supported model. `--dry-run` must be run first on a new machine.
+isl-causal-skill pilot \
+  --skilllearn-root /path/to/SkillLearnBench \
+  --output runs/cms-v1-pilot
+```
 
 ## Scientific stop rule
 
-Do not scale to all 20 tasks until the pilot is complete.
+Do not scale beyond the three-task pilot until it finishes.
 
-STOP this direction if either condition holds after a protocol-valid run:
+Headroom must satisfy:
 
-1. seed/human skills show no positive headroom on the selected SkillLearnBench tasks; or
-2. CMS fails to beat the unpruned seed on at least 2/3 tasks and aggregate held-out lift is non-positive.
+```text
+max(seed, human) > no_skill in >= 2/3 tasks
+mean headroom lift > 0
+```
 
-GO to full evaluation only if CMS produces a reproducible held-out advantage while retaining fewer modules/tokens.
+CMS must satisfy:
+
+```text
+CMS > seed on held-out in >= 2/3 tasks
+mean(CMS - seed) > 0
+CMS retains fewer native skills AND fewer bytes in >= 2/3 tasks
+```
+
+If either gate fails after a protocol-valid run, **STOP this direction**. Do not rescue it by increasing MCTS budget or adding search complexity.
+
+If both pass, expand to paper-level evaluation: broader SkillLearnBench coverage, repeated runs/models, SkillOpt/SkillRevise, outcome-only seed induction, and native-skill treatment-effect analysis. Section-level pruning is then a granularity ablation.
 
 ## Legacy compatibility
 
-Do not delete old ISL-Dual CLIs, results, or data structures. Update README/agent handoff so CMS is the recommended next experiment and label the existing `isl-dual-mechanism` campaign as the completed legacy exploratory line.
+Do not delete the legacy ISL-Dual CLIs, code, or `runs/v2-primary-2fam-luna` evidence. They provide the provenance for this pivot but are no longer the canonical experiment.
