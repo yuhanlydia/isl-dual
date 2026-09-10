@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import random
@@ -9,7 +10,12 @@ from pathlib import Path
 from statistics import fmean
 from typing import Any, Sequence
 
-from .benchmark_adapters import BenchmarkRun, SkillLearnBenchAdapter, discover_skilllearn_instances
+from .benchmark_adapters import (
+    BenchmarkRun,
+    SWESkillsBenchAdapter,
+    SkillLearnBenchAdapter,
+    discover_skilllearn_instances,
+)
 from .causal_pruning import PruningResult, causal_prune
 from .skill_modules import SkillPackage, load_skill_package, render_skill_package
 
@@ -21,6 +27,11 @@ DEFAULT_TASKS = (
 )
 DEFAULT_SEED_CONFIG = "b1-one-shot-claude-sonnet-4-6"
 DEFAULT_HUMAN_CONFIG = "human_authored"
+DEFAULT_SWE_SKILLS = (
+    "risk-metrics-calculation",
+    "gitlab-ci-patterns",
+    "tdd-workflow",
+)
 
 
 @dataclass(frozen=True)
@@ -64,6 +75,21 @@ def resolve_skill_task_path(root: Path, config: str, task: str) -> Path:
             return candidate
     raise FileNotFoundError(
         f"SkillLearnBench skill task directory not found for config={config!r}, task={task!r}; "
+        f"checked: {', '.join(str(path) for path in candidates)}"
+    )
+
+
+def _resolve_skill_config_root(root: Path, config: str) -> Path:
+    root = Path(root)
+    candidates = (
+        root / "skills" / config,
+        root / "output" / "skill_generation_results" / config,
+    )
+    for candidate in candidates:
+        if candidate.is_dir():
+            return candidate
+    raise FileNotFoundError(
+        f"SkillLearnBench skill config directory not found for {config!r}; "
         f"checked: {', '.join(str(path) for path in candidates)}"
     )
 
@@ -367,3 +393,319 @@ def summarize_pilot(results: Sequence[CMSTaskResult]) -> dict[str, Any]:
         "method_pass": method_pass,
         "go": bool(headroom_pass and method_pass),
     }
+
+
+def plan_pilot(
+    skilllearn_root: Path,
+    *,
+    tasks: Sequence[str] = DEFAULT_TASKS,
+    seed_config: str = DEFAULT_SEED_CONFIG,
+    human_config: str = DEFAULT_HUMAN_CONFIG,
+    selection_instances: int = 2,
+    agent: str = "claude-code",
+    model: str = "claude-sonnet-4-6",
+    max_workers: int = 3,
+    max_steps: int = 100,
+    output: Path = Path("runs/cms-v1-pilot"),
+) -> dict[str, Any]:
+    root = Path(skilllearn_root).resolve()
+    output = Path(output).resolve()
+    adapter = SkillLearnBenchAdapter(root)
+    adapter.preflight(tasks)
+    seed_root = _resolve_skill_config_root(root, seed_config)
+    human_root = _resolve_skill_config_root(root, human_config)
+    rows: list[dict[str, Any]] = []
+    for task in tasks:
+        instances = discover_skilllearn_instances(root, task)
+        if selection_instances < 1 or selection_instances >= len(instances):
+            raise ValueError(
+                f"selection_instances must be in [1, {len(instances) - 1}] for {task}"
+            )
+        selection = instances[:selection_instances]
+        heldout = instances[selection_instances:]
+        package = load_skill_package(resolve_skill_task_path(root, seed_config, task))
+        module_count = len(package.modules)
+        if module_count == 0:
+            raise ValueError(f"seed skill for {task} has no removable H2 modules")
+        no_skill_command = adapter.build_command(
+            heldout,
+            skill_path=None,
+            agent=agent,
+            model=model,
+            max_workers=max_workers,
+            max_steps=max_steps,
+            trials_dir=output / "plan" / task / "no_skill",
+            dry_run=True,
+        )
+        seed_command = adapter.build_command(
+            heldout,
+            skill_path=seed_root,
+            agent=agent,
+            model=model,
+            max_workers=max_workers,
+            max_steps=max_steps,
+            trials_dir=output / "plan" / task / "seed",
+            dry_run=True,
+        )
+        rows.append(
+            {
+                "task": task,
+                "selection_instances": selection,
+                "heldout_instances": heldout,
+                "seed_skill": str(resolve_skill_task_path(root, seed_config, task)),
+                "human_skill": str(resolve_skill_task_path(root, human_config, task)),
+                "seed_modules": module_count,
+                "max_selection_skill_evaluations": 1 + 2 * module_count,
+                "heldout_conditions": 5,
+                "example_no_skill_command": no_skill_command,
+                "example_seed_command": seed_command,
+            }
+        )
+    return {
+        "benchmark_root": str(root),
+        "output": str(output),
+        "agent": agent,
+        "model": model,
+        "selection_instances_per_task": selection_instances,
+        "tasks": rows,
+        "note": "dry-run planning only; no Docker/model/API calls are executed",
+    }
+
+
+def run_pilot(
+    skilllearn_root: Path,
+    *,
+    output: Path,
+    tasks: Sequence[str] = DEFAULT_TASKS,
+    seed_config: str = DEFAULT_SEED_CONFIG,
+    human_config: str = DEFAULT_HUMAN_CONFIG,
+    config: CMSConfig,
+) -> dict[str, Any]:
+    root = Path(skilllearn_root).resolve()
+    output = Path(output).resolve()
+    adapter = SkillLearnBenchAdapter(root)
+    adapter.preflight(tasks)
+    results: list[CMSTaskResult] = []
+    for task in tasks:
+        result = run_cms_task(
+            adapter,
+            task=task,
+            seed_task_path=resolve_skill_task_path(root, seed_config, task),
+            human_task_path=resolve_skill_task_path(root, human_config, task),
+            output=output,
+            config=config,
+        )
+        results.append(result)
+    summary = summarize_pilot(results)
+    payload = {
+        "method": "Causal Minimal Skill (CMS)",
+        "skilllearn_root": str(root),
+        "tasks": [asdict(result) for result in results],
+        "summary": summary,
+        "config": asdict(config),
+        "seed_config": seed_config,
+        "human_config": human_config,
+    }
+    output.mkdir(parents=True, exist_ok=True)
+    pilot_path = output / "pilot.json"
+    temporary = pilot_path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True))
+    temporary.replace(pilot_path)
+    return payload
+
+
+def run_skilllearn_headroom(
+    skilllearn_root: Path,
+    *,
+    output: Path,
+    tasks: Sequence[str],
+    seed_config: str,
+    human_config: str,
+    config: CMSConfig,
+) -> dict[str, Any]:
+    root = Path(skilllearn_root).resolve()
+    output = Path(output).resolve()
+    adapter = SkillLearnBenchAdapter(root)
+    adapter.preflight(tasks)
+    seed_root = _resolve_skill_config_root(root, seed_config)
+    human_root = _resolve_skill_config_root(root, human_config)
+    rows: dict[str, dict[str, float]] = {}
+    for task in tasks:
+        instances = discover_skilllearn_instances(root, task)
+        scores: dict[str, float] = {}
+        for name, skill_path in (
+            ("no_skill", None),
+            ("seed", seed_root),
+            ("human_authored", human_root),
+        ):
+            scores[name] = _score_or_fail(
+                _evaluate_cached(
+                    adapter,
+                    instances,
+                    skill_path=skill_path,
+                    output=output,
+                    config=config,
+                )
+            )
+        rows[task] = scores
+    lifts = [max(row["seed"], row["human_authored"]) - row["no_skill"] for row in rows.values()]
+    payload = {
+        "tasks": rows,
+        "positive_tasks": sum(lift > 1e-12 for lift in lifts),
+        "aggregate_headroom_lift": fmean(lifts),
+    }
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "headroom.json").write_text(json.dumps(payload, indent=2, sort_keys=True))
+    return payload
+
+
+def _add_skilllearn_common(parser: argparse.ArgumentParser, *, output_required: bool) -> None:
+    parser.add_argument("--skilllearn-root", type=Path, required=True)
+    if output_required:
+        parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--tasks", nargs="+", default=list(DEFAULT_TASKS))
+    parser.add_argument("--seed-config", default=DEFAULT_SEED_CONFIG)
+    parser.add_argument("--human-config", default=DEFAULT_HUMAN_CONFIG)
+    parser.add_argument("--agent", default="claude-code")
+    parser.add_argument("--model", default="claude-sonnet-4-6")
+    parser.add_argument("--selection-instances", type=int, default=2)
+    parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument("--max-workers", type=int, default=3)
+    parser.add_argument("--max-steps", type=int, default=100)
+    parser.add_argument("--tolerance", type=float, default=0.0)
+    parser.add_argument("--min-modules", type=int, default=1)
+    parser.add_argument("--random-seed", type=int, default=20260910)
+    parser.set_defaults(skip_metrics=True)
+    parser.add_argument(
+        "--with-metrics",
+        action="store_false",
+        dest="skip_metrics",
+        help="also run SkillLearnBench LLM-as-judge metrics; not needed for the primary pass/fail gate",
+    )
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="isl-causal-skill",
+        description="Causal Minimal Skill: execution-grounded module knockout and conservative skill compression.",
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    preflight = subparsers.add_parser("preflight", help="validate SkillLearnBench layout and seed skills")
+    _add_skilllearn_common(preflight, output_required=False)
+
+    pilot = subparsers.add_parser("pilot", help="run the canonical 3-task GO/STOP pilot")
+    _add_skilllearn_common(pilot, output_required=True)
+    pilot.add_argument("--dry-run", action="store_true")
+
+    prune = subparsers.add_parser("prune", help="run CMS on one or more selected tasks")
+    _add_skilllearn_common(prune, output_required=True)
+    prune.add_argument("--dry-run", action="store_true")
+
+    headroom = subparsers.add_parser("skilllearn-headroom", help="measure no-skill vs seed vs human headroom")
+    _add_skilllearn_common(headroom, output_required=True)
+    headroom.add_argument("--dry-run", action="store_true")
+
+    swe = subparsers.add_parser("swe-headroom", help="run the optional known-positive SWE-Skills-Bench protocol gate")
+    swe.add_argument("--swe-root", type=Path, required=True)
+    swe.add_argument("--skills", nargs="+", default=list(DEFAULT_SWE_SKILLS))
+    swe.add_argument("--dry-run", action="store_true")
+    swe.add_argument("--no-resume", action="store_false", dest="resume", default=True)
+    return parser
+
+
+def _config_from_args(args: argparse.Namespace) -> CMSConfig:
+    return CMSConfig(
+        agent=args.agent,
+        model=args.model,
+        selection_instances=args.selection_instances,
+        repeats=args.repeats,
+        max_workers=args.max_workers,
+        max_steps=args.max_steps,
+        skip_metrics=args.skip_metrics,
+        tolerance=args.tolerance,
+        min_modules=args.min_modules,
+        random_seed=args.random_seed,
+    )
+
+
+def _preflight(args: argparse.Namespace) -> None:
+    root = args.skilllearn_root.resolve()
+    adapter = SkillLearnBenchAdapter(root)
+    adapter.preflight(args.tasks)
+    for task in args.tasks:
+        load_skill_package(resolve_skill_task_path(root, args.seed_config, task))
+        load_skill_package(resolve_skill_task_path(root, args.human_config, task))
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    if args.command == "preflight":
+        _preflight(args)
+        print("preflight: PASS")
+        print("Note: live execution will additionally require Docker and the selected upstream agent API key.")
+        return 0
+
+    if args.command in {"pilot", "prune", "skilllearn-headroom"}:
+        _preflight(args)
+        if args.dry_run:
+            plan = plan_pilot(
+                args.skilllearn_root,
+                tasks=args.tasks,
+                seed_config=args.seed_config,
+                human_config=args.human_config,
+                selection_instances=args.selection_instances,
+                agent=args.agent,
+                model=args.model,
+                max_workers=args.max_workers,
+                max_steps=args.max_steps,
+                output=args.output,
+            )
+            print("NO MODEL/API CALLS — CMS dry-run plan")
+            print(json.dumps(plan, indent=2, sort_keys=True))
+            return 0
+
+        config = _config_from_args(args)
+        if args.command == "skilllearn-headroom":
+            payload = run_skilllearn_headroom(
+                args.skilllearn_root,
+                output=args.output,
+                tasks=args.tasks,
+                seed_config=args.seed_config,
+                human_config=args.human_config,
+                config=config,
+            )
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            return 0
+
+        payload = run_pilot(
+            args.skilllearn_root,
+            output=args.output,
+            tasks=args.tasks,
+            seed_config=args.seed_config,
+            human_config=args.human_config,
+            config=config,
+        )
+        decision = "GO" if payload["summary"]["go"] else "STOP"
+        print(f"CMS decision: {decision}")
+        print(json.dumps(payload["summary"], indent=2, sort_keys=True))
+        print(f"report: {Path(args.output).resolve() / 'pilot.json'}")
+        return 0
+
+    if args.command == "swe-headroom":
+        adapter = SWESkillsBenchAdapter(args.swe_root)
+        if args.dry_run:
+            print("NO MODEL/API CALLS — SWE-Skills-Bench headroom commands")
+            for command in adapter.build_headroom_commands(args.skills, dry_run=True, resume=args.resume):
+                print(" ".join(command))
+            return 0
+        runs = adapter.run_headroom(args.skills, dry_run=False, resume=args.resume)
+        print(f"completed {len(runs)} upstream SWE-Skills-Bench commands")
+        print("Run the upstream scripts/compare_pass_rate.py --all report to inspect per-skill treatment effects.")
+        return 0
+
+    raise AssertionError(f"unhandled command: {args.command}")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
