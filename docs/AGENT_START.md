@@ -37,7 +37,9 @@ financial-analysis
 github-repo-analytics
 ```
 
-Default seed skill:
+Each committed one-shot seed currently contains three independently registered native skill directories. CMS treats those native skills—not Markdown headings inside them—as the causal units in v1.
+
+Default seed skill set:
 
 ```text
 b1-one-shot-claude-sonnet-4-6
@@ -80,9 +82,11 @@ For each task it must show:
 - first two numeric instances as selection instances;
 - all remaining instances as held-out;
 - disjoint selection/held-out sets;
-- seed module count;
+- native seed-skill count;
 - maximum selection-evaluation count;
 - five held-out conditions: no-skill, seed, random-prune, CMS, human-authored.
+
+For the current canonical seeds, `K=3`, so the maximum selection-set evaluations are `1 + 2K = 7` per task before cache deduplication.
 
 ## 5. Run the canonical pilot
 
@@ -96,16 +100,18 @@ Do not tune on held-out results. Defaults are fixed:
 
 ```text
 selection instances = 2
-Markdown H2 sections = removable modules
-leave-one-module-out causal knockout
+causal module = one native skill directory containing SKILL.md
+leave-one-native-skill-out causal knockout
 greedy deletion tolerance = 0.0
-min modules = 1
+min retained native skills = 1
 repeats = 1
 max workers = 3
 max steps = 100
 primary metrics = upstream pass/fail only
 random seed = 20260910
 ```
+
+A finer Markdown-H2 section mode exists only for future granularity ablation and is not used by the canonical pilot.
 
 The run is resumable. Re-run the exact command and same output namespace after an interruption. Completed benchmark evaluations are content-addressed and reused from `cache/evaluations/`; infrastructure failures are never stored as scientific zero rewards.
 
@@ -120,12 +126,12 @@ positive skill headroom in >= 2/3 tasks
 aggregate skill headroom > 0
 CMS > seed on held-out in >= 2/3 tasks
 mean(CMS - seed) > 0
-CMS has fewer modules AND fewer bytes in >= 2/3 tasks
+CMS retains fewer native skills AND fewer bytes in >= 2/3 tasks
 ```
 
 If the result is `STOP`, stop this research direction. Do not rescue it by increasing MCTS budget, candidate count, or search depth.
 
-If the result is `GO`, the next paper-level stage is: expand benchmark coverage, add repeated runs/models, compare against SkillOpt/SkillRevise, restore outcome-only seed induction, and analyze module-level treatment effects.
+If the result is `GO`, the next paper-level stage is: expand benchmark coverage, add repeated runs/models, compare against SkillOpt/SkillRevise, restore outcome-only seed induction, and analyze native-skill treatment effects. Section-level pruning can be added later as an ablation.
 
 ## 7. Optional headroom checks
 
