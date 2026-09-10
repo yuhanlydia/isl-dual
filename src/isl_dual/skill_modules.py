@@ -31,7 +31,7 @@ class SkillMarkdown:
 class SkillPackage:
     root: Path
     markdown_files: tuple[SkillMarkdown, ...]
-    granularity: Granularity = "section"
+    granularity: Granularity = "skill"
 
     @property
     def modules(self) -> tuple[SkillModule, ...]:
@@ -94,7 +94,7 @@ def _parse_native_skill(relative_path: Path, text: str) -> SkillMarkdown:
 def load_skill_package(
     root: Path,
     *,
-    granularity: Granularity = "section",
+    granularity: Granularity = "skill",
 ) -> SkillPackage:
     root = Path(root)
     if not root.is_dir():
