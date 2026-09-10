@@ -1,30 +1,40 @@
 # Causal Minimal Skill (CMS) — Canonical Experiment
 
-This document is the canonical experiment plan after the completed exploratory ISL-Dual v2 run. The next scientific question is no longer whether a larger inverse/MCTS framework works in general. It is whether **execution-grounded removal of unnecessary procedural modules produces a smaller skill that transfers better**.
+This document is the canonical experiment plan after the completed exploratory ISL-Dual v2 run. The next scientific question is no longer whether a larger inverse/MCTS framework works in general. It is whether **execution-grounded removal of unnecessary native skills produces a smaller skill set that transfers better**.
 
 ## 1. Method
 
-Given a seed skill with reusable Markdown H2 modules `S = {m_1, ..., m_K}`, CMS measures each module by execution knockout on selection instances:
+SkillLearnBench already represents a task's procedural knowledge as a directory containing multiple independently registered native skills. CMS therefore uses each immediate native skill directory containing a `SKILL.md` as one causal module:
 
 ```text
-Delta_j = R(S) - R(S \ {m_j})
+S = {s_1, ..., s_K}
 ```
 
-Then it greedily removes the least useful modules, accepting a deletion only when the current selection score does not decrease beyond the configured tolerance. The final skill is frozen and evaluated only on held-out instances.
+For example, the committed `weighted-gdp-calculation` one-shot seed contains three native skills: `excel-index-match`, `excel-openpyxl-formulas`, and `excel-weighted-mean`.
+
+CMS measures each native skill by execution knockout on selection instances:
+
+```text
+Delta_j = R(S) - R(S \ {s_j})
+```
+
+Then it greedily removes the least useful skills, accepting a deletion only when the current selection score does not decrease beyond the configured tolerance. Removal deletes the whole native skill directory, including its `SKILL.md` and bundled resources. Retained directories are copied byte-for-byte. The final reduced skill set is frozen and evaluated only on held-out instances.
 
 Selection and held-out instances are disjoint. Held-out results never feed back into pruning.
+
+A finer Markdown-H2 section parser is implemented only for a future granularity ablation; it is **not** the default v1 experiment.
 
 Primary comparison:
 
 ```text
 B0  no_skill
-B1  unpruned seed skill
-B2  random prune to the same number of modules as CMS
-B3  causal minimal skill (CMS, ours)
-B4  human-authored skill (diagnostic upper bound)
+B1  unpruned seed skill set
+B2  random prune to the same number of native skills as CMS
+B3  causal minimal skill set (CMS, ours)
+B4  human-authored skill set (diagnostic upper bound)
 ```
 
-The first pilot starts from SkillLearnBench's committed one-shot seed skill rather than claiming outcome-only induction. This intentionally isolates the pruning mechanism that was positive in E2-LS1. If CMS passes the GO gate, outcome-only seed induction can be reintroduced as the next experiment without confounding whether pruning itself works.
+The first pilot starts from SkillLearnBench's committed one-shot seed skill set rather than claiming outcome-only induction. This intentionally isolates the pruning mechanism that was positive in E2-LS1. If CMS passes the GO gate, outcome-only seed induction can be reintroduced as the next experiment without confounding whether pruning itself works.
 
 ## 2. Main benchmark: SkillLearnBench
 
@@ -43,6 +53,8 @@ weighted-gdp-calculation
 financial-analysis
 github-repo-analytics
 ```
+
+All three committed one-shot seed configurations currently contain three native subskills, making the first causal screen small and directly interpretable.
 
 For each task, CMS discovers the available query instances dynamically. The first two numeric instances are selection instances; every remaining instance is frozen held-out evaluation.
 
@@ -119,8 +131,8 @@ The dry run prints, for each task:
 - exact selection instances;
 - exact held-out instances;
 - seed/human skill locations;
-- seed module count;
-- maximum number of selection skill evaluations (`1 + 2K` upper bound for full + one-at-a-time knockouts + greedy pass);
+- native skill count;
+- maximum number of selection skill-set evaluations (`1 + 2K` upper bound for full + one-at-a-time knockouts + greedy pass);
 - five held-out conditions;
 - example upstream SkillLearnBench commands.
 
@@ -140,10 +152,10 @@ The default live configuration is:
 
 ```text
 selection_instances = 2
-deterministic module parser = Markdown H2 sections
-causal knockout = leave-one-module-out
+causal module = one native skill directory containing SKILL.md
+causal knockout = leave-one-native-skill-out
 selection tolerance = 0.0
-minimum retained modules = 1
+minimum retained native skills = 1
 repeats = 1
 max_workers = 3
 max_steps = 100
@@ -153,6 +165,8 @@ random seed = 20260910
 
 Do not tune these settings on held-out results.
 
+Because the three canonical seeds currently have `K=3`, the v1 screen needs at most seven distinct selection skill-set evaluations per task before cache reuse (`1 + 3` knockouts + at most `3` greedy candidates), followed by five held-out conditions. Exact executed subsets can be fewer because the content-addressed cache deduplicates repeated variants.
+
 Safe resume: rerun the exact same command and output namespace. Every upstream evaluation is cached by benchmark identity, task instances, model/agent, seed/variant contents, repeats, and step budget. A completed cached evaluation is reused. Failed infrastructure calls are not cached as reward zero.
 
 Outputs:
@@ -161,7 +175,7 @@ Outputs:
 runs/cms-v1-pilot/
   pilot.json
   tasks/<task>/result.json
-  skills/<task>/<variant>/...
+  skills/<task>/<variant>/<task>/<retained-native-skill>/...
   cache/evaluations/<digest>.json
   trials/<digest>/...
 ```
@@ -189,12 +203,12 @@ CMS must satisfy all three:
 ```text
 CMS > seed on held-out performance in >= 2/3 tasks
 mean(CMS - seed) > 0 across the pilot
-CMS has fewer modules and fewer bytes than seed in >= 2/3 tasks
+CMS retains fewer native skills and fewer bytes than seed in >= 2/3 tasks
 ```
 
 If these fail, **STOP this research direction**. Do not expand to all 20 tasks and do not add MCTS/search complexity.
 
-If they pass, **GO** to a full paper-level evaluation: all suitable SkillLearnBench tasks, multiple seeds/repeats/models, SkillOpt and SkillRevise baselines, outcome-only seed induction, and module-level causal analyses.
+If they pass, **GO** to a full paper-level evaluation: all suitable SkillLearnBench tasks, multiple seeds/repeats/models, SkillOpt and SkillRevise baselines, outcome-only seed induction, and native-skill treatment-effect analyses. Markdown-section granularity can then be added as an ablation.
 
 ## 8. Cheap headroom-only check
 
