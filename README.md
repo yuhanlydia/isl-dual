@@ -9,28 +9,28 @@ The latest SkillEvolBench v2 experiment found one clear positive mechanism: the 
 
 ## Current method: Causal Minimal Skill
 
-CMS treats a procedural skill as reusable modules rather than one indivisible prompt. For a seed skill
+SkillLearnBench already represents one task's procedural knowledge as a **set of independently registered native skills**. CMS treats those native skill directories as the causal units:
 
 ```text
-S = {m1, ..., mK}
+S = {s1, ..., sK}
 ```
 
-it measures each module by an execution knockout on **selection instances only**:
+For each native skill `s_j`, CMS measures a leave-one-skill-out treatment effect on **selection instances only**:
 
 ```text
-Delta_j = R(S) - R(S \ {m_j})
+Delta_j = R(S) - R(S \ {s_j})
 ```
 
-Then it greedily removes the least useful modules, accepting a deletion only when the current selection score does not decrease beyond a fixed tolerance. The resulting compact skill is frozen and evaluated on held-out instances that were never used for pruning.
+Then it greedily removes the least useful native skills, accepting a deletion only when the current selection score does not decrease beyond a fixed tolerance. Retained skill directories are preserved byte-for-byte; removed skills disappear entirely. The resulting compact skill set is frozen and evaluated on held-out instances that were never used for pruning.
 
 ```text
-seed SKILL.md
+seed native skill set
     |
     v
-H2 procedural modules
+{s1, s2, s3, ...}
     |
-    +--> full skill execution
-    +--> leave-one-module-out execution
+    +--> full-set execution
+    +--> leave-one-skill-out execution
     |          |
     |          v
     |      causal effects
@@ -39,23 +39,25 @@ H2 procedural modules
 conservative greedy pruning
     |
     v
-minimal frozen skill
+minimal frozen native skill set
     |
     v
 held-out evaluation
 ```
+
+A finer Markdown-H2 section parser is implemented only for future granularity ablation; it is not the canonical v1 unit.
 
 Primary comparison:
 
 | ID | Condition |
 |---|---|
 | B0 | no skill |
-| B1 | unpruned seed skill |
-| B2 | random prune to the same module count as CMS |
+| B1 | unpruned seed skill set |
+| B2 | random prune to the same native-skill count as CMS |
 | **B3** | **Causal Minimal Skill (ours)** |
-| B4 | human-authored skill, diagnostic upper bound |
+| B4 | human-authored skill set, diagnostic upper bound |
 
-The first pilot deliberately starts from SkillLearnBench's committed one-shot seed skill. It does **not** claim outcome-only induction yet. This isolates whether causal minimality itself works. If CMS passes the GO gate, outcome-only seed induction is reintroduced as a second-stage experiment.
+The first pilot deliberately starts from SkillLearnBench's committed one-shot seed skill set. It does **not** claim outcome-only induction yet. This isolates whether causal minimality itself works. If CMS passes the GO gate, outcome-only seed induction is reintroduced as a second-stage experiment.
 
 ## Main benchmark: SkillLearnBench
 
@@ -72,6 +74,8 @@ weighted-gdp-calculation
 financial-analysis
 github-repo-analytics
 ```
+
+Each committed `b1-one-shot-claude-sonnet-4-6` seed for these tasks currently contains exactly **three native skills**, so the first causal screen is small and interpretable.
 
 CMS dynamically discovers every query instance. By default:
 
@@ -133,7 +137,7 @@ isl-causal-skill pilot \
   --output runs/cms-v1-pilot
 ```
 
-Safe resume uses the **same command and same output namespace**. External evaluations are content-addressed by benchmark identity, exact task instances, model/agent, skill contents, repeats, and execution budget. Completed calls are reused; infrastructure failures are never cached as scientific zero rewards.
+Safe resume uses the **same command and same output namespace**. External evaluations are content-addressed by benchmark identity, exact task instances, model/agent, skill-set contents, repeats, and execution budget. Completed calls are reused; infrastructure failures are never cached as scientific zero rewards.
 
 Detailed instructions are in:
 
@@ -148,15 +152,18 @@ Detailed instructions are in:
 | Pilot tasks | 3 |
 | Selection instances / task | 2 |
 | Held-out instances | all remaining |
-| Removable unit | Markdown H2 section |
-| Knockout | leave-one-module-out |
+| Causal unit | native skill directory containing `SKILL.md` |
+| Seed native skills / canonical task | 3 |
+| Knockout | leave-one-native-skill-out |
 | Greedy tolerance | 0.0 |
-| Minimum modules | 1 |
+| Minimum native skills | 1 |
 | Repeats | 1 |
 | Max workers | 3 |
 | Max agent steps | 100 |
 | Primary metric | upstream pass/fail |
 | Random seed | 20260910 |
+
+With `K=3`, the selection stage needs at most `1 + 2K = 7` distinct skill-set evaluations per task before cache deduplication.
 
 Held-out scores do not feed back into pruning and must not be used to tune these settings.
 
@@ -175,12 +182,12 @@ positive skill headroom in >= 2/3 tasks
 aggregate skill headroom > 0
 CMS > seed on held-out in >= 2/3 tasks
 mean(CMS - seed) > 0
-CMS has fewer modules AND fewer bytes than seed in >= 2/3 tasks
+CMS retains fewer native skills AND fewer bytes than seed in >= 2/3 tasks
 ```
 
 If the pilot prints `STOP`, stop this research direction. Do not rescue it by increasing MCTS budget, candidate count, or search depth.
 
-If it prints `GO`, the paper-level stage is: broader SkillLearnBench coverage, repeated runs/models, SkillOpt and SkillRevise baselines, outcome-only seed induction, and module-level treatment-effect analyses.
+If it prints `GO`, the paper-level stage is: broader SkillLearnBench coverage, repeated runs/models, SkillOpt and SkillRevise baselines, outcome-only seed induction, and native-skill treatment-effect analyses. H2-section pruning becomes a granularity ablation rather than the main method.
 
 ## Optional known-positive skill-interface gate
 
@@ -205,8 +212,8 @@ See `docs/CMS_EXPERIMENT.md` before running it live.
 
 ## CMS implementation
 
-- `skill_modules.py` — parse/render modular `SKILL.md` packages while preserving YAML frontmatter and non-Markdown resources.
-- `causal_pruning.py` — deterministic leave-one-module-out effects plus conservative greedy compression.
+- `skill_modules.py` — default native skill-directory parser/renderer plus optional H2-section granularity; preserved skills/resources are copied byte-for-byte.
+- `causal_pruning.py` — deterministic leave-one-skill-out effects plus conservative greedy compression.
 - `benchmark_adapters.py` — thin wrappers around external SkillLearnBench/SWE-Skills-Bench execution.
 - `skilllearn_bridge.py` — calls SkillLearnBench's own `hyper_eval()` while bypassing its unrelated unconditional Anthropic-only top-level CLI guard; live per-agent/per-task key validation is still upstream-authoritative.
 - `causal_runner.py` — selection/held-out splitting, content-addressed evaluation cache, random-prune control, held-out evaluation, GO/STOP report, and CLI.
@@ -217,7 +224,7 @@ Generated results live under the chosen output namespace, e.g.:
 runs/cms-v1-pilot/
   pilot.json
   tasks/<task>/result.json
-  skills/<task>/<variant>/...
+  skills/<task>/<variant>/<task>/<retained-native-skill>/...
   cache/evaluations/<digest>.json
   trials/<digest>/...
 ```
