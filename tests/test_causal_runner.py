@@ -15,14 +15,24 @@ from isl_dual.causal_runner import (
 
 
 def _write_package(root: Path, config: str, task: str, *, human: bool = False) -> Path:
-    skill = root / "skills" / config / task / "workflow"
-    skill.mkdir(parents=True, exist_ok=True)
+    task_root = root / "skills" / config / task
     if human:
-        text = """---\nname: oracle\ndescription: oracle\n---\n# Oracle\n\n## Oracle\nUse the complete correct workflow.\n"""
+        skill = task_root / "oracle-skill"
+        skill.mkdir(parents=True, exist_ok=True)
+        (skill / "SKILL.md").write_text(
+            "---\nname: oracle-skill\ndescription: oracle\n---\n# Oracle\n\n## Procedure\nUse the complete correct workflow.\n"
+        )
     else:
-        text = """---\nname: seed\ndescription: seed\n---\n# Seed\n\n## Helpful\nUse the reusable helpful procedure.\n\n## Harmful\nAdd an unnecessary harmful detour.\n"""
-    (skill / "SKILL.md").write_text(text)
-    return root / "skills" / config / task
+        for name, body in (
+            ("helpful-skill", "Use the reusable helpful procedure."),
+            ("harmful-skill", "Add an unnecessary harmful detour."),
+        ):
+            skill = task_root / name
+            skill.mkdir(parents=True, exist_ok=True)
+            (skill / "SKILL.md").write_text(
+                f"---\nname: {name}\ndescription: {name}\n---\n# {name}\n\n## Procedure\n{body}\n"
+            )
+    return task_root
 
 
 def _benchmark_root(root: Path, task: str = "demo", instances: int = 5) -> Path:
@@ -65,13 +75,13 @@ class FakeAdapter:
                 path.read_text()
                 for path in (Path(skill_path) / "demo").rglob("SKILL.md")
             )
-            if "## Oracle" in text:
+            if "name: oracle-skill" in text:
                 score = 0.9
             else:
                 score = 0.5
-                if "## Helpful" in text:
+                if "name: helpful-skill" in text:
                     score += 0.3
-                if "## Harmful" in text:
+                if "name: harmful-skill" in text:
                     score -= 0.2
         total = len(task_instances) * repeats
         passed = round(score * total)
@@ -94,7 +104,7 @@ def test_resolve_skill_task_path_uses_committed_skill_tree(tmp_path: Path) -> No
     assert resolved == root / "skills" / "seed" / "demo"
 
 
-def test_run_cms_task_prunes_harmful_module_and_improves_heldout(tmp_path: Path) -> None:
+def test_run_cms_task_prunes_harmful_native_skill_and_improves_heldout(tmp_path: Path) -> None:
     root = _benchmark_root(tmp_path / "bench")
     adapter = FakeAdapter(root)
     result = run_cms_task(
@@ -110,8 +120,7 @@ def test_run_cms_task_prunes_harmful_module_and_improves_heldout(tmp_path: Path)
     assert result.heldout_instances == ("demo/demo-3", "demo/demo-4", "demo/demo-5")
     assert len(result.seed_module_ids) == 2
     assert len(result.cms_module_ids) == 1
-    assert any("Helpful" in title for title in result.cms_module_titles)
-    assert all("Harmful" not in title for title in result.cms_module_titles)
+    assert result.cms_module_titles == ("helpful-skill",)
     assert result.selection_seed == pytest.approx(0.6)
     assert result.selection_cms == pytest.approx(0.8)
     assert result.heldout_scores["seed"] == pytest.approx(0.6)
@@ -119,6 +128,10 @@ def test_run_cms_task_prunes_harmful_module_and_improves_heldout(tmp_path: Path)
     assert result.heldout_scores["no_skill"] == pytest.approx(0.4)
     assert result.heldout_scores["human_authored"] == pytest.approx(0.9)
     assert result.cms_bytes < result.seed_bytes
+    cms_task_roots = list((tmp_path / "run" / "skills" / "demo").glob("cms-*/demo"))
+    assert len(cms_task_roots) == 1
+    assert (cms_task_roots[0] / "helpful-skill" / "SKILL.md").is_file()
+    assert not (cms_task_roots[0] / "harmful-skill").exists()
     assert (tmp_path / "run" / "tasks" / "demo" / "result.json").is_file()
 
 
