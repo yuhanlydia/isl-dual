@@ -59,7 +59,7 @@ def _write_multi_skill(root: Path) -> Path:
 def test_load_skill_package_preserves_frontmatter_and_extracts_h2_modules(tmp_path: Path) -> None:
     task = _write_skill(tmp_path)
 
-    package = load_skill_package(task)
+    package = load_skill_package(task, granularity="section")
 
     assert package.granularity == "section"
     assert len(package.markdown_files) == 1
@@ -82,15 +82,15 @@ def test_module_ids_are_stable_for_identical_skill_content(tmp_path: Path) -> No
     first = _write_skill(tmp_path / "a")
     second = _write_skill(tmp_path / "b")
 
-    ids_a = [module.id for module in load_skill_package(first).modules]
-    ids_b = [module.id for module in load_skill_package(second).modules]
+    ids_a = [module.id for module in load_skill_package(first, granularity="section").modules]
+    ids_b = [module.id for module in load_skill_package(second, granularity="section").modules]
 
     assert ids_a == ids_b
 
 
 def test_render_skill_package_keeps_selected_modules_in_original_order_and_resources_byte_exact(tmp_path: Path) -> None:
     task = _write_skill(tmp_path / "source")
-    package = load_skill_package(task)
+    package = load_skill_package(task, granularity="section")
     inspect, execute, verify = package.modules
     destination = tmp_path / "rendered"
 
@@ -106,10 +106,10 @@ def test_render_skill_package_keeps_selected_modules_in_original_order_and_resou
     assert (destination / "workflow" / "references" / "formula.txt").read_bytes() == b"alpha\x00beta\n"
 
 
-def test_skill_granularity_treats_each_native_skill_directory_as_one_module(tmp_path: Path) -> None:
+def test_default_granularity_treats_each_native_skill_directory_as_one_module(tmp_path: Path) -> None:
     task = _write_multi_skill(tmp_path)
 
-    package = load_skill_package(task, granularity="skill")
+    package = load_skill_package(task)
 
     assert package.granularity == "skill"
     assert [module.title for module in package.modules] == [
@@ -127,7 +127,7 @@ def test_skill_granularity_treats_each_native_skill_directory_as_one_module(tmp_
 
 def test_skill_granularity_removes_entire_unretained_skill_directory(tmp_path: Path) -> None:
     task = _write_multi_skill(tmp_path / "source")
-    package = load_skill_package(task, granularity="skill")
+    package = load_skill_package(task)
     helpful = next(module for module in package.modules if module.title == "helpful-skill")
     destination = tmp_path / "rendered"
 
@@ -141,7 +141,7 @@ def test_skill_granularity_removes_entire_unretained_skill_directory(tmp_path: P
 
 def test_render_rejects_unknown_module_id(tmp_path: Path) -> None:
     task = _write_skill(tmp_path / "source")
-    package = load_skill_package(task)
+    package = load_skill_package(task, granularity="section")
 
     try:
         render_skill_package(package, {"does-not-exist"}, tmp_path / "out")
