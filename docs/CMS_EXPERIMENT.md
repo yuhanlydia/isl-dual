@@ -97,6 +97,18 @@ Important: a local ChatGPT/Codex CLI login is **not assumed** to authenticate Sk
 isl-causal-skill pilot ... --agent codex --model <upstream-supported-model>
 ```
 
+ISL-Dual additionally provides an opt-in-compatible fallback for the upstream
+Codex runner: when `OPENAI_API_KEY` is absent, the bridge accepts a valid
+ChatGPT OAuth login from `~/.codex/auth.json` (or `CODEX_AUTH_JSON`) and stages
+a private copy only at the ephemeral container's Codex auth path during the
+agent phase. Before the verifier runs, the bridge retrieves any refreshed state
+and removes the container credential. OAuth trials are serialized and a
+cross-process lock protects refresh/writeback. API-key auth continues to take
+precedence. The OAuth credential is never stored under the CMS run directory
+or content-addressed cache. Do not run another host Codex process against the
+same OAuth login during this experiment because external processes do not honor
+the bridge lock.
+
 The CMS bridge bypasses one upstream CLI bug that unconditionally checks an Anthropic key before parsing `--agent`, but live execution still calls SkillLearnBench's own Docker check and its own per-agent/per-task API-key validation.
 
 ## 4. Update ISL-Dual and verify

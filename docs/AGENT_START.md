@@ -53,6 +53,15 @@ claude-code / claude-sonnet-4-6
 
 Credentials are inherited from SkillLearnBench. For the default pilot, provide a valid `ANTHROPIC_API_KEY`; `github-repo-analytics` additionally needs `GH_TOKEN`. If running the upstream Codex agent instead, provide the API credential it requires (`OPENAI_API_KEY`). Do not assume a host ChatGPT/Codex login is available inside SkillLearnBench Docker.
 
+The ISL-Dual bridge also supports an explicit Codex OAuth fallback. If
+`OPENAI_API_KEY` is unset and the host has a valid ChatGPT login at
+`~/.codex/auth.json`, run the pilot with `--agent codex`; the bridge securely
+stages a private copy only for the container's agent phase, removes it before
+the verifier, and synchronizes credential refresh under a cross-process lock.
+OAuth runs are serialized to avoid refresh-token rotation races. Set
+`CODEX_AUTH_JSON=/path/to/auth.json` to select a different credential file.
+The credential is not written to the CMS output or evaluation cache.
+
 ## 3. Preflight — no API calls
 
 ```bash
