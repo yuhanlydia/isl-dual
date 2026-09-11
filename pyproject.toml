@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "isl-dual"
 version = "0.1.0"
-description = "Inverse Skill Learning with an inverse-forward dual loop"
+description = "Inverse Skill Learning and Causal Minimal Skill experiments"
 requires-python = ">=3.10"
 dependencies = ["PyYAML>=6.0", "tomli>=2.0"]
 
@@ -15,6 +15,7 @@ isl-dual-family = "isl_dual.experiment:main"
 isl-dual-campaign = "isl_dual.campaign:main"
 isl-dual-status = "isl_dual.status:main"
 isl-dual-mechanism = "isl_dual.mechanism:main"
+isl-causal-skill = "isl_dual.causal_runner:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

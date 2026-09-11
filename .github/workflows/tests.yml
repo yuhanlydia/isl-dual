@@ -19,6 +19,34 @@ jobs:
       - name: Test
         run: python -m pytest -q
 
+  cms-skilllearn-dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install ISL-Dual
+        run: python -m pip install -e .
+      - name: Pin SkillLearnBench
+        run: |
+          git clone https://github.com/cxcscmu/SkillLearnBench.git /tmp/SkillLearnBench
+          git -C /tmp/SkillLearnBench checkout a0da045a8bf64b8a8ff20730c4d6ef10dc4e2c5b
+      - name: CMS preflight against real SkillLearnBench
+        run: |
+          isl-causal-skill preflight --skilllearn-root /tmp/SkillLearnBench
+      - name: CMS canonical pilot dry-run against real SkillLearnBench
+        run: |
+          rm -rf /tmp/cms-real-dry
+          isl-causal-skill pilot \
+            --skilllearn-root /tmp/SkillLearnBench \
+            --output /tmp/cms-real-dry \
+            --dry-run | tee /tmp/cms-real-dry.log
+          grep -q 'NO MODEL/API CALLS' /tmp/cms-real-dry.log
+          grep -q 'weighted-gdp-calculation' /tmp/cms-real-dry.log
+          grep -q '"seed_modules": 3' /tmp/cms-real-dry.log
+          test ! -e /tmp/cms-real-dry/pilot.json
+
   e2-native-preflight:
     runs-on: ubuntu-latest
     steps:
