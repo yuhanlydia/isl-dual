@@ -9,7 +9,7 @@ from isl_dual.experiment import _verified_artifact_rewards
 from isl_dual.mechanism import run_mechanism_pilot
 from isl_dual.models import AcquisitionTask, Graph, TrainingResult
 from isl_dual.pipeline import train_inverse_skill
-from isl_dual.skillevol_host import snapshot
+from isl_dual.skillevol_host import _python_executable, snapshot
 from isl_dual.toy import ToyCritic, ToyExecutor, ToyMutator, ToyProposer, node, toy_tasks
 
 
@@ -25,6 +25,15 @@ def test_snapshot_omits_generated_dependency_trees(tmp_path):
     assert "source.py" in value["files"]
     assert not any("node_modules" in path for path in value["files"])
     assert not any(".venv" in path for path in value["files"])
+
+
+def test_host_native_runtime_prefers_python311_when_available(monkeypatch):
+    monkeypatch.delenv("ISL_DUAL_PYTHON", raising=False)
+    monkeypatch.setattr(
+        "isl_dual.skillevol_host.shutil.which",
+        lambda name: {"python3.11": "/usr/bin/python3.11", "python3": "/usr/bin/python3"}.get(name),
+    )
+    assert _python_executable() == "/usr/bin/python3.11"
 
 
 def test_mutator_shortfall_is_nonfatal_and_calls_are_operation_conditioned():

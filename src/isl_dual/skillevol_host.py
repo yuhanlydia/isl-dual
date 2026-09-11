@@ -22,6 +22,27 @@ EPHEMERAL_PARTS = {
 }
 
 
+def _python_executable() -> str:
+    """Choose a Python runtime compatible with benchmark verifier fixtures.
+
+    Some pinned SkillEvolBench tasks use ``datetime.UTC`` and therefore need
+    Python 3.11+, while the repository itself still supports Python 3.10.
+    Allow an explicit override, prefer 3.11 when installed, and retain the
+    historical 3.x fallback for older hosts.
+    """
+    configured = os.environ.get("ISL_DUAL_PYTHON")
+    if configured:
+        resolved = shutil.which(configured) or (configured if Path(configured).exists() else None)
+        if resolved:
+            return resolved
+        raise FileNotFoundError(f"ISL_DUAL_PYTHON does not name an executable: {configured}")
+    for candidate in ("python3.11", "python3"):
+        resolved = shutil.which(candidate)
+        if resolved:
+            return resolved
+    raise FileNotFoundError("could not find python3.11 or python3 for native benchmark execution")
+
+
 def _observable_path(path: str) -> bool:
     return not (set(Path(path).parts) & EPHEMERAL_PARTS) and "$PROJECT_ROOT" not in path and '"' not in path
 
@@ -66,7 +87,10 @@ class HostNativeVerifier:
             raise TypeError("host verifier expects a workspace snapshot")
         with tempfile.TemporaryDirectory(prefix="isl-dual-verify-") as temp:
             root, logs = Path(temp) / "task", Path(temp) / "logs"
-            tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
+            python_executable = _python_executable()
+            tool_bin = Path(temp) / "bin"; tool_bin.mkdir()
+            (tool_bin / "python").symlink_to(python_executable)
+            (tool_bin / "python3").symlink_to(python_executable)
             if isinstance(output, dict) and "delta" in output:
                 shutil.copytree(self.base_environment, root, ignore=shutil.ignore_patterns("Dockerfile"))
                 files = output.get("_replay_delta", output["delta"])
@@ -90,7 +114,7 @@ class HostNativeVerifier:
             env = os.environ.copy()
             env.update(
                 PROJECT_ROOT=str((root / self.project_relative).resolve()),
-                TASK_ROOT=str(root), HARBOR_LOG_DIR=str(logs), PYTHON_BIN="python3",
+                TASK_ROOT=str(root), HARBOR_LOG_DIR=str(logs), PYTHON_BIN=python_executable,
                 PATH=str(tool_bin) + os.pathsep + env["PATH"],
                 PIP_NO_CACHE_DIR="1", npm_config_cache=str(Path(temp) / "npm-cache"),
             )
@@ -116,7 +140,7 @@ class HostNativeVerifier:
         requirements = root / "requirements.txt"
         if requirements.exists():
             subprocess.run(
-                ["python3", "-m", "pip", "install", "--no-cache-dir", "-r", str(requirements)],
+                [_python_executable(), "-m", "pip", "install", "--no-cache-dir", "-r", str(requirements)],
                 cwd=root, text=True, capture_output=True, timeout=self.timeout_seconds, check=True,
             )
         if (root / "package-lock.json").exists():
@@ -157,13 +181,16 @@ def _solution_project_relative(task_dir: Path) -> str:
 def _materialize_expert_artifact(task_dir: Path, project_relative: str) -> dict[str, Any]:
     with tempfile.TemporaryDirectory(prefix="isl-dual-outcome-") as temp:
         root = Path(temp) / "task"
-        tool_bin = Path(temp) / "bin"; tool_bin.mkdir(); (tool_bin / "python").symlink_to("/usr/bin/python3")
+        python_executable = _python_executable()
+        tool_bin = Path(temp) / "bin"; tool_bin.mkdir()
+        (tool_bin / "python").symlink_to(python_executable)
+        (tool_bin / "python3").symlink_to(python_executable)
         shutil.copytree(task_dir / "environment", root, ignore=shutil.ignore_patterns("Dockerfile"))
         before = snapshot(root)
         env = os.environ.copy()
         env.update(
             PROJECT_ROOT=str((root / project_relative).resolve()), TASK_ROOT=str(root),
-            PYTHON_BIN="python3", PATH=str(tool_bin) + os.pathsep + env["PATH"],
+            PYTHON_BIN=python_executable, PATH=str(tool_bin) + os.pathsep + env["PATH"],
             PIP_NO_CACHE_DIR="1", npm_config_cache=str(Path(temp) / "npm-cache"),
         )
         completed = subprocess.run(["bash", str(task_dir / "solution" / "solve.sh")], env=env, cwd=root, text=True, capture_output=True, timeout=600)
